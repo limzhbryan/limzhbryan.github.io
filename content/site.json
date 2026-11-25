@@ -7,21 +7,20 @@
     "themes": [
       {
         "title": "Commodities & pricing",
-        "text": "How prices for iron ore, plastics and other raw materials are discovered, and what really moves them."
+        "text": "What moves commodity prices"
       },
       {
         "title": "Trade & supply chains",
-        "text": "Tariffs, freight and sourcing, and who ends up carrying the cost when they change."
+        "text": "Tariffs, freight and sourcing"
       },
       {
         "title": "Global political economy",
-        "text": "How governments and industrial policy reshape the markets that firms operate in."
+        "text": "How governments and industrial policy reshape the markets that firms operate in"
       }
     ]
   },
-  "photo": "",
-  "writing_intro": "Opinion pieces, analysis and explainers. [These entries are samples and will be replaced with real articles.]",
-  "about": "<p>I'm an Economics PhD student at Nanyang Technological University in Singapore. I'm interested in global markets: how prices get set, how trade flows shift, and how politics changes both.</p><p>Before the PhD I spent two years at S&amp;P Global as a price assessment specialist, covering iron ore and petrochemicals. I spoke with traders and producers across Asia every day and turned what I heard into the benchmark prices they trade on. Earlier, I worked in strategy and market research at Kantar Consulting, Jacaranda Capital Partners and FairPrice Group.</p><p>I write here to work through ideas, and to make economics useful to the people who have to make decisions with it.</p>",
+  "writing_intro": "Opinion pieces, analysis and works",
+  "about": "Hi! I am Bryan, an Economics PhD student at Nanyang Technological University in Singapore. I'm interested in global markets such as why prices move, how trade flows shift, and how politics changes both.\n\nBefore the PhD I spent two years at S&P Global as a price assessment specialist, covering movements in commodity prices. I spoke with traders and producers across Asia every day and wrote daily reports explaining the movements of prices. Earlier, I worked in strategy and market research at Kantar Consulting, Jacaranda Capital Partners and FairPrice Group.\n\nI write here to work through ideas, and to make economics useful to the people who have to make decisions with it.",
   "contact": {
     "intro": "I'm always happy to talk about markets, trade, or anything I've written here. Email is the best way to reach me.",
     "email": "Limz0196@e.ntu.edu.sg",
