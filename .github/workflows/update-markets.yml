@@ -23,8 +23,13 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+      - name: Check data source
+        run: |
+          curl -sS -m 30 -A "Mozilla/5.0" -o /tmp/t.csv -w "fredgraph: %{http_code} in %{time_total}s\n" "https://fred.stlouisfed.org/graph/fredgraph.csv?id=DCOILBRENTEU&cosd=2026-10-01" || echo "fredgraph failed"
+          head -3 /tmp/t.csv || true
       - name: Fetch latest data
-        run: python scripts/update_markets.py
+        timeout-minutes: 10
+        run: python -u scripts/update_markets.py
       - name: Commit if changed
         run: |
           git config user.name "market-data-bot"

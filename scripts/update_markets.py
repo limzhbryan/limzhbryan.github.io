@@ -30,13 +30,13 @@ OUT = Path(__file__).resolve().parent.parent / "data" / "markets.json"
 
 def fetch(series_id, start):
     req = urllib.request.Request(URL.format(id=series_id, start=start), headers={"User-Agent": "personal-site-market-updater"})
-    for attempt in range(3):
+    for attempt in range(2):
         try:
-            with urllib.request.urlopen(req, timeout=60) as r:
+            with urllib.request.urlopen(req, timeout=25) as r:
                 text = r.read().decode("utf-8")
             break
         except Exception:
-            if attempt == 2:
+            if attempt == 1:
                 raise
             time.sleep(5 * (attempt + 1))
     rows = []
