@@ -316,7 +316,7 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
     <section class="stack col" id="mk-today">
       <h2 class="sec">Today in markets</h2>
       <p class="mk-summary" id="mk-summary">The daily summary appears here once the latest data has loaded.</p>
-      <p class="mk-meta">Written automatically each morning from the latest closing prices.</p>
+      <p class="mk-meta">Written automatically each morning from the latest closing prices of oil and US stocks.</p>
     </section>
 
     <section class="stack" id="mk-board" aria-live="polite"></section>
@@ -446,20 +446,32 @@ function summarize(data) {
   const by = id => { const s = data.series.find(x => x.id === id); return s ? dailyMoves(s) : null; };
   const out = [];
   const brent = by("DCOILBRENTEU"), wti = by("DCOILWTICO"), gas = by("DHHNGSP");
-  if (brent) out.push(`In energy, ${priceLine(brent, "US$")} a barrel${wti ? `, while WTI ${verb(wti.pct, "gained", "lost", "held")}${Math.abs(wti.pct) < 0.05 ? " steady" : " " + Math.abs(wti.pct).toFixed(1) + "%"}` : ""}.`);
-  if (gas && Math.abs(gas.pct) >= 3) out.push(`US natural gas was volatile, ${gas.pct > 0 ? "jumping" : "dropping"} ${Math.abs(gas.pct).toFixed(1)}%.`);
-  const spx = by("SP500"), ndq = by("NASDAQCOM"), nky = by("NIKKEI225"), vix = by("VIXCLS");
+  if (brent) out.push(`${priceLine(brent, "US$")} a barrel${wti ? `, while WTI ${verb(wti.pct, "gained", "lost", "held")}${Math.abs(wti.pct) < 0.05 ? " steady" : " " + Math.abs(wti.pct).toFixed(1) + "%"}` : ""}.`);
+    const spx = by("SP500"), ndq = by("NASDAQCOM"), nky = by("NIKKEI225"), vix = by("VIXCLS");
   if (spx) {
     let t = `On Wall Street, the ${priceLine(spx)}`;
     if (ndq) t += `, and the Nasdaq ${verb(ndq.pct, "gained", "lost", "was flat")}${Math.abs(ndq.pct) < 0.05 ? "" : " " + Math.abs(ndq.pct).toFixed(1) + "%"}`;
     out.push(t + ".");
   }
-  if (nky) out.push(`In Tokyo, the ${priceLine(nky)}.`);
   if (vix && Math.abs(vix.pct) >= 5) out.push(`The VIX ${vix.pct > 0 ? "jumped" : "eased"} to ${fmtNum(vix.last, 1)}, ${vix.pct > 0 ? "a sign of rising nerves" : "suggesting calmer markets"}.`);
-  const sgd = by("DEXSIUS"), cny = by("DEXCHUS"), y10 = by("DGS10");
-  if (sgd) out.push(`The US dollar ${verb(sgd.pct, "strengthened", "weakened", "was steady")} against the Singapore dollar at ${fmtNum(sgd.last, 4)}${cny ? ` and ${verb(cny.pct, "firmed", "softened", "held")} against the yuan at ${fmtNum(cny.last, 4)}` : ""}.`);
-  if (y10) { const bp = Math.round(y10.diff * 100); out.push(`The US 10-year Treasury yield ${bp === 0 ? "was unchanged at" : (bp > 0 ? "rose " : "fell ") + Math.abs(bp) + " basis point" + (Math.abs(bp) === 1 ? "" : "s") + " to"} ${fmtNum(y10.last, 2)}%.`); }
   return out.join(" ");
+}
+
+// Daily commentary on oil and US stocks (data/commentary.json), written each morning with sources.
+async function loadCommentary() {
+  try {
+    const r = await fetch("data/commentary.json", { cache: "no-cache" });
+    if (!r.ok) return;
+    const c = await r.json();
+    if (!c.paragraphs || !c.paragraphs.length) return;
+    const box = document.getElementById("mk-today");
+    const esc = s => String(s).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+    const srcs = (c.sources || []).filter(s => /^https?:\/\//.test(s.url)).map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a>`).join(" · ");
+    box.innerHTML = `<h2 class="sec">Today in markets</h2>
+      ${c.headline ? `<h3 style="font-size:24px">${esc(c.headline)}</h3>` : ""}
+      ${c.paragraphs.map(p => `<p class="mk-summary">${esc(p)}</p>`).join("")}
+      <p class="mk-meta">${esc(fmtDate(c.date))}. Automated commentary, written each morning from the day's market data and news.${srcs ? " Sources: " + srcs : ""}</p>`;
+  } catch (e) { /* keep the data-only summary */ }
 }
 
 async function loadMarkets() {
@@ -479,6 +491,7 @@ async function loadMarkets() {
         <div class="mk-spark">${spark(s.history)}</div>
       </div>`).join("")}</div>`).join("");
     const sum = summarize(data); if (sum) document.getElementById("mk-summary").textContent = sum;
+    loadCommentary();
     const u = new Date(data.updated.replace("Z", ":00Z"));
     upd.textContent = "Last refreshed " + u.toLocaleString("en-GB", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Singapore" }) + " (Singapore time).";
   } catch (e) {
