@@ -1,13 +1,22 @@
 {
   "date": "2026-11-24",
-  "headline": "Oil slips on Iran talks, while tech drags the Nasdaq and the Dow tops 50,000",
+  "headline": "Oil falls on Iran talks, while tech drags the Nasdaq and the Dow climbs back above 50,000",
   "paragraphs": [
-    "Oil eased on Tuesday, with Brent slipping below US$90 a barrel to around US$88 as traders weighed progress in US–Iran negotiations. A deal that brings more Iranian barrels back to market would loosen supply, so the market is trimming some of the risk premium it had built in.",
-    "On Wall Street the picture was split. The Dow closed above 50,000 for the first time as investors rotated into value stocks, but the S&P 500 fell about 0.5% and the Nasdaq led declines as doubts over AI spending weighed on big tech. Investors don't seem to be leaving equities; they are rethinking how much they will pay for growth."
+    "Oil came under pressure as traders weighed progress in US–Iran negotiations. Brent settled at about US$91.40 a barrel on Tuesday and slipped below US$90 in Asian trading on Wednesday. A deal that brings more Iranian barrels back to market would loosen supply, so the market is trimming some of the risk premium it had built in.",
+    "On Wall Street the picture was split. The Dow rose about 0.9% to close at 50,019, back above the 50,000 mark, as investors rotated into value stocks. The S&P 500 fell 0.5% and the Nasdaq led declines with a 1.5% drop as doubts over AI spending weighed on big tech. Investors don't seem to be leaving equities; they are rethinking how much they will pay for growth."
   ],
   "sources": [
-    {"title": "Kotak Neo: Brent slips below $90", "url": "https://www.kotakneo.com/news/commodities/oil-price-today-24-november-2026-brent-falls-below-90-us-iran-talks-supply-risks/"},
-    {"title": "Yahoo Finance: Tech sell-off drags Nasdaq", "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-nov-24-221148355.html"},
-    {"title": "24/7 Wall St: Dow closes above 50,000", "url": "https://247wallst.com/cards/the-dow-closed-above-50-000-for-the-first-time-while-the-nas-gspc-market-bell-01m87nyn7mshvn15b2vdser41w"}
+    {
+      "title": "Kotak Neo: Brent slips below $90 on US–Iran talks",
+      "url": "https://www.kotakneo.com/news/commodities/oil-price-today-24-november-2026-brent-falls-below-90-us-iran-talks-supply-risks/"
+    },
+    {
+      "title": "Yahoo Finance: Tech sell-off drags Nasdaq as Dow gains on value rotation",
+      "url": "https://finance.yahoo.com/markets/stocks/articles/stock-market-today-nov-24-221148355.html"
+    },
+    {
+      "title": "Closing prices: FRED (St. Louis Fed)",
+      "url": "https://fred.stlouisfed.org/series/DJIA"
+    }
   ]
 }
