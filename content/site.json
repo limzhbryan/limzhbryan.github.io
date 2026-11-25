@@ -1,4 +1,5 @@
 {
+  "photo": "/files/Bryan Lim.jpg",
   "home": {
     "headline": "Markets, trade & the price of things.",
     "intro": "I'm Bryan, an Economics PhD student at NTU Singapore. I write about commodities, trade, and how politics shapes the markets businesses depend on.",
@@ -27,9 +28,5 @@
     "linkedin": "https://www.linkedin.com/in/bryanlimzh",
     "location": "Singapore"
   },
-  "footer_note": "Views are my own and should not be taken as financial advice",
-  "markets": {
-    "intro": "The prices I keep an eye on, from crude oil and Wall Street to the Singapore dollar. The numbers refresh automatically every morning, with a short commentary on what moved oil and US stocks and why.",
-    "note": "Data: Yahoo Finance and FRED (Federal Reserve Bank of St. Louis). Oil and gas prices are front-month futures. For information only, not investment advice."
-  }
+  "footer_note": "Views are my own and should not be taken as financial advice"
 }
