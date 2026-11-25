@@ -1,0 +1,99 @@
+# Settings for the visual editor at https://app.pagescms.org
+# Each entry below becomes a section in the editor's left menu.
+media:
+  input: files
+  output: /files
+
+content:
+  - name: articles
+    label: Articles
+    type: file
+    path: content/articles.json
+    format: json
+    fields:
+      - name: articles
+        label: Articles (newest appear first automatically)
+        type: object
+        list: true
+        fields:
+          - { name: title, label: Title, type: string, required: true }
+          - { name: date, label: Date, type: date, options: { format: yyyy-MM-dd } }
+          - name: type
+            label: Type
+            type: select
+            options: { values: [Analysis, Opinion, Explainer, Published elsewhere] }
+          - { name: summary, label: One-line summary, type: text, description: "Shown under the title in lists and at the top of the article." }
+          - { name: featured, label: Feature on the homepage, type: boolean, description: "Tick one article. If none is ticked, the newest one is featured." }
+          - { name: image, label: Homepage image (optional), type: image, description: "A chart or picture shown next to the featured article." }
+          - { name: image_caption, label: Image caption, type: string }
+          - { name: read_time, label: Reading time, type: string, description: "For example: 6 min read" }
+          - { name: external_url, label: Link to another site (optional), type: string, description: "For pieces published elsewhere. If filled in, the title links there instead of to the article below." }
+          - { name: body, label: Article text, type: rich-text, description: "Leave empty for a piece that only links elsewhere." }
+
+  - name: site
+    label: Home, About & Contact
+    type: file
+    path: content/site.json
+    format: json
+    fields:
+      - { name: photo, label: Your photo, type: image, description: "Portrait, ideally 4:5. Shown on the homepage and About page." }
+      - name: home
+        label: Homepage
+        type: object
+        fields:
+          - { name: headline, label: Big headline, type: string }
+          - { name: intro, label: Intro paragraph, type: text }
+          - { name: intro_more, label: Second line, type: text }
+          - { name: themes_title, label: Themes heading, type: string }
+          - name: themes
+            label: Themes
+            type: object
+            list: true
+            fields:
+              - { name: title, label: Title, type: string }
+              - { name: text, label: Description, type: text }
+      - { name: writing_intro, label: Writing page intro, type: text }
+      - { name: about, label: About page text, type: rich-text }
+      - name: contact
+        label: Contact page
+        type: object
+        fields:
+          - { name: intro, label: Intro, type: text }
+          - { name: email, label: Email, type: string }
+          - { name: linkedin, label: LinkedIn URL, type: string }
+          - { name: location, label: Location, type: string }
+      - { name: footer_note, label: Footer note, type: string }
+
+  - name: resume
+    label: Resume
+    type: file
+    path: content/resume.json
+    format: json
+    fields:
+      - { name: pdf, label: Resume PDF, type: file, description: "Upload a new PDF to replace the download link." }
+      - name: experience
+        label: Experience
+        type: object
+        list: true
+        fields:
+          - { name: organisation, label: Company, type: string }
+          - { name: role, label: Role, type: string }
+          - { name: dates, label: Dates, type: string }
+          - { name: points, label: Bullet points, type: string, list: true }
+      - name: education
+        label: Education
+        type: object
+        list: true
+        fields:
+          - { name: qualification, label: Qualification, type: string }
+          - { name: school, label: School, type: string }
+          - { name: dates, label: Dates, type: string }
+      - name: leadership
+        label: Leadership
+        type: object
+        list: true
+        fields:
+          - { name: organisation, label: Organisation, type: string }
+          - { name: role, label: Role, type: string }
+          - { name: dates, label: Dates, type: string }
+      - { name: skills, label: Skills, type: text }

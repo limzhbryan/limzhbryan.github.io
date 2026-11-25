@@ -168,6 +168,13 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
   .contact-list div { grid-template-columns: 1fr; gap: 0; }
   main { padding-block: 40px 56px; }
 }
+.prose img { display: block; max-width: 100%; height: auto; margin: 8px 0; }
+.prose em:only-child { display: block; font-family: var(--ui); font-style: normal; font-size: 13.5px; color: var(--muted); margin-top: -8px; }
+.prose ul, .prose ol { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
+.prose blockquote { margin: 0; padding-left: 18px; border-left: 3px solid var(--accent); font-style: italic; }
+.photo img, .photo-light img { width: 100%; height: 100%; object-fit: cover; display: block; }
+.feature img { width: 100%; height: auto; display: block; }
+.entry h3 span { color: var(--ink); }
 </style>
 <style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
 </head>
@@ -187,67 +194,31 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
     </div>
     <div class="hero" id="hero">
       <div>
-        <h1>Markets, trade <i>&amp;</i> the price of things.</h1>
-        <p class="intro">I'm Bryan, an Economics PhD student at NTU Singapore. I write about commodities, trade, and how politics shapes the markets businesses depend on.</p>
-        <p>Before the PhD, I spent two years at S&amp;P Global assessing iron ore and petrochemical prices. <a href="#about">More about me</a>.</p>
+        <h1 id="home-headline"></h1>
+        <p class="intro" id="home-intro"></p>
+        <p><span id="home-more"></span> <a href="#about">More about me</a>.</p>
       </div>
-      <div class="photo" role="img" aria-label="Photo to come">[Photo]</div>
+      <div class="photo" id="home-photo" role="img" aria-label="Photo">[Photo]</div>
     </div>
   </div>
 </header>
 
+<!-- All text on this site lives in the content/ folder and is edited with Pages CMS (app.pagescms.org). -->
 <main class="inner">
   <!-- HOME -->
   <div class="view" data-view="home">
-    <section class="stack" style="gap:28px">
+    <section class="stack" style="gap:28px" id="home-latest">
       <h2 class="sec">Latest</h2>
-      <article class="feature">
-        <div>
-          <span class="date">November 2026 · Analysis</span>
-          <h3><a href="#article">When freight spikes, who really pays for Asia's plastics?</a></h3>
-          <p>Shipping shocks rarely land fully on the buyer. How the cost splits between buyers and producers shows who holds the market power.</p>
-          <p class="small" style="margin-top:16px"><a href="#article">Read the piece</a></p>
-        </div>
-        <figure style="margin:0">
-          <svg viewBox="0 0 420 210" role="img" aria-label="Illustrative chart: delivered price rises after a freight shock while producer netback falls">
-            <g font-family="-apple-system, Helvetica, Arial, sans-serif" font-size="11" fill="var(--muted)">
-              <line x1="34" y1="30" x2="410" y2="30" stroke="var(--rule)"/>
-              <line x1="34" y1="90" x2="410" y2="90" stroke="var(--rule)"/>
-              <line x1="34" y1="150" x2="410" y2="150" stroke="var(--rule)"/>
-              <text x="28" y="34" text-anchor="end">110</text>
-              <text x="28" y="94" text-anchor="end">100</text>
-              <text x="28" y="154" text-anchor="end">90</text>
-              <line x1="222" y1="20" x2="222" y2="178" stroke="var(--ink)" stroke-dasharray="3 4" stroke-opacity=".45"/>
-              <text x="222" y="196" text-anchor="middle">Freight shock</text>
-              <text x="34" y="196">Week −8</text>
-              <text x="410" y="196" text-anchor="end">Week +8</text>
-            </g>
-            <polyline class="draw" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linejoin="round" points="34,92 57,89 81,93 104,90 128,88 151,92 175,89 198,91 222,90 245,97 269,103 292,107 316,109 339,110 363,111 386,112 410,112"/>
-            <polyline class="draw" fill="none" stroke="var(--accent)" stroke-width="2.6" stroke-linejoin="round" points="34,89 57,91 81,88 104,90 128,87 151,91 175,89 198,88 222,90 245,72 269,58 292,50 316,46 339,43 363,41 386,40 410,39"/>
-            <circle cx="410" cy="39" r="4" fill="var(--accent)"/>
-            <g font-family="-apple-system, Helvetica, Arial, sans-serif" font-size="12" font-weight="600">
-              <text x="404" y="62" text-anchor="end" fill="var(--accent)">Delivered price +9%</text>
-              <text x="404" y="132" text-anchor="end" fill="var(--muted)">Producer netback −4%</text>
-            </g>
-          </svg>
-          <figcaption>Index, pre-shock = 100. Illustrative numbers.</figcaption>
-        </figure>
-      </article>
+      <article class="feature" id="home-feature"></article>
     </section>
-
     <section class="stack">
       <h2 class="sec">More writing</h2>
       <div class="list col" data-posts="latest"></div>
       <p class="small"><a href="#writing">All writing</a></p>
     </section>
-
     <section class="stack" style="gap:24px">
-      <h2 class="sec">What I write about</h2>
-      <div class="themes">
-        <div><h3>Commodities &amp; pricing</h3><p>How prices for iron ore, plastics and other raw materials are discovered, and what really moves them.</p></div>
-        <div><h3>Trade &amp; supply chains</h3><p>Tariffs, freight and sourcing, and who ends up carrying the cost when they change.</p></div>
-        <div><h3>Global political economy</h3><p>How governments and industrial policy reshape the markets that firms operate in.</p></div>
-      </div>
+      <h2 class="sec" id="themes-title">What I write about</h2>
+      <div class="themes" id="home-themes"></div>
     </section>
   </div>
 
@@ -255,54 +226,14 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
   <div class="view" data-view="writing" hidden>
     <div class="stack col">
       <h1 class="page-title">Writing</h1>
-      <p class="muted">Opinion pieces, analysis and explainers. [These entries are samples and will be replaced with real articles.]</p>
+      <p class="muted" id="writing-intro"></p>
     </div>
     <div class="list col" data-posts="all"></div>
   </div>
 
-  <!-- ARTICLE -->
+  <!-- ARTICLE (filled from content/articles.json) -->
   <div class="view" data-view="article" hidden>
-    <article class="article stack col" style="gap:36px">
-      <header>
-        <h1>When freight spikes, who really pays for Asia's plastics?</h1>
-        <p class="dek">Shipping shocks rarely land fully on the buyer. How the cost splits tells you who holds the market power.</p>
-        <p class="byline">Bryan Lim · November 2026 · 6 min read · [Sample article]</p>
-      </header>
-      <div class="prose">
-        <p>When container and tanker rates jump, the first reaction in most procurement meetings is simple: our costs just went up by the freight increase. In practice the delivered price usually rises by less than that, and the difference comes out of the producer's pocket.</p>
-        <p>How that cost is shared depends on who has options. A buyer who can switch origins forces the producer to absorb more. A producer with full order books and other markets to sell to can pass almost all of it on. Watching the gap between origin and delivered prices shows you which situation you are in.</p>
-        <figure class="wide">
-          <div class="scroll">
-            <svg viewBox="0 0 600 230" role="img" aria-label="Illustrative chart of how much of a freight increase producers absorbed, by product">
-              <g font-family="inherit" font-size="15" fill="var(--ink)">
-                <text x="0" y="38">Benzene</text>
-                <text x="0" y="88">Polypropylene</text>
-                <text x="0" y="138">Polyethylene</text>
-                <text x="0" y="188">Iron ore</text>
-              </g>
-              <line x1="560" y1="12" x2="560" y2="204" stroke="var(--ink)" stroke-opacity=".5"/>
-              <rect x="548" y="24" width="12" height="20" fill="var(--accent)"/>
-              <rect x="440" y="74" width="120" height="20" fill="var(--accent)"/>
-              <rect x="416" y="124" width="144" height="20" fill="var(--accent)"/>
-              <rect x="554" y="174" width="6" height="20" fill="var(--accent)"/>
-              <g font-family="inherit" font-size="14" fill="var(--muted)">
-                <text x="542" y="39" text-anchor="end">−1%</text>
-                <text x="434" y="89" text-anchor="end">−10%</text>
-                <text x="410" y="139" text-anchor="end">−12%</text>
-                <text x="548" y="189" text-anchor="end">−0.5%</text>
-                <text x="560" y="224" text-anchor="middle">0</text>
-                <text x="380" y="224" text-anchor="middle">−15%</text>
-              </g>
-            </svg>
-          </div>
-          <figcaption>Change in producer netback after a freight increase. Illustrative numbers.</figcaption>
-        </figure>
-        <h2>Read the spread, not the headline</h2>
-        <p>In this example, polyethylene and polypropylene producers took a large share of the hit because buyers had plenty of alternative supply. Iron ore barely moved at origin because buyers had few places to switch to. Same shock, very different outcomes.</p>
-        <p>For a buyer, this is useful in negotiation. For a producer, it is a warning about how replaceable your cargo is. Either way, the data is already in the price reports most teams subscribe to. It just needs to be read as a spread.</p>
-        <p class="small"><a href="#writing">← All writing</a></p>
-      </div>
-    </article>
+    <article class="article stack col" style="gap:36px" id="article-view"></article>
   </div>
 
   <!-- MARKETS -->
@@ -312,15 +243,12 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
       <p>The prices I keep an eye on, from crude oil and Wall Street to the Singapore dollar. The numbers refresh automatically every morning, with a short commentary on what moved oil and US stocks and why.</p>
       <p class="mk-meta" id="mk-updated">Loading the latest data…</p>
     </div>
-
     <section class="stack col" id="mk-today">
       <h2 class="sec">Today in markets</h2>
       <p class="mk-summary" id="mk-summary">The daily summary appears here once the latest data has loaded.</p>
       <p class="mk-meta">Written automatically each morning from the latest closing prices of oil and US stocks.</p>
     </section>
-
     <section class="stack" id="mk-board" aria-live="polite"></section>
-
     <p class="mk-meta">Data: Yahoo Finance and FRED (Federal Reserve Bank of St. Louis). Oil and gas prices are front-month futures. For information only, not investment advice.</p>
   </div>
 
@@ -329,12 +257,10 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
     <div class="about-grid">
       <div class="stack col">
         <h1 class="page-title">About</h1>
-        <p>I'm an Economics PhD student at Nanyang Technological University in Singapore. I'm interested in global markets: how prices get set, how trade flows shift, and how politics changes both.</p>
-        <p>Before the PhD I spent two years at S&amp;P Global as a price assessment specialist, covering iron ore and petrochemicals. I spoke with traders and producers across Asia every day and turned what I heard into the benchmark prices they trade on. Earlier, I worked in strategy and market research at Kantar Consulting, Jacaranda Capital Partners and FairPrice Group.</p>
-        <p>I write here to work through ideas, and to make economics useful to the people who have to make decisions with it.</p>
+        <div class="stack" id="about-body"></div>
         <p class="small"><a href="#resume">Resume</a> · <a href="#contact">Contact</a></p>
       </div>
-      <div class="photo-light" role="img" aria-label="Photo to come">[Photo]</div>
+      <div class="photo-light" id="about-photo" role="img" aria-label="Photo">[Photo]</div>
     </div>
   </div>
 
@@ -342,66 +268,105 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
   <div class="view col" data-view="resume" hidden>
     <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap">
       <h1 class="page-title">Resume</h1>
-      <a class="small" href="Bryan_Lim_Resume.pdf" target="_blank" rel="noopener">PDF version</a>
+      <a class="small" id="resume-pdf" href="files/Bryan_Lim_Resume.pdf" target="_blank" rel="noopener">PDF version</a>
     </div>
-
-    <section class="cv-sec">
-      <h2 class="sec">Experience</h2>
-      <div class="job"><h3>S&amp;P Global</h3><span class="when">2023–2025</span><span class="role">Senior Specialist, Price Assessments</span>
-        <ul><li>Covered iron ore and petrochemicals (polymers, olefins, aromatics).</li><li>Produced daily price assessments and reported on market fundamentals.</li><li>Worked with traders and producers worldwide to understand market dynamics.</li><li>Developed new market sources and maintained assessment standards.</li><li>Presented market updates to participants across Asia.</li></ul></div>
-      <div class="job"><h3>Kantar Consulting</h3><span class="when">2022</span><span class="role">Strategy Consulting Intern</span>
-        <ul><li>Supported futures planning, growth strategy and brand strategy projects across industries and regions.</li><li>Ran qualitative and quantitative studies using primary and secondary data.</li></ul></div>
-      <div class="job"><h3>Jacaranda Capital Partners</h3><span class="when">2021–2022</span><span class="role">Projects Intern</span>
-        <ul><li>Researched the bullion industry for a project with the World Gold Council.</li><li>Built an investor pitch deck for the orthopaedic repair industry.</li></ul></div>
-      <div class="job"><h3>FairPrice Group Supply Chain</h3><span class="when">2021</span><span class="role">Strategy &amp; Analytics Intern</span>
-        <ul><li>Assessed market potential for a new FairPrice Analytics business.</li><li>Used operations data on GCP to help streamline distribution centre logistics.</li></ul></div>
-    </section>
-
-    <section class="cv-sec">
-      <h2 class="sec">Education</h2>
-      <div class="job"><h3>PhD in Economics</h3><span class="when">2025–present</span><span class="role">Nanyang Technological University</span></div>
-      <div class="job"><h3>MSc, International Political Economy</h3><span class="when">2023–2024</span><span class="role">Nanyang Technological University</span></div>
-      <div class="job"><h3>Bachelor of Business (Honours, Distinction)</h3><span class="when">2019–2022</span><span class="role">Nanyang Technological University. Banking &amp; Finance, International Trade specialisation</span></div>
-    </section>
-
-    <section class="cv-sec">
-      <h2 class="sec">Leadership</h2>
-      <div class="job"><h3>NTU United Nations Student Association</h3><span class="when">2020–2021</span><span class="role">Head of Finance, Publicity Wing</span></div>
-      <div class="job"><h3>NTU Tanjong Hall, 3rd Hall Council</h3><span class="when">2019–2020</span><span class="role">Publicity and Publications Secretary</span></div>
-    </section>
-
-    <section class="cv-sec">
-      <h2 class="sec">Skills</h2>
-      <p>R, Python, SQL, Google Cloud Platform. Market research, consulting, client management, market journalism.</p>
-    </section>
+    <section class="cv-sec"><h2 class="sec">Experience</h2><div class="stack" id="cv-experience"></div></section>
+    <section class="cv-sec"><h2 class="sec">Education</h2><div class="stack" id="cv-education"></div></section>
+    <section class="cv-sec"><h2 class="sec">Leadership</h2><div class="stack" id="cv-leadership"></div></section>
+    <section class="cv-sec"><h2 class="sec">Skills</h2><p id="cv-skills"></p></section>
   </div>
 
   <!-- CONTACT -->
   <div class="view col" data-view="contact" hidden>
     <div class="stack">
       <h1 class="page-title">Contact</h1>
-      <p>I'm always happy to talk about markets, trade, or anything I've written here. Email is the best way to reach me.</p>
+      <p id="contact-intro"></p>
     </div>
     <div class="contact-list">
-      <div><span>Email</span><span>Limz0196@e.ntu.edu.sg</span></div>
-      <div><span>LinkedIn</span><a href="https://www.linkedin.com/in/bryanlimzh" target="_blank" rel="noopener">linkedin.com/in/bryanlimzh</a></div>
-      <div><span>Location</span><span>Singapore</span></div>
+      <div><span>Email</span><span id="contact-email"></span></div>
+      <div><span>LinkedIn</span><a id="contact-linkedin" href="#" target="_blank" rel="noopener"></a></div>
+      <div><span>Location</span><span id="contact-location"></span></div>
     </div>
   </div>
 </main>
 
-<footer><div class="inner"><span>© 2026 Bryan Lim</span><span>Views are my own.</span></div></footer>
+<footer><div class="inner"><span>© <span id="year">2026</span> Bryan Lim</span><span id="footer-note">Views are my own.</span></div></footer>
 
 <script>
-const POSTS = [
-  { date: "Nov 2026", title: "When freight spikes, who really pays for Asia's plastics?", dek: "How a shipping shock splits between buyers and producers, and what the price spread reveals." },
-  { date: "Oct 2026", title: "What a benchmark price actually is, from someone who used to set them", dek: "Inside a daily price assessment: who reports, what counts as a deal, and why it matters for contracts." },
-  { date: "Sep 2026", title: "Tariffs are a tax on the supply chain you already built", dek: "Why switching suppliers is slower and more expensive than policy debates assume." },
-  { date: "Aug 2026", title: "[An op-ed published elsewhere]", dek: "[Outlet name] — link to the original." }
-];
-const entry = p => `<div class="entry"><span class="date">${p.date}</span><div><h3><a href="#article">${p.title}</a></h3><p>${p.dek}</p></div></div>`;
-document.querySelector('[data-posts="latest"]').innerHTML = POSTS.slice(1, 3).map(entry).join("");
-document.querySelector('[data-posts="all"]').innerHTML = POSTS.map(entry).join("");
+// ---------- Site content (edited in Pages CMS; stored in content/*.json) ----------
+const esc = s => String(s ?? "").replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
+const $ = id => document.getElementById(id);
+const getJSON = p => fetch(p, { cache: "no-cache" }).then(r => { if (!r.ok) throw new Error(p); return r.json(); });
+const slugify = s => String(s).toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "").slice(0, 60);
+const monthYear = d => { const t = new Date(d + "T00:00:00Z"); return isNaN(t) ? "" : t.toLocaleDateString("en-GB", { month: "short", year: "numeric", timeZone: "UTC" }); };
+const longDate = d => { const t = new Date(d + "T00:00:00Z"); return isNaN(t) ? "" : t.toLocaleDateString("en-GB", { month: "long", year: "numeric", timeZone: "UTC" }); };
+const safeUrl = u => /^(https?:\/\/|\/|files\/)/.test(String(u || "")) ? u : "";
+let ARTICLES = [];
+
+function articleLink(a) {
+  if (a.external_url && safeUrl(a.external_url)) return { href: a.external_url, ext: true };
+  if (a.body && a.body.trim()) return { href: "#article-" + a.slug, ext: false };
+  return null;
+}
+function entryHTML(a) {
+  const l = articleLink(a);
+  const title = l ? `<a href="${esc(l.href)}"${l.ext ? ' target="_blank" rel="noopener"' : ""}>${esc(a.title)}</a>` : `<span>${esc(a.title)}</span>`;
+  return `<div class="entry"><span class="date">${esc(monthYear(a.date))}</span><div><h3>${title}</h3><p>${esc(a.summary)}</p></div></div>`;
+}
+function photoHTML(src, alt) { return src && safeUrl(src) ? `<img src="${esc(src)}" alt="${esc(alt)}">` : "[Photo]"; }
+
+function renderSite(s) {
+  const h = s.home || {};
+  $("home-headline").innerHTML = esc(h.headline).replace(/ &amp; /g, " <i>&amp;</i> ");
+  $("home-intro").textContent = h.intro || "";
+  $("home-more").textContent = h.intro_more || "";
+  $("themes-title").textContent = h.themes_title || "What I write about";
+  $("home-themes").innerHTML = (h.themes || []).map(t => `<div><h3>${esc(t.title)}</h3><p>${esc(t.text)}</p></div>`).join("");
+  $("home-photo").innerHTML = photoHTML(s.photo, "Bryan Lim");
+  $("about-photo").innerHTML = photoHTML(s.photo, "Bryan Lim");
+  $("writing-intro").textContent = s.writing_intro || "";
+  $("about-body").innerHTML = s.about || "";
+  const c = s.contact || {};
+  $("contact-intro").textContent = c.intro || "";
+  $("contact-email").textContent = c.email || "";
+  const li = $("contact-linkedin"); li.href = safeUrl(c.linkedin) || "#"; li.textContent = String(c.linkedin || "").replace(/^https?:\/\/(www\.)?/, "");
+  $("contact-location").textContent = c.location || "";
+  $("footer-note").textContent = s.footer_note || "";
+}
+
+function renderArticles(list) {
+  ARTICLES = (list || []).filter(a => a && a.title).map(a => ({ ...a, slug: slugify(a.title) }))
+    .sort((a, b) => String(b.date).localeCompare(String(a.date)));
+  const feat = ARTICLES.find(a => a.featured) || ARTICLES[0];
+  if (feat) {
+    const l = articleLink(feat);
+    const link = l ? `<p class="small" style="margin-top:16px"><a href="${esc(l.href)}"${l.ext ? ' target="_blank" rel="noopener"' : ""}>Read the piece</a></p>` : "";
+    const img = feat.image && safeUrl(feat.image) ? `<figure style="margin:0"><img src="${esc(feat.image)}" alt="">${feat.image_caption ? `<figcaption>${esc(feat.image_caption)}</figcaption>` : ""}</figure>` : "";
+    $("home-feature").innerHTML = `<div><span class="date">${esc(longDate(feat.date))}${feat.type ? " · " + esc(feat.type) : ""}</span>
+      <h3>${l ? `<a href="${esc(l.href)}">${esc(feat.title)}</a>` : esc(feat.title)}</h3><p>${esc(feat.summary)}</p>${link}</div>${img}`;
+  } else { $("home-latest").hidden = true; }
+  document.querySelector('[data-posts="latest"]').innerHTML = ARTICLES.filter(a => a !== feat).slice(0, 3).map(entryHTML).join("");
+  document.querySelector('[data-posts="all"]').innerHTML = ARTICLES.map(entryHTML).join("");
+}
+
+function renderArticle(slug) {
+  const a = ARTICLES.find(x => x.slug === slug);
+  if (!a) return false;
+  $("article-view").innerHTML = `<header><h1>${esc(a.title)}</h1><p class="dek">${esc(a.summary)}</p>
+    <p class="byline">Bryan Lim · ${esc(longDate(a.date))}${a.read_time ? " · " + esc(a.read_time) : ""}</p></header>
+    <div class="prose">${a.body || ""}<p class="small"><a href="#writing">← All writing</a></p></div>`;
+  document.title = a.title + " · Bryan Lim";
+  return true;
+}
+
+function renderResume(r) {
+  const pdf = $("resume-pdf");
+  if (r.pdf && safeUrl(r.pdf)) pdf.href = r.pdf; else pdf.hidden = true;
+  $("cv-experience").innerHTML = (r.experience || []).map(j => `<div class="job"><h3>${esc(j.organisation)}</h3><span class="when">${esc(j.dates)}</span><span class="role">${esc(j.role)}</span>${(j.points || []).length ? `<ul>${j.points.map(p => `<li>${esc(p)}</li>`).join("")}</ul>` : ""}</div>`).join("");
+  $("cv-education").innerHTML = (r.education || []).map(e => `<div class="job"><h3>${esc(e.qualification)}</h3><span class="when">${esc(e.dates)}</span><span class="role">${esc(e.school)}</span></div>`).join("");
+  $("cv-leadership").innerHTML = (r.leadership || []).map(l => `<div class="job"><h3>${esc(l.organisation)}</h3><span class="when">${esc(l.dates)}</span><span class="role">${esc(l.role)}</span></div>`).join("");
+  $("cv-skills").textContent = r.skills || "";
+}
 
 // Markets board: reads data/markets.json, which a GitHub Action refreshes every morning.
 const fmtNum = (v, d) => v.toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
@@ -494,11 +459,15 @@ async function loadMarkets() {
 }
 loadMarkets();
 
+// ---------- Routing ----------
 const views = [...document.querySelectorAll(".view")];
-const hero = document.getElementById("hero");
+const hero = $("hero");
 function route() {
-  const name = (location.hash || "#home").slice(1);
-  const target = views.some(v => v.dataset.view === name) ? name : "home";
+  let name = (location.hash || "#home").slice(1);
+  let target = name;
+  if (name.startsWith("article-")) target = renderArticle(name.slice(8)) ? "article" : "writing";
+  else if (!views.some(v => v.dataset.view === name)) target = "home";
+  if (target !== "article") document.title = "Bryan Lim";
   views.forEach(v => { v.hidden = v.dataset.view !== target; });
   hero.hidden = target !== "home";
   const navKey = target === "article" ? "writing" : target;
@@ -508,6 +477,13 @@ function route() {
   window.scrollTo(0, 0);
 }
 window.addEventListener("hashchange", route);
+$("year").textContent = new Date().getFullYear();
+
+Promise.allSettled([
+  getJSON("content/site.json").then(renderSite),
+  getJSON("content/articles.json").then(d => renderArticles(d.articles)),
+  getJSON("content/resume.json").then(renderResume),
+]).then(route);
 route();
 </script>
 

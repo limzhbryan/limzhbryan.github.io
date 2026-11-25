@@ -1,0 +1,52 @@
+{
+  "articles": [
+    {
+      "title": "When freight spikes, who really pays for Asia's plastics?",
+      "date": "2026-11-12",
+      "type": "Analysis",
+      "summary": "Shipping shocks rarely land fully on the buyer. How the cost splits between buyers and producers shows who holds the market power.",
+      "featured": true,
+      "image": "/files/freight-shock-chart.svg",
+      "image_caption": "Index, pre-shock = 100. Illustrative numbers.",
+      "read_time": "6 min read",
+      "external_url": "",
+      "body": "<p>When container and tanker rates jump, the first reaction in most procurement meetings is simple: our costs just went up by the freight increase. In practice the delivered price usually rises by less than that, and the difference comes out of the producer's pocket.</p><p>How that cost is shared depends on who has options. A buyer who can switch origins forces the producer to absorb more. A producer with full order books and other markets to sell to can pass almost all of it on. Watching the gap between origin and delivered prices shows you which situation you are in.</p><p><img src=\"/files/netback-by-product-chart.svg\" alt=\"Change in producer netback after a freight increase, by product (illustrative)\"></p><p><em>Change in producer netback after a freight increase. Illustrative numbers.</em></p><h2>Read the spread, not the headline</h2><p>In this example, polyethylene and polypropylene producers took a large share of the hit because buyers had plenty of alternative supply. Iron ore barely moved at origin because buyers had few places to switch to. Same shock, very different outcomes.</p><p>For a buyer, this is useful in negotiation. For a producer, it is a warning about how replaceable your cargo is. Either way, the data is already in the price reports most teams subscribe to. It just needs to be read as a spread.</p>"
+    },
+    {
+      "title": "What a benchmark price actually is, from someone who used to set them",
+      "date": "2026-10-15",
+      "type": "Explainer",
+      "summary": "Inside a daily price assessment: who reports, what counts as a deal, and why it matters for contracts.",
+      "featured": false,
+      "image": "",
+      "image_caption": "",
+      "read_time": "",
+      "external_url": "",
+      "body": ""
+    },
+    {
+      "title": "Tariffs are a tax on the supply chain you already built",
+      "date": "2026-09-10",
+      "type": "Opinion",
+      "summary": "Why switching suppliers is slower and more expensive than policy debates assume.",
+      "featured": false,
+      "image": "",
+      "image_caption": "",
+      "read_time": "",
+      "external_url": "",
+      "body": ""
+    },
+    {
+      "title": "[An op-ed published elsewhere]",
+      "date": "2026-08-20",
+      "type": "Published elsewhere",
+      "summary": "[Outlet name] — link to the original.",
+      "featured": false,
+      "image": "",
+      "image_caption": "",
+      "read_time": "",
+      "external_url": "",
+      "body": ""
+    }
+  ]
+}

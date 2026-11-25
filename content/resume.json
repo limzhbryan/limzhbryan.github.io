@@ -1,0 +1,74 @@
+{
+  "pdf": "/files/Bryan_Lim_Resume.pdf",
+  "experience": [
+    {
+      "organisation": "S&P Global",
+      "role": "Senior Specialist, Price Assessments",
+      "dates": "2023–2025",
+      "points": [
+        "Covered iron ore and petrochemicals (polymers, olefins, aromatics).",
+        "Produced daily price assessments and reported on market fundamentals.",
+        "Worked with traders and producers worldwide to understand market dynamics.",
+        "Developed new market sources and maintained assessment standards.",
+        "Presented market updates to participants across Asia."
+      ]
+    },
+    {
+      "organisation": "Kantar Consulting",
+      "role": "Strategy Consulting Intern",
+      "dates": "2022",
+      "points": [
+        "Supported futures planning, growth strategy and brand strategy projects across industries and regions.",
+        "Ran qualitative and quantitative studies using primary and secondary data."
+      ]
+    },
+    {
+      "organisation": "Jacaranda Capital Partners",
+      "role": "Projects Intern",
+      "dates": "2021–2022",
+      "points": [
+        "Researched the bullion industry for a project with the World Gold Council.",
+        "Built an investor pitch deck for the orthopaedic repair industry."
+      ]
+    },
+    {
+      "organisation": "FairPrice Group Supply Chain",
+      "role": "Strategy & Analytics Intern",
+      "dates": "2021",
+      "points": [
+        "Assessed market potential for a new FairPrice Analytics business.",
+        "Used operations data on GCP to help streamline distribution centre logistics."
+      ]
+    }
+  ],
+  "education": [
+    {
+      "qualification": "PhD in Economics",
+      "school": "Nanyang Technological University",
+      "dates": "2025–present"
+    },
+    {
+      "qualification": "MSc, International Political Economy",
+      "school": "Nanyang Technological University",
+      "dates": "2023–2024"
+    },
+    {
+      "qualification": "Bachelor of Business (Honours, Distinction)",
+      "school": "Nanyang Technological University. Banking & Finance, International Trade specialisation",
+      "dates": "2019–2022"
+    }
+  ],
+  "leadership": [
+    {
+      "organisation": "NTU United Nations Student Association",
+      "role": "Head of Finance, Publicity Wing",
+      "dates": "2020–2021"
+    },
+    {
+      "organisation": "NTU Tanjong Hall, 3rd Hall Council",
+      "role": "Publicity and Publications Secretary",
+      "dates": "2019–2020"
+    }
+  ],
+  "skills": "R, Python, SQL, Google Cloud Platform. Market research, consulting, client management, market journalism."
+}
