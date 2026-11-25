@@ -172,6 +172,8 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
 .prose em:only-child { display: block; font-family: var(--ui); font-style: normal; font-size: 13.5px; color: var(--muted); margin-top: -8px; }
 .prose ul, .prose ol { margin: 0; padding-left: 22px; display: grid; gap: 6px; }
 .prose blockquote { margin: 0; padding-left: 18px; border-left: 3px solid var(--accent); font-style: italic; }
+.why { border-left: 3px solid var(--accent); padding: 4px 0 4px 18px; display: grid; gap: 4px; }
+.why strong { font-family: var(--ui); font-size: 13px; letter-spacing: .06em; text-transform: uppercase; color: var(--accent); }
 .pdf-btn { font-family: var(--ui); font-size: 15px; font-weight: 600; color: var(--band-ink); background: var(--band); padding: 10px 16px; text-decoration: none; border-radius: 4px; }
 .pdf-btn:hover { color: var(--band-ink); background: var(--accent); }
 .photo img, .photo-light img { width: 100%; height: 100%; object-fit: cover; display: block; }
@@ -229,7 +231,8 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
       <h1 class="page-title">Writing</h1>
       <p class="muted" id="writing-intro"></p>
     </div>
-    <div class="list col" data-posts="all"></div>
+    <section class="stack col"><h2 class="sec">Opinion</h2><div class="list" data-posts="Opinion"></div></section>
+    <section class="stack col"><h2 class="sec">Research</h2><div class="list" data-posts="Research"></div></section>
   </div>
 
   <!-- ARTICLE (filled from content/articles.json) -->
@@ -312,7 +315,7 @@ function articleLink(a) {
 function entryHTML(a) {
   const l = articleLink(a);
   const title = l ? `<a href="${esc(l.href)}"${l.ext ? ' target="_blank" rel="noopener"' : ""}>${esc(a.title)}</a>` : `<span>${esc(a.title)}</span>`;
-  return `<div class="entry"><span class="date">${esc(monthYear(a.date))}</span><div><h3>${title}</h3><p>${esc(a.summary)}</p></div></div>`;
+  return `<div class="entry"><span class="date">${esc(monthYear(a.date))}</span><div><h3>${title}</h3>${a.venue ? `<p class="small" style="font-style:italic">${esc(a.venue)}</p>` : ""}<p>${esc(a.summary)}</p>${a.why_it_matters ? `<p class="small"><strong>Why it matters:</strong> ${esc(a.why_it_matters)}</p>` : ""}</div></div>`;
 }
 function photoHTML(src, alt) { return src && safeUrl(src) ? `<img src="${esc(src)}" alt="${esc(alt)}">` : "[Photo]"; }
 
@@ -350,14 +353,18 @@ function renderArticles(list) {
     $("home-feature").style.gridTemplateColumns = img ? "" : "minmax(0, 760px)";
   } else { $("home-latest").hidden = true; }
   document.querySelector('[data-posts="latest"]').innerHTML = ARTICLES.filter(a => a !== feat).slice(0, 3).map(entryHTML).join("");
-  document.querySelector('[data-posts="all"]').innerHTML = ARTICLES.map(entryHTML).join("");
+  for (const kind of ["Opinion", "Research"]) {
+    const items = ARTICLES.filter(a => (a.type === "Research" ? "Research" : "Opinion") === kind);
+    document.querySelector(`[data-posts="${kind}"]`).innerHTML = items.length ? items.map(entryHTML).join("") : `<p class="muted small">Nothing here yet.</p>`;
+  }
 }
 
 function renderArticle(slug) {
   const a = ARTICLES.find(x => x.slug === slug);
   if (!a) return false;
   $("article-view").innerHTML = `<header><h1>${esc(a.title)}</h1><p class="dek">${esc(a.summary)}</p>
-    <p class="byline">Bryan Lim · ${esc(longDate(a.date))}${a.read_time ? " · " + esc(a.read_time) : ""}</p></header>
+    <p class="byline">Bryan Lim · ${esc(longDate(a.date))}${a.venue ? " · " + esc(a.venue) : ""}${a.read_time ? " · " + esc(a.read_time) : ""}</p></header>
+    ${a.why_it_matters ? `<div class="why"><strong>Why it matters</strong><p>${esc(a.why_it_matters)}</p></div>` : ""}
     <div class="prose">${a.body || ""}<p class="small"><a href="#writing">← All writing</a></p></div>`;
   document.title = a.title + " · Bryan Lim";
   return true;

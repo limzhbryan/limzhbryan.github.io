@@ -21,13 +21,15 @@ content:
           - name: type
             label: Type
             type: select
-            options: { values: [Analysis, Opinion, Explainer, Published elsewhere] }
+            options: { values: [Opinion, Research] }
+          - { name: venue, label: Journal or outlet (optional), type: string, description: "For research or pieces published elsewhere, e.g. Journal of International Economics." }
           - { name: summary, label: One-line summary, type: text, description: "Shown under the title in lists and at the top of the article." }
+          - { name: why_it_matters, label: Why it matters (optional), type: text, description: "One or two plain-English sentences for non-academic readers. Best for research." }
           - { name: featured, label: Feature on the homepage, type: boolean, description: "Tick one article. If none is ticked, the newest one is featured." }
           - { name: image, label: Homepage image (optional), type: image, description: "A chart or picture shown next to the featured article." }
           - { name: image_caption, label: Image caption, type: string }
           - { name: read_time, label: Reading time, type: string, description: "For example: 6 min read" }
-          - { name: external_url, label: Link to another site (optional), type: string, description: "For pieces published elsewhere. If filled in, the title links there instead of to the article below." }
+          - { name: external_url, label: Link to another site (optional), type: string, description: "For research papers or pieces published elsewhere (journal page, PDF or SSRN link). If filled in, the title links there." }
           - { name: body, label: Article text, type: rich-text, description: "Leave empty for a piece that only links elsewhere." }
 
   - name: site
