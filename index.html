@@ -359,7 +359,18 @@ function renderHome(h) {
   $("home-themes").innerHTML = (h.themes || []).map(t => `<div><h3>${esc(t.title)}</h3><p>${esc(t.text)}</p></div>`).join("");
 }
 // The About text may be rich text (HTML) or plain text with blank lines between paragraphs.
-const paras = t => /<\w+[^>]*>/.test(t || "") ? t : String(t || "").split(/\n\s*\n/).filter(x => x.trim()).map(x => `<p>${esc(x.trim())}</p>`).join("");
+// Text from the editor may be rich text (HTML) or plain text: blank lines start new paragraphs,
+// and lines starting "1." or "-" become numbered or bulleted lists.
+function paras(t) {
+  t = String(t || "");
+  if (/<\w+[^>]*>/.test(t)) return t;
+  return t.split(/\n\s*\n/).map(b => b.trim()).filter(Boolean).map(b => {
+    const lines = b.split("\n").map(l => l.trim()).filter(Boolean);
+    if (lines.every(l => /^\d+[.)]\s/.test(l))) return `<ol>${lines.map(l => `<li>${esc(l.replace(/^\d+[.)]\s+/, ""))}</li>`).join("")}</ol>`;
+    if (lines.every(l => /^[-•*]\s/.test(l))) return `<ul>${lines.map(l => `<li>${esc(l.replace(/^[-•*]\s+/, ""))}</li>`).join("")}</ul>`;
+    return `<p>${lines.map(esc).join("<br>")}</p>`;
+  }).join("");
+}
 function renderAbout(a) {
   $("about-photo").innerHTML = photoHTML(a.photo, "Bryan Lim");
   $("about-body").innerHTML = paras(a.about);
@@ -407,7 +418,7 @@ function renderArticle(slug) {
   $("article-view").innerHTML = `<header><h1>${esc(a.title)}</h1><p class="dek">${esc(a.summary)}</p>
     <p class="byline">Bryan Lim · ${esc(longDate(a.date))}${a.venue ? " · " + esc(a.venue) : ""}${a.read_time ? " · " + esc(a.read_time) : ""}</p></header>
     ${a.why_it_matters ? `<div class="why"><strong>Why it matters</strong><p>${esc(a.why_it_matters)}</p></div>` : ""}
-    <div class="prose">${a.body || ""}<p class="small"><a href="#writing">← All writing</a></p></div>`;
+    <div class="prose">${paras(a.body)}<p class="small"><a href="#writing">← All writing</a></p></div>`;
   document.title = a.title + " · Bryan Lim";
   return true;
 }
