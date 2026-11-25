@@ -46,6 +46,18 @@ nav { display: flex; gap: 24px; flex-wrap: wrap; font-family: var(--ui); font-si
 nav a { color: var(--band-muted); text-decoration: none; }
 nav a:hover { color: var(--band-ink); }
 nav a[aria-current="page"] { color: var(--band-ink); box-shadow: inset 0 -2px 0 var(--accent); padding-bottom: 4px; }
+.has-sub { position: relative; }
+.sub { position: absolute; left: -16px; top: 100%; padding-top: 10px; z-index: 5; display: none; }
+.sub > div { background: var(--band); border-top: 2px solid var(--accent); padding: 8px 0; min-width: 150px; box-shadow: 0 8px 24px rgba(0,0,0,.25); }
+.sub a { display: block; padding: 7px 16px; white-space: nowrap; }
+.sub a[aria-current="page"] { box-shadow: none; padding-bottom: 7px; }
+.has-sub:hover .sub, .has-sub:focus-within .sub { display: block; }
+@media (hover: none) { .has-sub .sub { display: none !important; } }
+.filters { display: flex; gap: 20px; font-family: var(--ui); font-size: 15px; }
+.filters a { color: var(--muted); text-decoration: none; padding-bottom: 4px; }
+.filters a:hover { color: var(--ink); }
+.filters a[aria-current="true"] { color: var(--ink); box-shadow: inset 0 -2px 0 var(--accent); }
+.entry .kind { display: block; font-size: 13px; font-weight: 600; color: var(--accent); margin-top: 2px; }
 .hero { display: grid; grid-template-columns: minmax(0, 1fr); gap: 48px; align-items: end; padding-block: 72px 40px; }
 .hero > * { min-width: 0; }
 .hero h1 { font-size: clamp(48px, 8vw, 92px); font-weight: 500; letter-spacing: -0.025em; line-height: 0.98; }
@@ -189,7 +201,13 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
     <div class="bar">
       <a class="name" href="#home">Bryan Lim</a>
       <nav aria-label="Main">
-        <a href="#writing" data-nav="writing">Writing</a>
+        <span class="has-sub">
+          <a href="#writing" data-nav="writing">Writing</a>
+          <span class="sub"><div>
+            <a href="#writing-opinion" data-sub="opinion">Opinion</a>
+            <a href="#writing-research" data-sub="research">Research</a>
+          </div></span>
+        </span>
         <a href="#markets" data-nav="markets">Markets</a>
         <a href="#about" data-nav="about">About</a>
         <a href="#resume" data-nav="resume">Resume</a>
@@ -231,8 +249,14 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
       <h1 class="page-title">Writing</h1>
       <p class="muted" id="writing-intro"></p>
     </div>
-    <section class="stack col"><h2 class="sec">Opinion</h2><div class="list" data-posts="Opinion"></div></section>
-    <section class="stack col"><h2 class="sec">Research</h2><div class="list" data-posts="Research"></div></section>
+    <section class="stack col">
+      <div class="filters" aria-label="Filter">
+        <a href="#writing" data-filter="all">All</a>
+        <a href="#writing-opinion" data-filter="opinion">Opinion</a>
+        <a href="#writing-research" data-filter="research">Research</a>
+      </div>
+      <div class="list" data-posts="all"></div>
+    </section>
   </div>
 
   <!-- ARTICLE (filled from content/articles.json) -->
@@ -312,37 +336,43 @@ function articleLink(a) {
   if (a.body && a.body.trim()) return { href: "#article-" + a.slug, ext: false };
   return null;
 }
-function entryHTML(a) {
+const kindOf = a => a.type === "Research" ? "Research" : "Opinion";
+function entryHTML(a, showKind) {
   const l = articleLink(a);
   const title = l ? `<a href="${esc(l.href)}"${l.ext ? ' target="_blank" rel="noopener"' : ""}>${esc(a.title)}</a>` : `<span>${esc(a.title)}</span>`;
-  return `<div class="entry"><span class="date">${esc(monthYear(a.date))}</span><div><h3>${title}</h3>${a.venue ? `<p class="small" style="font-style:italic">${esc(a.venue)}</p>` : ""}<p>${esc(a.summary)}</p>${a.why_it_matters ? `<p class="small"><strong>Why it matters:</strong> ${esc(a.why_it_matters)}</p>` : ""}</div></div>`;
+  return `<div class="entry"><span class="date">${esc(monthYear(a.date))}${showKind ? `<span class="kind">${kindOf(a)}</span>` : ""}</span><div><h3>${title}</h3>${a.venue ? `<p class="small" style="font-style:italic">${esc(a.venue)}</p>` : ""}<p>${esc(a.summary)}</p>${a.why_it_matters ? `<p class="small"><strong>Why it matters:</strong> ${esc(a.why_it_matters)}</p>` : ""}</div></div>`;
 }
 function photoHTML(src, alt) { return src && safeUrl(src) ? `<img src="${esc(src)}" alt="${esc(alt)}">` : "[Photo]"; }
 
-function renderSite(s) {
-  const h = s.home || {};
+function renderHome(h) {
   $("home-headline").innerHTML = esc(h.headline).replace(/ &amp; /g, " <i>&amp;</i> ");
   $("home-intro").textContent = h.intro || "";
   $("home-more").textContent = h.intro_more || "";
   $("themes-title").textContent = h.themes_title || "What I write about";
   $("home-themes").innerHTML = (h.themes || []).map(t => `<div><h3>${esc(t.title)}</h3><p>${esc(t.text)}</p></div>`).join("");
-  $("about-photo").innerHTML = photoHTML(s.photo, "Bryan Lim");
-  $("writing-intro").textContent = s.writing_intro || "";
-  $("about-body").innerHTML = s.about || "";
-  const c = s.contact || {};
+}
+// The About text may be rich text (HTML) or plain text with blank lines between paragraphs.
+const paras = t => /<\w+[^>]*>/.test(t || "") ? t : String(t || "").split(/\n\s*\n/).filter(x => x.trim()).map(x => `<p>${esc(x.trim())}</p>`).join("");
+function renderAbout(a) {
+  $("about-photo").innerHTML = photoHTML(a.photo, "Bryan Lim");
+  $("about-body").innerHTML = paras(a.about);
+}
+function renderContact(c) {
   $("contact-intro").textContent = c.intro || "";
   $("contact-email").textContent = c.email || "";
   const li = $("contact-linkedin"); li.href = safeUrl(c.linkedin) || "#"; li.textContent = String(c.linkedin || "").replace(/^https?:\/\/(www\.)?/, "");
   $("contact-location").textContent = c.location || "";
-  $("footer-note").textContent = s.footer_note || "";
-  const m = s.markets || {};
+  $("footer-note").textContent = c.footer_note || "";
+}
+function renderMarketsText(m) {
   $("markets-intro").textContent = m.intro || "";
   $("markets-note").textContent = m.note || "";
 }
 
-function renderArticles(list) {
-  ARTICLES = (list || []).filter(a => a && a.title).map(a => ({ ...a, slug: slugify(a.title) }))
-    .sort((a, b) => String(b.date).localeCompare(String(a.date)));
+function renderArticles(d) {
+  $("writing-intro").textContent = d.intro || "";
+  ARTICLES = (d.articles || []).filter(a => a && a.title).map(a => ({ ...a, slug: slugify(a.title) }))
+    .sort((a, b) => (!a.date - !b.date) || String(b.date).localeCompare(String(a.date)));
   const feat = ARTICLES.find(a => a.featured) || ARTICLES[0];
   if (feat) {
     const l = articleLink(feat);
@@ -352,11 +382,16 @@ function renderArticles(list) {
       <h3>${l ? `<a href="${esc(l.href)}">${esc(feat.title)}</a>` : esc(feat.title)}</h3><p>${esc(feat.summary)}</p>${link}</div>${img}`;
     $("home-feature").style.gridTemplateColumns = img ? "" : "minmax(0, 760px)";
   } else { $("home-latest").hidden = true; }
-  document.querySelector('[data-posts="latest"]').innerHTML = ARTICLES.filter(a => a !== feat).slice(0, 3).map(entryHTML).join("");
-  for (const kind of ["Opinion", "Research"]) {
-    const items = ARTICLES.filter(a => (a.type === "Research" ? "Research" : "Opinion") === kind);
-    document.querySelector(`[data-posts="${kind}"]`).innerHTML = items.length ? items.map(entryHTML).join("") : `<p class="muted small">Nothing here yet</p>`;
-  }
+  document.querySelector('[data-posts="latest"]').innerHTML = ARTICLES.filter(a => a !== feat).slice(0, 3).map(a => entryHTML(a, true)).join("");
+  renderWriting(WRITING_FILTER);
+}
+let WRITING_FILTER = "all";
+function renderWriting(filter) {
+  WRITING_FILTER = filter;
+  const items = ARTICLES.filter(a => filter === "all" || kindOf(a).toLowerCase() === filter);
+  document.querySelector('[data-posts="all"]').innerHTML = items.length ? items.map(a => entryHTML(a, true)).join("") : `<p class="muted small">Nothing here yet</p>`;
+  document.querySelectorAll("[data-filter]").forEach(x => x.setAttribute("aria-current", x.dataset.filter === filter ? "true" : "false"));
+  document.querySelectorAll("[data-sub]").forEach(x => { if (x.dataset.sub === filter) x.setAttribute("aria-current", "page"); else x.removeAttribute("aria-current"); });
 }
 
 function renderArticle(slug) {
@@ -477,6 +512,7 @@ function route() {
   let name = (location.hash || "#home").slice(1);
   let target = name;
   if (name.startsWith("article-")) target = renderArticle(name.slice(8)) ? "article" : "writing";
+  else if (name === "writing-opinion" || name === "writing-research") target = "writing";
   else if (!views.some(v => v.dataset.view === name)) target = "home";
   if (target !== "article") document.title = "Bryan Lim";
   views.forEach(v => { v.hidden = v.dataset.view !== target; });
@@ -485,14 +521,19 @@ function route() {
   document.querySelectorAll("[data-nav]").forEach(a => {
     if (a.dataset.nav === navKey) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
   });
+  if (target === "writing") renderWriting(name.startsWith("writing-") ? name.slice(8) : "all");
+  if (document.activeElement && document.activeElement.closest(".has-sub")) document.activeElement.blur();
   window.scrollTo(0, 0);
 }
 window.addEventListener("hashchange", route);
 $("year").textContent = new Date().getFullYear();
 
 Promise.allSettled([
-  getJSON("content/site.json").then(renderSite),
-  getJSON("content/articles.json").then(d => renderArticles(d.articles)),
+  getJSON("content/home.json").then(renderHome),
+  getJSON("content/articles.json").then(renderArticles),
+  getJSON("content/markets-page.json").then(renderMarketsText),
+  getJSON("content/about.json").then(renderAbout),
+  getJSON("content/contact.json").then(renderContact),
   getJSON("content/resume.json").then(renderResume),
 ]).then(route);
 route();
