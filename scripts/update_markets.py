@@ -1,12 +1,15 @@
-"""Fetch daily market data from FRED (St. Louis Fed) and write data/markets.json.
+"""Fetch daily market data and write data/markets.json.
 
-Runs in GitHub Actions every morning. Uses only the Python standard library and the
-official FRED API. Needs a free API key in the FRED_API_KEY environment
-variable (stored as a GitHub Actions secret).
+Runs in GitHub Actions every morning, using only the Python standard library.
+Prices come from Yahoo Finance's chart data where it is fresher (FRED's oil and
+FX series lag by several days), with the official FRED API as the fallback.
+FRED needs a free API key in the FRED_API_KEY environment variable (stored as
+a GitHub Actions secret).
 """
 import json
 import os
 import time
+import urllib.parse
 import urllib.request
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
@@ -26,6 +29,13 @@ SERIES = [
     ("FX & rates", "DGS10", "US 10-year Treasury yield", "%", 2, "daily"),
 ]
 
+# Fresher daily source for each series, used when it returns newer data than FRED.
+YAHOO = {
+    "DCOILBRENTEU": "BZ=F", "DCOILWTICO": "CL=F", "DHHNGSP": "NG=F",
+    "SP500": "^GSPC", "DJIA": "^DJI", "NASDAQCOM": "^IXIC", "NIKKEI225": "^N225", "VIXCLS": "^VIX",
+    "DEXSIUS": "SGD=X", "DEXCHUS": "CNY=X",
+}
+YAHOO_URL = "https://query1.finance.yahoo.com/v8/finance/chart/{sym}?range=3y&interval=1d"
 URL = "https://api.stlouisfed.org/fred/series/observations?series_id={id}&observation_start={start}&file_type=json&api_key={key}"
 OUT = Path(__file__).resolve().parent.parent / "data" / "markets.json"
 
@@ -50,6 +60,20 @@ def fetch(series_id, start, key):
     return rows
 
 
+def fetch_yahoo(symbol):
+    req = urllib.request.Request(YAHOO_URL.format(sym=urllib.parse.quote(symbol)), headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(req, timeout=30) as r:
+        res = json.load(r)["chart"]["result"][0]
+    offset = res["meta"].get("gmtoffset", 0)
+    closes = res["indicators"]["quote"][0]["close"]
+    rows = {}
+    for ts, v in zip(res["timestamp"], closes):
+        if v is None:
+            continue
+        rows[datetime.fromtimestamp(ts + offset, timezone.utc).date()] = float(v)
+    return sorted(rows.items())
+
+
 def value_on_or_before(rows, target):
     best = None
     for d, v in rows:
@@ -72,13 +96,20 @@ def main():
         raise SystemExit("FRED_API_KEY is not set. Add it under Settings > Secrets and variables > Actions.")
     today = datetime.now(timezone.utc).date()
     start = (today - timedelta(days=3 * 365)).isoformat()
-    out = {"updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "source": "FRED, Federal Reserve Bank of St. Louis", "series": []}
+    out = {"updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "source": "Yahoo Finance; FRED, Federal Reserve Bank of St. Louis", "series": []}
     for group, sid, name, unit, decimals, freq in SERIES:
+        rows, src = [], "FRED"
         try:
             rows = fetch(sid, start, key)
         except Exception as e:
-            print(f"skip {sid}: {type(e).__name__}")
-            continue
+            print(f"FRED failed for {sid}: {type(e).__name__}")
+        if sid in YAHOO:
+            try:
+                y = fetch_yahoo(YAHOO[sid])
+                if len(y) >= 2 and (not rows or y[-1][0] >= rows[-1][0]):
+                    rows, src = y, "Yahoo Finance"
+            except Exception as e:
+                print(f"Yahoo failed for {sid}: {type(e).__name__}")
         if len(rows) < 2:
             print(f"skip {sid}: not enough data")
             continue
@@ -91,12 +122,12 @@ def main():
         history = [[d.isoformat(), round(v, decimals + 2)] for d, v in rows if d >= history_start]
         out["series"].append({
             "group": group, "id": sid, "name": name, "unit": unit, "decimals": decimals, "frequency": freq,
-            "latest": last_v, "date": last_d.isoformat(),
+            "latest": last_v, "date": last_d.isoformat(), "source": src,
             "change_short": pct(last_v, prior), "change_short_label": "1M" if freq == "daily" else "3M",
             "change_ytd": pct(last_v, ytd_base), "change_1y": pct(last_v, yoy),
             "history": history,
         })
-        print(f"ok {sid}: {last_d} {last_v}")
+        print(f"ok {sid} ({src}): {last_d} {last_v}")
     if not out["series"]:
         raise SystemExit("No series fetched; keeping the previous file.")
     OUT.parent.mkdir(parents=True, exist_ok=True)
