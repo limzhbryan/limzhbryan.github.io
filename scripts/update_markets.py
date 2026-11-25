@@ -1,11 +1,11 @@
 """Fetch daily market data from FRED (St. Louis Fed) and write data/markets.json.
 
-Runs in GitHub Actions every morning. Uses only the Python standard library and
-FRED's public CSV download, so no API key is needed.
+Runs in GitHub Actions every morning. Uses only the Python standard library and the
+official FRED API. Needs a free API key in the FRED_API_KEY environment
+variable (stored as a GitHub Actions secret).
 """
-import csv
-import io
 import json
+import os
 import time
 import urllib.request
 from datetime import date, datetime, timedelta, timezone
@@ -24,31 +24,27 @@ SERIES = [
     ("FX & rates", "DGS10", "US 10-year Treasury yield", "%", 2, "daily"),
 ]
 
-URL = "https://fred.stlouisfed.org/graph/fredgraph.csv?id={id}&cosd={start}"
+URL = "https://api.stlouisfed.org/fred/series/observations?series_id={id}&observation_start={start}&file_type=json&api_key={key}"
 OUT = Path(__file__).resolve().parent.parent / "data" / "markets.json"
 
 
-def fetch(series_id, start):
-    req = urllib.request.Request(URL.format(id=series_id, start=start), headers={"User-Agent": "personal-site-market-updater"})
-    for attempt in range(2):
+def fetch(series_id, start, key):
+    req = urllib.request.Request(URL.format(id=series_id, start=start, key=key), headers={"User-Agent": "personal-site-market-updater"})
+    for attempt in range(3):
         try:
-            with urllib.request.urlopen(req, timeout=25) as r:
-                text = r.read().decode("utf-8")
+            with urllib.request.urlopen(req, timeout=30) as r:
+                payload = json.load(r)
             break
         except Exception:
-            if attempt == 1:
+            if attempt == 2:
                 raise
             time.sleep(5 * (attempt + 1))
     rows = []
-    for row in csv.reader(io.StringIO(text)):
-        if len(row) < 2:
-            continue
+    for obs in payload.get("observations", []):
         try:
-            d = date.fromisoformat(row[0])
-            v = float(row[1])
-        except ValueError:
-            continue  # header row or missing value (".")
-        rows.append((d, v))
+            rows.append((date.fromisoformat(obs["date"]), float(obs["value"])))
+        except (KeyError, ValueError):
+            continue  # missing values are reported as "."
     return rows
 
 
@@ -69,14 +65,17 @@ def pct(new, old):
 
 
 def main():
+    key = os.environ.get("FRED_API_KEY", "").strip()
+    if not key:
+        raise SystemExit("FRED_API_KEY is not set. Add it under Settings > Secrets and variables > Actions.")
     today = datetime.now(timezone.utc).date()
     start = (today - timedelta(days=3 * 365)).isoformat()
     out = {"updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "source": "FRED, Federal Reserve Bank of St. Louis", "series": []}
     for group, sid, name, unit, decimals, freq in SERIES:
         try:
-            rows = fetch(sid, start)
+            rows = fetch(sid, start, key)
         except Exception as e:
-            print(f"skip {sid}: {e}")
+            print(f"skip {sid}: {type(e).__name__}")
             continue
         if len(rows) < 2:
             print(f"skip {sid}: not enough data")
