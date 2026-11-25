@@ -1,0 +1,38 @@
+name: Update market data
+
+on:
+  schedule:
+    - cron: "30 22 * * *"   # 06:30 Singapore time, every day
+  workflow_dispatch:
+  push:
+    branches: [market-insights]
+    paths: [scripts/update_markets.py, .github/workflows/update-markets.yml]
+
+permissions:
+  contents: write
+
+concurrency:
+  group: update-markets
+  cancel-in-progress: false
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - name: Fetch latest data
+        run: python scripts/update_markets.py
+      - name: Commit if changed
+        run: |
+          git config user.name "market-data-bot"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add data/markets.json
+          if git diff --cached --quiet; then
+            echo "No change in data."
+          else
+            git commit -m "Update market data $(date -u +%Y-%m-%d)"
+            git push
+          fi
