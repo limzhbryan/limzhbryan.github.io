@@ -240,7 +240,7 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
   <div class="view" data-view="markets" hidden>
     <div class="stack col">
       <h1 class="page-title">Markets</h1>
-      <p>The prices I keep an eye on, from crude oil and Wall Street to the Singapore dollar. The numbers refresh automatically every morning, with a short commentary on what moved oil and US stocks and why.</p>
+      <p id="markets-intro"></p>
       <p class="mk-meta" id="mk-updated">Loading the latest data…</p>
     </div>
     <section class="stack col" id="mk-today">
@@ -249,7 +249,7 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
       <p class="mk-meta">Written automatically each morning from the latest closing prices of oil and US stocks.</p>
     </section>
     <section class="stack" id="mk-board" aria-live="polite"></section>
-    <p class="mk-meta">Data: Yahoo Finance and FRED (Federal Reserve Bank of St. Louis). Oil and gas prices are front-month futures. For information only, not investment advice.</p>
+    <p class="mk-meta" id="markets-note"></p>
   </div>
 
   <!-- ABOUT -->
@@ -332,6 +332,9 @@ function renderSite(s) {
   const li = $("contact-linkedin"); li.href = safeUrl(c.linkedin) || "#"; li.textContent = String(c.linkedin || "").replace(/^https?:\/\/(www\.)?/, "");
   $("contact-location").textContent = c.location || "";
   $("footer-note").textContent = s.footer_note || "";
+  const m = s.markets || {};
+  $("markets-intro").textContent = m.intro || "";
+  $("markets-note").textContent = m.note || "";
 }
 
 function renderArticles(list) {
