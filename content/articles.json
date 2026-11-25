@@ -1,36 +1,52 @@
 {
   "articles": [
     {
-      "title": "When freight spikes, who really pays for Asia's plastics?",
-      "date": "2026-11-12",
-      "type": "Analysis",
-      "summary": "Shipping shocks rarely land fully on the buyer. How the cost splits between buyers and producers shows who holds the market power.",
-      "featured": true,
-      "image": "/files/freight-shock-chart.svg",
-      "image_caption": "Index, pre-shock = 100. Illustrative numbers.",
-      "read_time": "6 min read",
-      "body": "When container and tanker rates jump, the first reaction in most procurement meetings is simple: our costs just went up by the freight increase. In practice the delivered price usually rises by less than that, and the difference comes out of the producer's pocket.\n\nHow that cost is shared depends on who has options. A buyer who can switch origins forces the producer to absorb more. A producer with full order books and other markets to sell to can pass almost all of it on. Watching the gap between origin and delivered prices shows you which situation you are in.\n\n\n\n![Change in producer netback after a freight increase, by product (illustrative)](/files/netback-by-product-chart.svg)\n\n*Change in producer netback after a freight increase. Illustrative numbers.*\n\n## Read the spread, not the headline\n\nIn this example, polyethylene and polypropylene producers took a large share of the hit because buyers had plenty of alternative supply. Iron ore barely moved at origin because buyers had few places to switch to. Same shock, very different outcomes.\n\nFor a buyer, this is useful in negotiation. For a producer, it is a warning about how replaceable your cargo is. Either way, the data is already in the price reports most teams subscribe to. It just needs to be read as a spread."
-    },
-    {
-      "title": "What a benchmark price actually is, from someone who used to set them",
-      "date": "2026-10-15",
-      "type": "Explainer",
-      "summary": "Inside a daily price assessment: who reports, what counts as a deal, and why it matters for contracts.",
-      "featured": false
-    },
-    {
-      "title": "Tariffs are a tax on the supply chain you already built",
-      "date": "2026-09-10",
-      "type": "Opinion",
-      "summary": "Why switching suppliers is slower and more expensive than policy debates assume.",
-      "featured": false
-    },
-    {
-      "title": "Turbulent times in the stock",
+      "title": "2026 in markets: an oil shock, an AI reckoning and a somber finish",
       "date": "2026-11-25",
       "type": "Opinion",
-      "summary": "This year, we have seen extreme volatility in the markets, starting with oil prices spiking as the US and Israel went to war with Iran. The disruption in the Strait of Hormuz has caused lots of uncertainty and concern over stability of the world's most precious resource, with countries attempting to scramble and find alternative suppliers or look for other sources of energy. All of this has led to a supply shock that pushed up energy prices and inflation all around the world. \n\nAt the same time, we saw the AI market boom as technology and AI-related stocks soared in price, with high corporate earnings being announced and chip supply sold out well into 2027. However, reality hit in the last quarter of 2026 as we see stock prices fall just as sharply as they rose earlier in the year. Many investors were caught off guard, and regulators in Korea, Taiwan and China had to step in to calm the market players and announced measures to support buying. Large repricing of technology stocks amid exorbitant valuations will likely continue until the market is convinced it has found fair value. \n\nWhile we are nearing the end of 2026, it seems like the year will end on a somber note for market participants, especially those who are still holding onto the technology stocks that fell dramatically from their all-time high. With expectations of inflation picking up and interest rates rising in December, there is a lot of uncertainty in the market. Furthermore, as a blue wave hit the US Congress, with AI being a key campaign issue, tensions and gridlock between the Democratic Congress and the White House could potentially put more pressure on the stock market. \n\nSome signs of relief could come from:\n1. A lasting US-Iran deal and a reopening of the Strait of Hormuz\n2. Clarity on the Democratic Party's goals going forward\n3. Earnings that could convince investors that AI is indeed here to stay in the long run",
-      "featured": true
+      "summary": "From the Iran war's oil shock to the sharp repricing of AI stocks, why markets are ending the year on edge, and what could bring relief.",
+      "featured": true,
+      "image": "",
+      "image_caption": "",
+      "read_time": "3 min read",
+      "external_url": "",
+      "body": "<p>This year, we have seen extreme volatility in the markets, starting with oil prices spiking as the US and Israel went to war with Iran. The disruption in the Strait of Hormuz has caused lots of uncertainty and concern over stability of the world's most precious resource, with countries attempting to scramble and find alternative suppliers or look for other sources of energy. All of this has led to a supply shock that pushed energy prices and inflation all around the world.</p><p>At the same time, we saw the AI market boom as technology and AI-related stocks soared in price, with high corporate earnings being announced and chip supply sold out well into 2027. However, reality hit in the last quarter of 2026 as we see stock prices fall just as sharply as they rose earlier in the year. Many investors were caught off guard, and regulators in Korea, Taiwan and China had to step in to calm the market players and supported buying. Large repricing of technology stocks amid exorbitant valuations will likely continue until the market is convinced it has found fair value.</p><p>While we are nearing the end of 2026, it seems like the year will end on a somber note for market participants, especially those who are still holding onto the technology stocks that fell dramatically from their all-time high. With expectations of inflation picking up and interest rates rising in December, there is a lot of uncertainty in the market. Furthermore, as a blue wave hit the US Congress, with AI being a key campaign issue, tensions and gridlock between the Democratic Congress and the White House could potentially put more pressure on the stock market.</p><p>Some signs of relief could come from:</p><ol><li>A lasting US-Iran deal and a reopening of the Strait of Hormuz</li><li>Clarity on the Democratic Party's goals going forward</li><li>Earnings that could convince investors that AI is indeed here to stay in the long run</li></ol>"
+    },
+    {
+      "title": "Coming soon: commodities & pricing",
+      "date": "",
+      "type": "Analysis",
+      "summary": "A new piece is on the way.",
+      "featured": false,
+      "image": "",
+      "image_caption": "",
+      "read_time": "",
+      "external_url": "",
+      "body": ""
+    },
+    {
+      "title": "Coming soon: trade & supply chains",
+      "date": "",
+      "type": "Analysis",
+      "summary": "A new piece is on the way.",
+      "featured": false,
+      "image": "",
+      "image_caption": "",
+      "read_time": "",
+      "external_url": "",
+      "body": ""
+    },
+    {
+      "title": "Coming soon: global political economy",
+      "date": "",
+      "type": "Analysis",
+      "summary": "A new piece is on the way.",
+      "featured": false,
+      "image": "",
+      "image_caption": "",
+      "read_time": "",
+      "external_url": "",
+      "body": ""
     }
   ]
 }

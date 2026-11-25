@@ -347,6 +347,7 @@ function renderArticles(list) {
     const img = feat.image && safeUrl(feat.image) ? `<figure style="margin:0"><img src="${esc(feat.image)}" alt="">${feat.image_caption ? `<figcaption>${esc(feat.image_caption)}</figcaption>` : ""}</figure>` : "";
     $("home-feature").innerHTML = `<div><span class="date">${esc(longDate(feat.date))}${feat.type ? " · " + esc(feat.type) : ""}</span>
       <h3>${l ? `<a href="${esc(l.href)}">${esc(feat.title)}</a>` : esc(feat.title)}</h3><p>${esc(feat.summary)}</p>${link}</div>${img}`;
+    $("home-feature").style.gridTemplateColumns = img ? "" : "minmax(0, 760px)";
   } else { $("home-latest").hidden = true; }
   document.querySelector('[data-posts="latest"]').innerHTML = ARTICLES.filter(a => a !== feat).slice(0, 3).map(entryHTML).join("");
   document.querySelector('[data-posts="all"]').innerHTML = ARTICLES.map(entryHTML).join("");
