@@ -146,6 +146,7 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
 .mk-spark svg { width: 100%; height: 36px; display: block; }
 .mk-head { font-family: var(--ui); font-size: 12px; color: var(--muted); }
 .mk-head .mk-row { border-top: 0; padding-block: 0 6px; }
+.mk-summary { font-size: 20px; line-height: 1.6; }
 .notes .note { display: grid; gap: 4px; padding-block: 16px; border-top: 1px solid var(--rule); }
 .notes .note .date { font-family: var(--ui); font-size: 14px; color: var(--muted); }
 .notes .note h3 { font-size: 20px; }
@@ -312,6 +313,12 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
       <p class="mk-meta" id="mk-updated">Loading the latest data…</p>
     </div>
 
+    <section class="stack col" id="mk-today">
+      <h2 class="sec">Today in markets</h2>
+      <p class="mk-summary" id="mk-summary">The daily summary appears here once the latest data has loaded.</p>
+      <p class="mk-meta">Written automatically each morning from the latest closing prices.</p>
+    </section>
+
     <section class="stack" id="mk-board" aria-live="polite"></section>
 
     <section class="stack col">
@@ -418,6 +425,43 @@ function spark(hist) {
   const last = pts[pts.length - 1].split(",");
   return `<svg viewBox="0 0 ${w} ${h}" preserveAspectRatio="none" aria-hidden="true"><polyline fill="none" stroke="var(--link)" stroke-width="1.5" vector-effect="non-scaling-stroke" points="${pts.join(" ")}"/><circle cx="${last[0]}" cy="${last[1]}" r="2.5" fill="var(--accent)"/></svg>`;
 }
+// Plain-English daily summary built from the data (no AI, no news feeds).
+function dailyMoves(s) {
+  const h = s.history || [];
+  if (h.length < 2) return null;
+  const last = h[h.length - 1][1], prev = h[h.length - 2][1];
+  const vals = h.map(x => x[1]);
+  return { s, last, prev, pct: (last / prev - 1) * 100, diff: last - prev,
+    hi: last >= Math.max(...vals), lo: last <= Math.min(...vals) };
+}
+function verb(p, up, down, flat) { return Math.abs(p) < 0.05 ? flat : p > 0 ? up : down; }
+function moveWord(p) { const a = Math.abs(p); if (a < 0.05) return "was little changed"; if (a >= 2) return p > 0 ? "jumped" : "slumped"; if (a < 0.3) return p > 0 ? "edged up" : "edged down"; return p > 0 ? "rose" : "fell"; }
+function extreme(m) { return m.hi ? ", its highest in a year" : m.lo ? ", its lowest in a year" : ""; }
+function priceLine(m, unitPrefix = "") {
+  if (!m) return "";
+  const v = fmtNum(m.last, m.s.decimals);
+  return `${m.s.name} ${moveWord(m.pct)}${Math.abs(m.pct) < 0.05 ? "" : " " + Math.abs(m.pct).toFixed(1) + "%"} to ${unitPrefix}${v}${extreme(m)}`;
+}
+function summarize(data) {
+  const by = id => { const s = data.series.find(x => x.id === id); return s ? dailyMoves(s) : null; };
+  const out = [];
+  const brent = by("DCOILBRENTEU"), wti = by("DCOILWTICO"), gas = by("DHHNGSP");
+  if (brent) out.push(`In energy, ${priceLine(brent, "US$")} a barrel${wti ? `, while WTI ${verb(wti.pct, "gained", "lost", "held")}${Math.abs(wti.pct) < 0.05 ? " steady" : " " + Math.abs(wti.pct).toFixed(1) + "%"}` : ""}.`);
+  if (gas && Math.abs(gas.pct) >= 3) out.push(`US natural gas was volatile, ${gas.pct > 0 ? "jumping" : "dropping"} ${Math.abs(gas.pct).toFixed(1)}%.`);
+  const spx = by("SP500"), ndq = by("NASDAQCOM"), nky = by("NIKKEI225"), vix = by("VIXCLS");
+  if (spx) {
+    let t = `On Wall Street, the ${priceLine(spx)}`;
+    if (ndq) t += `, and the Nasdaq ${verb(ndq.pct, "gained", "lost", "was flat")}${Math.abs(ndq.pct) < 0.05 ? "" : " " + Math.abs(ndq.pct).toFixed(1) + "%"}`;
+    out.push(t + ".");
+  }
+  if (nky) out.push(`In Tokyo, the ${priceLine(nky)}.`);
+  if (vix && Math.abs(vix.pct) >= 5) out.push(`The VIX ${vix.pct > 0 ? "jumped" : "eased"} to ${fmtNum(vix.last, 1)}, ${vix.pct > 0 ? "a sign of rising nerves" : "suggesting calmer markets"}.`);
+  const sgd = by("DEXSIUS"), cny = by("DEXCHUS"), y10 = by("DGS10");
+  if (sgd) out.push(`The US dollar ${verb(sgd.pct, "strengthened", "weakened", "was steady")} against the Singapore dollar at ${fmtNum(sgd.last, 4)}${cny ? ` and ${verb(cny.pct, "firmed", "softened", "held")} against the yuan at ${fmtNum(cny.last, 4)}` : ""}.`);
+  if (y10) { const bp = Math.round(y10.diff * 100); out.push(`The US 10-year Treasury yield ${bp === 0 ? "was unchanged at" : (bp > 0 ? "rose " : "fell ") + Math.abs(bp) + " basis point" + (Math.abs(bp) === 1 ? "" : "s") + " to"} ${fmtNum(y10.last, 2)}%.`); }
+  return out.join(" ");
+}
+
 async function loadMarkets() {
   const board = document.getElementById("mk-board"), upd = document.getElementById("mk-updated");
   try {
@@ -434,6 +478,7 @@ async function loadMarkets() {
         ${chg(s.change_ytd, "YTD", "c-ytd")}
         <div class="mk-spark">${spark(s.history)}</div>
       </div>`).join("")}</div>`).join("");
+    const sum = summarize(data); if (sum) document.getElementById("mk-summary").textContent = sum;
     const u = new Date(data.updated.replace("Z", ":00Z"));
     upd.textContent = "Last refreshed " + u.toLocaleString("en-GB", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Singapore" }) + " (Singapore time).";
   } catch (e) {
