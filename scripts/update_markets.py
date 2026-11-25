@@ -17,6 +17,7 @@ SERIES = [
     ("Energy", "DCOILWTICO", "WTI crude", "US$/bbl", 2, "daily"),
     ("Energy", "DHHNGSP", "Henry Hub natural gas", "US$/MMBtu", 2, "daily"),
     ("Stock markets", "SP500", "S&P 500", "index", 0, "daily"),
+    ("Stock markets", "DJIA", "Dow Jones Industrial Average", "index", 0, "daily"),
     ("Stock markets", "NASDAQCOM", "Nasdaq Composite", "index", 0, "daily"),
     ("Stock markets", "NIKKEI225", "Nikkei 225", "index", 0, "daily"),
     ("Stock markets", "VIXCLS", "VIX (US volatility)", "index", 2, "daily"),
