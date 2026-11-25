@@ -36,7 +36,7 @@ content:
     path: content/site.json
     format: json
     fields:
-      - { name: photo, label: Your photo, type: image, description: "Portrait, ideally 4:5. Shown on the homepage and About page." }
+      - { name: photo, label: Your photo, type: image, description: "Portrait, ideally 4:5. Shown on the About page." }
       - name: home
         label: Homepage
         type: object

@@ -46,7 +46,7 @@ nav { display: flex; gap: 24px; flex-wrap: wrap; font-family: var(--ui); font-si
 nav a { color: var(--band-muted); text-decoration: none; }
 nav a:hover { color: var(--band-ink); }
 nav a[aria-current="page"] { color: var(--band-ink); box-shadow: inset 0 -2px 0 var(--accent); padding-bottom: 4px; }
-.hero { display: grid; grid-template-columns: 1fr 220px; gap: 48px; align-items: end; padding-block: 72px 40px; }
+.hero { display: grid; grid-template-columns: minmax(0, 1fr); gap: 48px; align-items: end; padding-block: 72px 40px; }
 .hero > * { min-width: 0; }
 .hero h1 { font-size: clamp(48px, 8vw, 92px); font-weight: 500; letter-spacing: -0.025em; line-height: 0.98; }
 .hero h1 i { color: var(--accent); font-weight: 400; }
@@ -198,7 +198,6 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
         <p class="intro" id="home-intro"></p>
         <p><span id="home-more"></span> <a href="#about">More about me</a>.</p>
       </div>
-      <div class="photo" id="home-photo" role="img" aria-label="Photo">[Photo]</div>
     </div>
   </div>
 </header>
@@ -322,7 +321,6 @@ function renderSite(s) {
   $("home-more").textContent = h.intro_more || "";
   $("themes-title").textContent = h.themes_title || "What I write about";
   $("home-themes").innerHTML = (h.themes || []).map(t => `<div><h3>${esc(t.title)}</h3><p>${esc(t.text)}</p></div>`).join("");
-  $("home-photo").innerHTML = photoHTML(s.photo, "Bryan Lim");
   $("about-photo").innerHTML = photoHTML(s.photo, "Bryan Lim");
   $("writing-intro").textContent = s.writing_intro || "";
   $("about-body").innerHTML = s.about || "";
