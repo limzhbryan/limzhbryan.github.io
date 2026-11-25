@@ -2,15 +2,6 @@
   "intro": "Opinion pieces and research",
   "articles": [
     {
-      "title": "2026 in markets: an oil shock, an AI reckoning and a somber finish",
-      "date": "2026-11-25",
-      "type": "Opinion",
-      "summary": "From the Iran war's oil shock to the sharp repricing of AI stocks, why markets are ending the year on edge, and what could bring relief",
-      "featured": true,
-      "read_time": "3 min read",
-      "body": "This year, we have seen extreme volatility in the markets, starting with oil prices spiking as the US and Israel went to war with Iran. The disruption in the Strait of Hormuz has caused lots of uncertainty and concern over stability of the world's most precious resource, with countries attempting to scramble and find alternative suppliers or look for other sources of energy. All of this has led to a supply shock that pushed energy prices and inflation all around the world.\n\nAt the same time, we saw the AI market boom as technology and AI-related stocks soared in price, with high corporate earnings being announced and chip supply sold out well into 2027. However, reality hit in the last quarter of 2026 as we see stock prices fall just as sharply as they rose earlier in the year. Many investors were caught off guard, and regulators in Korea, Taiwan and China had to step in to calm the market players and supported buying. Large repricing of technology stocks amid exorbitant valuations will likely continue until the market is convinced it has found fair value.\n\nWhile we are nearing the end of 2026, it seems like the year will end on a somber note for market participants, especially those who are still holding onto the technology stocks that fell dramatically from their all-time high. With expectations of inflation picking up and interest rates rising in December, there is a lot of uncertainty in the market. Furthermore, as a blue wave hit the US Congress, with AI being a key campaign issue, tensions and gridlock between the Democratic Congress and the White House could potentially put more pressure on the stock market.\n\nSome signs of relief could come from:\n\n1. A lasting US-Iran deal and a reopening of the Strait of Hormuz\n2. Clarity on the Democratic Party's goals going forward\n3. Earnings that could convince investors that AI is indeed here to stay in the long run\n\n"
-    },
-    {
       "title": "How supply shock from the Strait of Hormuz moves into supermarket prices",
       "date": "2026-11-25",
       "type": "Opinion",
@@ -19,15 +10,24 @@
       "body": "This year, the Strait of Hormuz was disrupted, stalling deliveries in one of the most important trade routes in the world. You might be wondering how the price you pay for goods and services can be affected. The route has played an important part in allowing commodities such as oil, liquefied natural gas (LNG) and fertiliser from the Gulf to pass through to the rest of the world.\n\nOil is one of the most important commodities in the world, if not the most important. It is a necessity in our daily lives such as in transport, power generation and cooking. LNG is also another important alternative energy source, especially for Singapore. Singapore relies on imported natural gas, as about 95% of our electricity is generated from the natural gas. When there is a shortage of either of these, it would result in prices creeping up, as everyone fights for the limited supply. \n\nAt the same time, due to increased costs of oil, gas, fertiliser and more, these could further increase the price of end products for consumers. For example, I'm sure you have all experienced price markups at food stores, with them justifying that they had to pass on some increase in costs to the consumer. This is known as cost-push inflation.\n\nThat is how this disruption in the Strait of Hormuz could have caused prices to increase in our everyday lives. As I write this, I see that the data for the US Personal Consumption Expenditures (PCE) Price Index has just been released, with them stating that inflation has increased to 3.8% (year-on-year basis), up from 3.6% in September. With this increase, it is likely that the Federal Reserve, America's Central Bank, will impose an interest rate hike in December (estimated around 0.25 percentage points). This is known as contractionary monetary policy, where the bank increases interest rates to reduce spending and curb inflation.\n\nThis matters for us in Singapore as well. Higher US interest rates tend to increase borrowing costs worldwide (as interest rate is the cost of borrowing), and in Singapore, the Monetary Authority of Singapore (MAS) manages inflation through the exchange rate, by letting the Singapore dollar strengthen. \n\nNonetheless, whether this interest rate hike can really curb inflation remains to be seen, as this time, inflation is caused by cost-push reasons, not demand-pull (where demand increases at a faster rate than supply). A rate hike cannot bring back the lost oil supply, though it can stop higher prices from spreading into other costs."
     },
     {
-      "title": "Coming soon: trade & supply chains",
+      "title": "2026 in markets: an oil shock, an AI reckoning and a somber finish",
       "date": "2026-11-25",
+      "type": "Opinion",
+      "summary": "From the Iran war's oil shock to the sharp repricing of AI stocks, why markets are ending the year on edge, and what could bring relief",
+      "featured": false,
+      "read_time": "3 min read",
+      "body": "This year, we have seen extreme volatility in the markets, starting with oil prices spiking as the US and Israel went to war with Iran. The disruption in the Strait of Hormuz has caused lots of uncertainty and concern over stability of the world's most precious resource, with countries attempting to scramble and find alternative suppliers or look for other sources of energy. All of this has led to a supply shock that pushed energy prices and inflation all around the world.\n\nAt the same time, we saw the AI market boom as technology and AI-related stocks soared in price, with high corporate earnings being announced and chip supply sold out well into 2027. However, reality hit in the last quarter of 2026 as we see stock prices fall just as sharply as they rose earlier in the year. Many investors were caught off guard, and regulators in Korea, Taiwan and China had to step in to calm the market players and supported buying. Large repricing of technology stocks amid exorbitant valuations will likely continue until the market is convinced it has found fair value.\n\nWhile we are nearing the end of 2026, it seems like the year will end on a somber note for market participants, especially those who are still holding onto the technology stocks that fell dramatically from their all-time high. With expectations of inflation picking up and interest rates rising in December, there is a lot of uncertainty in the market. Furthermore, as a blue wave hit the US Congress, with AI being a key campaign issue, tensions and gridlock between the Democratic Congress and the White House could potentially put more pressure on the stock market.\n\nSome signs of relief could come from:\n\n1. A lasting US-Iran deal and a reopening of the Strait of Hormuz\n2. Clarity on the Democratic Party's goals going forward\n3. Earnings that could convince investors that AI is indeed here to stay in the long run\n\n"
+    },
+    {
+      "title": "Coming soon: trade & supply chains",
+      "date": "",
       "type": "Opinion",
       "summary": "A new piece is on the way",
       "featured": false
     },
     {
       "title": "Coming soon: research paper",
-      "date": "2026-11-25",
+      "date": "",
       "type": "Research",
       "summary": "Published research will be listed here",
       "featured": false
