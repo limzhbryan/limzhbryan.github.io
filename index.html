@@ -1,0 +1,380 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Bryan Lim, Economics PhD student at NTU Singapore. Writing on commodities, trade and global markets.">
+<title>Bryan Lim</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,500;0,6..72,600;1,6..72,400;1,6..72,500&display=swap">
+<style>
+/* Layout: a deep navy masthead (big name + intro on the home page), then one reading column. Accent is iron-oxide red, a nod to the iron ore market. */
+:root {
+  --bg: #FBFBFA;
+  --ink: #18202B;
+  --muted: #646B74;
+  --rule: #E2E4E7;
+  --band: #14233A;
+  --band-ink: #F2F0EB;
+  --band-muted: #A9B4C4;
+  --accent: #A8432B;
+  --link: #1E3D63;
+  --serif: "Newsreader", Georgia, "Times New Roman", serif;
+  --ui: -apple-system, BlinkMacSystemFont, "Helvetica Neue", Arial, sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) { --bg: #111720; --ink: #E7E9EC; --muted: #9AA3AE; --rule: #263040; --band: #0B1320; --band-ink: #F2F0EB; --band-muted: #93A0B3; --accent: #E07A5F; --link: #A9C4E6; color-scheme: dark; }
+}
+:root[data-theme="dark"] { --bg: #111720; --ink: #E7E9EC; --muted: #9AA3AE; --rule: #263040; --band: #0B1320; --band-ink: #F2F0EB; --band-muted: #93A0B3; --accent: #E07A5F; --link: #A9C4E6; color-scheme: dark; }
+
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--ink); font-family: var(--serif); font-size: 19px; line-height: 1.6; }
+.inner { max-width: 960px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
+a { color: var(--link); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, currentColor 40%, transparent); }
+a:hover { color: var(--accent); text-decoration-color: currentColor; }
+a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+h1, h2, h3 { font-weight: 500; line-height: 1.15; margin: 0; text-wrap: balance; }
+p { margin: 0; }
+
+/* Masthead */
+.band { background: var(--band); color: var(--band-ink); margin-top: calc(-1 * env(safe-area-inset-top, 0px)); padding-top: calc(env(safe-area-inset-top, 0px) + 26px); padding-bottom: 26px; }
+.band .bar { display: flex; justify-content: space-between; align-items: baseline; gap: 12px 28px; flex-wrap: wrap; }
+.name { font-size: 22px; font-weight: 600; color: var(--band-ink); text-decoration: none; }
+.name:hover { color: var(--band-ink); }
+nav { display: flex; gap: 24px; flex-wrap: wrap; font-family: var(--ui); font-size: 15px; }
+nav a { color: var(--band-muted); text-decoration: none; }
+nav a:hover { color: var(--band-ink); }
+nav a[aria-current="page"] { color: var(--band-ink); box-shadow: inset 0 -2px 0 var(--accent); padding-bottom: 4px; }
+.hero { display: grid; grid-template-columns: 1fr 220px; gap: 48px; align-items: end; padding-block: 72px 40px; }
+.hero > * { min-width: 0; }
+.hero h1 { font-size: clamp(48px, 8vw, 92px); font-weight: 500; letter-spacing: -0.025em; line-height: 0.98; }
+.hero h1 i { color: var(--accent); font-weight: 400; }
+.hero .intro { font-size: clamp(20px, 2.3vw, 24px); line-height: 1.45; color: var(--band-ink); max-width: 30em; margin-top: 28px; }
+.hero .intro + p { color: var(--band-muted); font-size: 17px; margin-top: 16px; max-width: 36em; }
+.hero .intro + p a { color: var(--band-ink); }
+.hero .photo { aspect-ratio: 4 / 5; max-width: 100%; background: color-mix(in srgb, var(--band-ink) 10%, transparent); border-bottom: 3px solid var(--accent); display: grid; place-items: center; font-family: var(--ui); font-size: 13px; color: var(--band-muted); }
+
+main { padding-block: 56px 72px; }
+.col { max-width: 700px; }
+.view { display: grid; gap: 48px; }
+.stack { display: grid; gap: 18px; }
+.muted { color: var(--muted); }
+.small { font-size: 16px; }
+h2.sec { font-size: 26px; font-style: italic; font-weight: 400; display: flex; align-items: baseline; gap: 16px; }
+h2.sec::after { content: ""; flex: 1; height: 1px; background: var(--rule); transform: translateY(-6px); }
+.page-title { font-size: clamp(36px, 5vw, 52px); letter-spacing: -0.02em; }
+
+/* Featured piece */
+.feature { display: grid; grid-template-columns: 1fr 1.1fr; gap: 40px; align-items: center; }
+.feature > * { min-width: 0; }
+.feature .date { font-family: var(--ui); font-size: 14px; color: var(--accent); font-weight: 600; }
+.feature h3 { font-size: clamp(28px, 3.4vw, 36px); margin-top: 8px; letter-spacing: -0.01em; }
+.feature h3 a { color: var(--ink); text-decoration: none; }
+.feature h3 a:hover { color: var(--accent); }
+.feature p { color: var(--muted); margin-top: 12px; }
+.feature svg { width: 100%; height: auto; display: block; }
+.feature figcaption { font-family: var(--ui); font-size: 13px; color: var(--muted); margin-top: 6px; }
+.draw { stroke-dasharray: 700; stroke-dashoffset: 0; }
+@media (prefers-reduced-motion: no-preference) {
+  .draw { stroke-dashoffset: 700; animation: draw 1.6s .2s ease-out forwards; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+}
+
+.list { display: grid; gap: 0; }
+.entry { display: grid; grid-template-columns: 100px 1fr; gap: 4px 24px; padding-block: 20px; border-top: 1px solid var(--rule); }
+.entry > * { min-width: 0; }
+.entry .date { font-family: var(--ui); font-size: 14px; color: var(--muted); padding-top: 5px; font-variant-numeric: tabular-nums; }
+.entry h3 { font-size: 22px; }
+.entry h3 a { color: var(--ink); text-decoration: none; }
+.entry h3 a:hover { color: var(--accent); }
+.entry p { color: var(--muted); font-size: 17px; margin-top: 4px; }
+
+.themes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
+.themes > div { display: grid; gap: 6px; align-content: start; padding-top: 14px; border-top: 2px solid var(--ink); }
+.themes h3 { font-size: 21px; }
+.themes p { color: var(--muted); font-size: 16.5px; }
+
+/* Article */
+.article h1 { font-size: clamp(34px, 5vw, 48px); line-height: 1.1; letter-spacing: -0.015em; }
+.article .dek { font-size: 22px; color: var(--muted); font-style: italic; margin-top: 14px; }
+.article .byline { font-family: var(--ui); font-size: 14px; color: var(--muted); margin-top: 18px; }
+.prose { display: grid; gap: 20px; }
+.prose > p:first-child::first-letter { float: left; font-size: 64px; line-height: 0.85; padding: 6px 8px 0 0; color: var(--accent); }
+.prose h2 { font-size: 26px; margin-top: 12px; }
+figure { margin: 8px 0; display: grid; gap: 8px; }
+figure .scroll { overflow-x: auto; }
+figure.wide svg { width: 100%; min-width: 460px; height: auto; display: block; }
+figcaption { font-family: var(--ui); font-size: 13.5px; color: var(--muted); }
+
+/* About */
+.about-grid { display: grid; grid-template-columns: 1fr 200px; gap: 40px; align-items: start; }
+.about-grid > * { min-width: 0; }
+.photo-light { aspect-ratio: 4 / 5; max-width: 100%; background: var(--rule); border-bottom: 3px solid var(--accent); display: grid; place-items: center; font-family: var(--ui); font-size: 13px; color: var(--muted); }
+
+/* Resume */
+.cv-sec { display: grid; gap: 16px; }
+.job { display: grid; grid-template-columns: 1fr auto; gap: 0 16px; }
+.job > * { min-width: 0; }
+.job h3 { font-size: 20px; font-weight: 600; }
+.job .when { font-family: var(--ui); font-size: 14px; color: var(--muted); white-space: nowrap; padding-top: 3px; font-variant-numeric: tabular-nums; }
+.job .role { grid-column: 1 / -1; font-style: italic; color: var(--muted); }
+.job ul { grid-column: 1 / -1; margin: 6px 0 0; padding-left: 20px; font-size: 17px; display: grid; gap: 3px; }
+.job ul li::marker { color: var(--accent); }
+
+.contact-list { display: grid; gap: 0; }
+.contact-list div { display: grid; grid-template-columns: 120px 1fr; gap: 16px; padding-block: 14px; border-top: 1px solid var(--rule); }
+.contact-list span:first-child { font-family: var(--ui); font-size: 15px; color: var(--muted); padding-top: 3px; }
+.contact-list span, .contact-list a { overflow-wrap: anywhere; }
+
+footer { border-top: 1px solid var(--rule); }
+footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+
+@media (max-width: 760px) {
+  body { font-size: 18px; }
+  .hero { grid-template-columns: 1fr; gap: 28px; padding-block: 48px 24px; }
+  .hero .photo { max-width: 140px; grid-row: 1; }
+  .feature { grid-template-columns: 1fr; gap: 20px; }
+  .themes { grid-template-columns: 1fr; gap: 20px; }
+  .entry { grid-template-columns: 1fr; }
+  .entry .date { padding-top: 0; }
+  .about-grid { grid-template-columns: 1fr; }
+  .about-grid .photo-light { max-width: 160px; grid-row: 1; }
+  .job { grid-template-columns: 1fr; }
+  .contact-list div { grid-template-columns: 1fr; gap: 0; }
+  main { padding-block: 40px 56px; }
+}
+</style>
+<style>body{margin:0}img{max-width:100%}[hidden]{display:none!important}</style>
+</head>
+<body>
+
+<header class="band">
+  <div class="inner">
+    <div class="bar">
+      <a class="name" href="#home">Bryan Lim</a>
+      <nav aria-label="Main">
+        <a href="#writing" data-nav="writing">Writing</a>
+        <a href="#about" data-nav="about">About</a>
+        <a href="#resume" data-nav="resume">Resume</a>
+        <a href="#contact" data-nav="contact">Contact</a>
+      </nav>
+    </div>
+    <div class="hero" id="hero">
+      <div>
+        <h1>Markets, trade <i>&amp;</i> the price of things.</h1>
+        <p class="intro">I'm Bryan, an Economics PhD student at NTU Singapore. I write about commodities, trade, and how politics shapes the markets businesses depend on.</p>
+        <p>Before the PhD, I spent two years at S&amp;P Global assessing iron ore and petrochemical prices. <a href="#about">More about me</a>.</p>
+      </div>
+      <div class="photo" role="img" aria-label="Photo to come">[Photo]</div>
+    </div>
+  </div>
+</header>
+
+<main class="inner">
+  <!-- HOME -->
+  <div class="view" data-view="home">
+    <section class="stack" style="gap:28px">
+      <h2 class="sec">Latest</h2>
+      <article class="feature">
+        <div>
+          <span class="date">November 2026 · Analysis</span>
+          <h3><a href="#article">When freight spikes, who really pays for Asia's plastics?</a></h3>
+          <p>Shipping shocks rarely land fully on the buyer. How the cost splits between buyers and producers shows who holds the market power.</p>
+          <p class="small" style="margin-top:16px"><a href="#article">Read the piece</a></p>
+        </div>
+        <figure style="margin:0">
+          <svg viewBox="0 0 420 210" role="img" aria-label="Illustrative chart: delivered price rises after a freight shock while producer netback falls">
+            <g font-family="-apple-system, Helvetica, Arial, sans-serif" font-size="11" fill="var(--muted)">
+              <line x1="34" y1="30" x2="410" y2="30" stroke="var(--rule)"/>
+              <line x1="34" y1="90" x2="410" y2="90" stroke="var(--rule)"/>
+              <line x1="34" y1="150" x2="410" y2="150" stroke="var(--rule)"/>
+              <text x="28" y="34" text-anchor="end">110</text>
+              <text x="28" y="94" text-anchor="end">100</text>
+              <text x="28" y="154" text-anchor="end">90</text>
+              <line x1="222" y1="20" x2="222" y2="178" stroke="var(--ink)" stroke-dasharray="3 4" stroke-opacity=".45"/>
+              <text x="222" y="196" text-anchor="middle">Freight shock</text>
+              <text x="34" y="196">Week −8</text>
+              <text x="410" y="196" text-anchor="end">Week +8</text>
+            </g>
+            <polyline class="draw" fill="none" stroke="var(--muted)" stroke-width="2" stroke-linejoin="round" points="34,92 57,89 81,93 104,90 128,88 151,92 175,89 198,91 222,90 245,97 269,103 292,107 316,109 339,110 363,111 386,112 410,112"/>
+            <polyline class="draw" fill="none" stroke="var(--accent)" stroke-width="2.6" stroke-linejoin="round" points="34,89 57,91 81,88 104,90 128,87 151,91 175,89 198,88 222,90 245,72 269,58 292,50 316,46 339,43 363,41 386,40 410,39"/>
+            <circle cx="410" cy="39" r="4" fill="var(--accent)"/>
+            <g font-family="-apple-system, Helvetica, Arial, sans-serif" font-size="12" font-weight="600">
+              <text x="404" y="62" text-anchor="end" fill="var(--accent)">Delivered price +9%</text>
+              <text x="404" y="132" text-anchor="end" fill="var(--muted)">Producer netback −4%</text>
+            </g>
+          </svg>
+          <figcaption>Index, pre-shock = 100. Illustrative numbers.</figcaption>
+        </figure>
+      </article>
+    </section>
+
+    <section class="stack">
+      <h2 class="sec">More writing</h2>
+      <div class="list col" data-posts="latest"></div>
+      <p class="small"><a href="#writing">All writing</a></p>
+    </section>
+
+    <section class="stack" style="gap:24px">
+      <h2 class="sec">What I write about</h2>
+      <div class="themes">
+        <div><h3>Commodities &amp; pricing</h3><p>How prices for iron ore, plastics and other raw materials are discovered, and what really moves them.</p></div>
+        <div><h3>Trade &amp; supply chains</h3><p>Tariffs, freight and sourcing, and who ends up carrying the cost when they change.</p></div>
+        <div><h3>Global political economy</h3><p>How governments and industrial policy reshape the markets that firms operate in.</p></div>
+      </div>
+    </section>
+  </div>
+
+  <!-- WRITING -->
+  <div class="view" data-view="writing" hidden>
+    <div class="stack col">
+      <h1 class="page-title">Writing</h1>
+      <p class="muted">Opinion pieces, analysis and explainers. [These entries are samples and will be replaced with real articles.]</p>
+    </div>
+    <div class="list col" data-posts="all"></div>
+  </div>
+
+  <!-- ARTICLE -->
+  <div class="view" data-view="article" hidden>
+    <article class="article stack col" style="gap:36px">
+      <header>
+        <h1>When freight spikes, who really pays for Asia's plastics?</h1>
+        <p class="dek">Shipping shocks rarely land fully on the buyer. How the cost splits tells you who holds the market power.</p>
+        <p class="byline">Bryan Lim · November 2026 · 6 min read · [Sample article]</p>
+      </header>
+      <div class="prose">
+        <p>When container and tanker rates jump, the first reaction in most procurement meetings is simple: our costs just went up by the freight increase. In practice the delivered price usually rises by less than that, and the difference comes out of the producer's pocket.</p>
+        <p>How that cost is shared depends on who has options. A buyer who can switch origins forces the producer to absorb more. A producer with full order books and other markets to sell to can pass almost all of it on. Watching the gap between origin and delivered prices shows you which situation you are in.</p>
+        <figure class="wide">
+          <div class="scroll">
+            <svg viewBox="0 0 600 230" role="img" aria-label="Illustrative chart of how much of a freight increase producers absorbed, by product">
+              <g font-family="inherit" font-size="15" fill="var(--ink)">
+                <text x="0" y="38">Benzene</text>
+                <text x="0" y="88">Polypropylene</text>
+                <text x="0" y="138">Polyethylene</text>
+                <text x="0" y="188">Iron ore</text>
+              </g>
+              <line x1="560" y1="12" x2="560" y2="204" stroke="var(--ink)" stroke-opacity=".5"/>
+              <rect x="548" y="24" width="12" height="20" fill="var(--accent)"/>
+              <rect x="440" y="74" width="120" height="20" fill="var(--accent)"/>
+              <rect x="416" y="124" width="144" height="20" fill="var(--accent)"/>
+              <rect x="554" y="174" width="6" height="20" fill="var(--accent)"/>
+              <g font-family="inherit" font-size="14" fill="var(--muted)">
+                <text x="542" y="39" text-anchor="end">−1%</text>
+                <text x="434" y="89" text-anchor="end">−10%</text>
+                <text x="410" y="139" text-anchor="end">−12%</text>
+                <text x="548" y="189" text-anchor="end">−0.5%</text>
+                <text x="560" y="224" text-anchor="middle">0</text>
+                <text x="380" y="224" text-anchor="middle">−15%</text>
+              </g>
+            </svg>
+          </div>
+          <figcaption>Change in producer netback after a freight increase. Illustrative numbers.</figcaption>
+        </figure>
+        <h2>Read the spread, not the headline</h2>
+        <p>In this example, polyethylene and polypropylene producers took a large share of the hit because buyers had plenty of alternative supply. Iron ore barely moved at origin because buyers had few places to switch to. Same shock, very different outcomes.</p>
+        <p>For a buyer, this is useful in negotiation. For a producer, it is a warning about how replaceable your cargo is. Either way, the data is already in the price reports most teams subscribe to. It just needs to be read as a spread.</p>
+        <p class="small"><a href="#writing">← All writing</a></p>
+      </div>
+    </article>
+  </div>
+
+  <!-- ABOUT -->
+  <div class="view" data-view="about" hidden>
+    <div class="about-grid">
+      <div class="stack col">
+        <h1 class="page-title">About</h1>
+        <p>I'm an Economics PhD student at Nanyang Technological University in Singapore. I'm interested in global markets: how prices get set, how trade flows shift, and how politics changes both.</p>
+        <p>Before the PhD I spent two years at S&amp;P Global as a price assessment specialist, covering iron ore and petrochemicals. I spoke with traders and producers across Asia every day and turned what I heard into the benchmark prices they trade on. Earlier, I worked in strategy and market research at Kantar Consulting, Jacaranda Capital Partners and FairPrice Group.</p>
+        <p>I write here to work through ideas, and to make economics useful to the people who have to make decisions with it.</p>
+        <p class="small"><a href="#resume">Resume</a> · <a href="#contact">Contact</a></p>
+      </div>
+      <div class="photo-light" role="img" aria-label="Photo to come">[Photo]</div>
+    </div>
+  </div>
+
+  <!-- RESUME -->
+  <div class="view col" data-view="resume" hidden>
+    <div style="display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap">
+      <h1 class="page-title">Resume</h1>
+      <a class="small" href="Bryan_Lim_Resume.pdf" target="_blank" rel="noopener">PDF version</a>
+    </div>
+
+    <section class="cv-sec">
+      <h2 class="sec">Experience</h2>
+      <div class="job"><h3>S&amp;P Global</h3><span class="when">2023–2025</span><span class="role">Senior Specialist, Price Assessments</span>
+        <ul><li>Covered iron ore and petrochemicals (polymers, olefins, aromatics).</li><li>Produced daily price assessments and reported on market fundamentals.</li><li>Worked with traders and producers worldwide to understand market dynamics.</li><li>Developed new market sources and maintained assessment standards.</li><li>Presented market updates to participants across Asia.</li></ul></div>
+      <div class="job"><h3>Kantar Consulting</h3><span class="when">2022</span><span class="role">Strategy Consulting Intern</span>
+        <ul><li>Supported futures planning, growth strategy and brand strategy projects across industries and regions.</li><li>Ran qualitative and quantitative studies using primary and secondary data.</li></ul></div>
+      <div class="job"><h3>Jacaranda Capital Partners</h3><span class="when">2021–2022</span><span class="role">Projects Intern</span>
+        <ul><li>Researched the bullion industry for a project with the World Gold Council.</li><li>Built an investor pitch deck for the orthopaedic repair industry.</li></ul></div>
+      <div class="job"><h3>FairPrice Group Supply Chain</h3><span class="when">2021</span><span class="role">Strategy &amp; Analytics Intern</span>
+        <ul><li>Assessed market potential for a new FairPrice Analytics business.</li><li>Used operations data on GCP to help streamline distribution centre logistics.</li></ul></div>
+    </section>
+
+    <section class="cv-sec">
+      <h2 class="sec">Education</h2>
+      <div class="job"><h3>PhD in Economics</h3><span class="when">2025–present</span><span class="role">Nanyang Technological University</span></div>
+      <div class="job"><h3>MSc, International Political Economy</h3><span class="when">2023–2024</span><span class="role">Nanyang Technological University</span></div>
+      <div class="job"><h3>Bachelor of Business (Honours, Distinction)</h3><span class="when">2019–2022</span><span class="role">Nanyang Technological University. Banking &amp; Finance, International Trade specialisation</span></div>
+    </section>
+
+    <section class="cv-sec">
+      <h2 class="sec">Leadership</h2>
+      <div class="job"><h3>NTU United Nations Student Association</h3><span class="when">2020–2021</span><span class="role">Head of Finance, Publicity Wing</span></div>
+      <div class="job"><h3>NTU Tanjong Hall, 3rd Hall Council</h3><span class="when">2019–2020</span><span class="role">Publicity and Publications Secretary</span></div>
+    </section>
+
+    <section class="cv-sec">
+      <h2 class="sec">Skills</h2>
+      <p>R, Python, SQL, Google Cloud Platform. Market research, consulting, client management, market journalism.</p>
+    </section>
+  </div>
+
+  <!-- CONTACT -->
+  <div class="view col" data-view="contact" hidden>
+    <div class="stack">
+      <h1 class="page-title">Contact</h1>
+      <p>I'm always happy to talk about markets, trade, or anything I've written here. Email is the best way to reach me.</p>
+    </div>
+    <div class="contact-list">
+      <div><span>Email</span><span>Limz0196@e.ntu.edu.sg</span></div>
+      <div><span>LinkedIn</span><a href="https://www.linkedin.com/in/bryanlimzh" target="_blank" rel="noopener">linkedin.com/in/bryanlimzh</a></div>
+      <div><span>Location</span><span>Singapore</span></div>
+    </div>
+  </div>
+</main>
+
+<footer><div class="inner"><span>© 2026 Bryan Lim</span><span>Views are my own.</span></div></footer>
+
+<script>
+const POSTS = [
+  { date: "Nov 2026", title: "When freight spikes, who really pays for Asia's plastics?", dek: "How a shipping shock splits between buyers and producers, and what the price spread reveals." },
+  { date: "Oct 2026", title: "What a benchmark price actually is, from someone who used to set them", dek: "Inside a daily price assessment: who reports, what counts as a deal, and why it matters for contracts." },
+  { date: "Sep 2026", title: "Tariffs are a tax on the supply chain you already built", dek: "Why switching suppliers is slower and more expensive than policy debates assume." },
+  { date: "Aug 2026", title: "[An op-ed published elsewhere]", dek: "[Outlet name] — link to the original." }
+];
+const entry = p => `<div class="entry"><span class="date">${p.date}</span><div><h3><a href="#article">${p.title}</a></h3><p>${p.dek}</p></div></div>`;
+document.querySelector('[data-posts="latest"]').innerHTML = POSTS.slice(1, 3).map(entry).join("");
+document.querySelector('[data-posts="all"]').innerHTML = POSTS.map(entry).join("");
+
+const views = [...document.querySelectorAll(".view")];
+const hero = document.getElementById("hero");
+function route() {
+  const name = (location.hash || "#home").slice(1);
+  const target = views.some(v => v.dataset.view === name) ? name : "home";
+  views.forEach(v => { v.hidden = v.dataset.view !== target; });
+  hero.hidden = target !== "home";
+  const navKey = target === "article" ? "writing" : target;
+  document.querySelectorAll("[data-nav]").forEach(a => {
+    if (a.dataset.nav === navKey) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+  });
+  window.scrollTo(0, 0);
+}
+window.addEventListener("hashchange", route);
+route();
+</script>
+
+</body>
+</html>
