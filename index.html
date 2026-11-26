@@ -212,6 +212,7 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
           <a href="#writing" data-nav="writing">Writing</a>
           <span class="sub"><div>
             <a href="#writing-opinion" data-sub="opinion">Opinion</a>
+            <a href="#writing-analysis" data-sub="analysis">Analysis</a>
             <a href="#writing-research" data-sub="research">Research</a>
           </div></span>
         </span>
@@ -260,6 +261,7 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
       <div class="filters" aria-label="Filter">
         <a href="#writing" data-filter="all">All</a>
         <a href="#writing-opinion" data-filter="opinion">Opinion</a>
+        <a href="#writing-analysis" data-filter="analysis">Analysis</a>
         <a href="#writing-research" data-filter="research">Research</a>
       </div>
       <div class="list" data-posts="all"></div>
@@ -343,7 +345,7 @@ function articleLink(a) {
   if (a.body && a.body.trim()) return { href: "#article-" + a.slug, ext: false };
   return null;
 }
-const kindOf = a => a.type === "Research" ? "Research" : "Opinion";
+const kindOf = a => ["Analysis", "Research"].includes(a.type) ? a.type : "Opinion";
 function entryHTML(a, showKind) {
   const l = articleLink(a);
   const title = l ? `<a href="${esc(l.href)}"${l.ext ? ' target="_blank" rel="noopener"' : ""}>${esc(a.title)}</a>` : `<span>${esc(a.title)}</span>`;
@@ -537,7 +539,7 @@ function route() {
   let name = (location.hash || "#home").slice(1);
   let target = name;
   if (name.startsWith("article-")) target = renderArticle(name.slice(8)) ? "article" : "writing";
-  else if (name === "writing-opinion" || name === "writing-research") target = "writing";
+  else if (["writing-opinion", "writing-analysis", "writing-research"].includes(name)) target = "writing";
   else if (!views.some(v => v.dataset.view === name)) target = "home";
   if (target !== "article") document.title = "Bryan Lim";
   views.forEach(v => { v.hidden = v.dataset.view !== target; });
