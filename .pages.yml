@@ -1,4 +1,5 @@
 # Settings for the visual editor at https://app.pagescms.org
+# Writing types: Opinion, Analysis, Research
 # Each entry below becomes a section in the editor's left menu, in the same order as the site's menu.
 media:
   input: files
