@@ -2,19 +2,19 @@
   "headline": "Markets, trade, & the price of things",
   "intro": "Hi! I am Bryan, an Economics PhD student at Nanyang Technological University in Singapore. I'm interested in global markets such as why prices move, how trade flows shift, and how politics changes both.",
   "intro_more": "Before pursuing my PhD, I spent two years at S&P Global as a price assessment specialist, covering movements in commodity prices",
-  "themes_title": "What I write about",
+  "themes_title": "What you can find here",
   "themes": [
     {
-      "title": "Commodities & pricing",
-      "text": "What moves commodity prices"
+      "title": "Random Opinions",
+      "text": "Random short opinions and thoughts on society news, sometimes with basic lessons for those not in the know"
     },
     {
-      "title": "Trade & supply chains",
-      "text": "Tariffs, freight and sourcing"
+      "title": "(Slightly-Deeper) Analysis",
+      "text": "Slightly more analytical pieces that observes macro-ongoings with some statistics and illustrations"
     },
     {
-      "title": "Global political economy",
-      "text": "How governments and industrial policy reshape the markets that firms operate in"
+      "title": "Research Paper",
+      "text": "Deep dive research papers that I work on "
     }
   ]
 }
