@@ -24,8 +24,8 @@ SERIES = [
     ("Stock markets", "NASDAQCOM", "Nasdaq Composite", "index", 0, "daily"),
     ("Stock markets", "NIKKEI225", "Nikkei 225", "index", 0, "daily"),
     ("Stock markets", "VIXCLS", "VIX (US volatility)", "index", 2, "daily"),
-    ("FX & rates", "DEXSIUS", "USD/SGD", "SGD per USD", 4, "daily"),
-    ("FX & rates", "DEXCHUS", "USD/CNY", "CNY per USD", 4, "daily"),
+    ("FX & rates", "DEXSIUS", "USD/SGD", "S$ per US$1", 4, "daily"),
+    ("FX & rates", "DEXCHUS", "USD/CNY", "yuan per US$1", 4, "daily"),
     ("FX & rates", "DGS10", "US 10-year Treasury yield", "%", 2, "daily"),
 ]
 
@@ -92,7 +92,7 @@ def contract_symbols(root, today, n=4):
 
 
 def front_contract(cont_symbol, cont_rows, today):
-    """Splice the nearest live contract onto the continuous series. Returns (rows, label)."""
+    """Use the nearest live contract for recent prices. Returns (rows, symbol, day_change)."""
     root = FUTURES_ROOT[cont_symbol]
     last_day = cont_rows[-1][0]
     for sym in contract_symbols(root, today):
@@ -101,20 +101,21 @@ def front_contract(cont_symbol, cont_rows, today):
         except Exception as e:
             print(f"  {sym}: {type(e).__name__}")
             continue
-        if len(rows) < 30 or rows[-1][0] < last_day:
-            print(f"  {sym}: no current data (last {rows[-1][0] if rows else None})")
+        if len(rows) < 2 or rows[-1][0] < last_day:
             continue
-        # Join at the contract's first date; scale older continuous prices to match it.
-        start = rows[0][0]
-        base = value_on_or_before(cont_rows, start)
-        if not base or base[0] != start or base[1] == 0:
-            print(f"  {sym}: cannot join to continuous series")
-            continue
-        k = rows[0][1] / base[1]
-        older = [(d, v * k) for d, v in cont_rows if d < start]
-        print(f"  front contract {sym}: {rows[-1][0]} {rows[-1][1]} (continuous {cont_rows[-1][1]}, scale {k:.4f})")
-        return older + rows, sym
-    return cont_rows, None
+        c = dict(rows)
+        # Last date on which the continuous series was this same contract (prices match).
+        match = None
+        for d, v in cont_rows:
+            if d in c and c[d] and abs(v / c[d] - 1) < 0.003:
+                match = d
+        if match is None:
+            match = cont_rows[-2][0]
+        spliced = [(d, v) for d, v in cont_rows if d <= match] + [(d, v) for d, v in rows if d > match]
+        day = round((rows[-1][1] / rows[-2][1] - 1) * 100, 2) if rows[-2][1] else None
+        print(f"  front contract {sym}: {rows[-1][0]} {rows[-1][1]:.2f} (prev {rows[-2][1]:.2f}, continuous {cont_rows[-1][1]:.2f}, joined after {match})")
+        return spliced, sym, day
+    return cont_rows, None, None
 
 
 def value_on_or_before(rows, target):
@@ -140,6 +141,7 @@ def main():
     today = datetime.now(timezone.utc).date()
     start = (today - timedelta(days=3 * 365)).isoformat()
     out = {"updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "source": "Yahoo Finance; FRED, Federal Reserve Bank of St. Louis", "series": []}
+    day_change = {}
     for group, sid, name, unit, decimals, freq in SERIES:
         rows, src = [], "FRED"
         try:
@@ -149,14 +151,16 @@ def main():
         if sid in YAHOO:
             try:
                 y = fetch_yahoo(YAHOO[sid])
-                contract = None
+                contract, day = None, None
                 if YAHOO[sid] in FUTURES_ROOT and len(y) >= 2:
                     try:
-                        y, contract = front_contract(YAHOO[sid], y, today)
+                        y, contract, day = front_contract(YAHOO[sid], y, today)
                     except Exception as e:
                         print(f"  front contract failed for {sid}: {type(e).__name__}: {e}")
                 if len(y) >= 2 and (not rows or y[-1][0] >= rows[-1][0]):
                     rows, src = y, "Yahoo Finance" + (f" ({contract})" if contract else "")
+                    if day is not None:
+                        day_change[sid] = day
             except Exception as e:
                 print(f"Yahoo failed for {sid}: {type(e).__name__}")
         if len(rows) < 2:
@@ -172,6 +176,7 @@ def main():
         out["series"].append({
             "group": group, "id": sid, "name": name, "unit": unit, "decimals": decimals, "frequency": freq,
             "latest": last_v, "date": last_d.isoformat(), "source": src,
+            "change_1d": day_change.get(sid, pct(last_v, rows[-2])),
             "change_short": pct(last_v, prior), "change_short_label": "1M" if freq == "daily" else "3M",
             "change_ytd": pct(last_v, ytd_base), "change_1y": pct(last_v, yoy),
             "history": history,

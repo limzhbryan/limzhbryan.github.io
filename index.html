@@ -528,6 +528,7 @@ async function loadCommentary() {
 
 // Change from the previous close, from the price history in markets.json.
 function dayChange(s) {
+  if (typeof s.change_1d === "number") return s.change_1d;
   const h = s.history || [];
   if (h.length < 2 || !h[h.length - 2][1]) return null;
   return (h[h.length - 1][1] / h[h.length - 2][1] - 1) * 100;
