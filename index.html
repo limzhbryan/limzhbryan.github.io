@@ -58,7 +58,8 @@ nav a[aria-current="page"] { color: var(--band-ink); box-shadow: inset 0 -2px 0 
 .filters a:hover { color: var(--ink); }
 .filters a[aria-current="true"] { color: var(--ink); box-shadow: inset 0 -2px 0 var(--accent); }
 .entry .kind { display: block; font-size: 13px; font-weight: 600; color: var(--accent); margin-top: 2px; }
-.hero { display: grid; grid-template-columns: minmax(0, 1fr); gap: 48px; align-items: end; padding-block: 72px 40px; }
+.hero { display: grid; grid-template-columns: minmax(0, 1fr); gap: 56px; align-items: end; padding-block: 72px 40px; }
+.hero:has(#home-photo:not([hidden])) { grid-template-columns: minmax(0, 1fr) 240px; }
 .hero > * { min-width: 0; }
 .hero h1 { font-size: clamp(48px, 8vw, 92px); font-weight: 500; letter-spacing: -0.025em; line-height: 0.98; }
 .hero h1 i { color: var(--accent); font-weight: 400; }
@@ -179,7 +180,8 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
 }
 @media (max-width: 760px) {
   body { font-size: 18px; }
-  .hero { grid-template-columns: 1fr; gap: 28px; padding-block: 48px 24px; }
+  .hero, .hero:has(#home-photo:not([hidden])) { grid-template-columns: 1fr; gap: 28px; padding-block: 48px 24px; }
+  .hero #home-photo { max-width: 120px; }
   .hero .photo { max-width: 140px; grid-row: 1; }
   .feature { grid-template-columns: 1fr; gap: 20px; }
   .themes { grid-template-columns: 1fr; gap: 20px; }
@@ -232,6 +234,7 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
         <p class="intro" id="home-intro"></p>
         <p><span id="home-more"></span> <a href="#about">More about me</a></p>
       </div>
+      <div class="photo" id="home-photo" role="img" aria-label="Photo of Bryan Lim" hidden></div>
     </div>
   </div>
 </header>
@@ -402,6 +405,8 @@ function paras(t) {
 }
 function renderAbout(a) {
   $("about-photo").innerHTML = photoHTML(a.photo, "Bryan Lim");
+  // The same photo also appears next to the homepage intro.
+  if (a.photo && safeUrl(a.photo)) { $("home-photo").innerHTML = photoHTML(a.photo, "Bryan Lim"); $("home-photo").hidden = false; }
   $("about-body").innerHTML = paras(a.about);
 }
 function renderContact(c) {
