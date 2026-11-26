@@ -35,7 +35,13 @@ YAHOO = {
     "SP500": "^GSPC", "DJIA": "^DJI", "NASDAQCOM": "^IXIC", "NIKKEI225": "^N225", "VIXCLS": "^VIX",
     "DEXSIUS": "SGD=X", "DEXCHUS": "CNY=X",
 }
-YAHOO_URL = "https://query1.finance.yahoo.com/v8/finance/chart/{sym}?range=3y&interval=1d"
+YAHOO_URL = "https://query1.finance.yahoo.com/v8/finance/chart/{sym}?range={range}&interval=1d"
+# Yahoo's continuous futures (BZ=F etc.) switch to the next contract before the old one
+# expires, which makes the price jump and the daily change compare two different
+# contracts. For these we use the nearest live contract itself (e.g. BZF27.NYM) for
+# recent prices, and scale the older continuous history to join it smoothly.
+FUTURES_ROOT = {"BZ=F": "BZ", "CL=F": "CL", "NG=F": "NG"}
+MONTH_CODES = "FGHJKMNQUVXZ"
 URL = "https://api.stlouisfed.org/fred/series/observations?series_id={id}&observation_start={start}&file_type=json&api_key={key}"
 OUT = Path(__file__).resolve().parent.parent / "data" / "markets.json"
 
@@ -60,8 +66,8 @@ def fetch(series_id, start, key):
     return rows
 
 
-def fetch_yahoo(symbol):
-    req = urllib.request.Request(YAHOO_URL.format(sym=urllib.parse.quote(symbol)), headers={"User-Agent": "Mozilla/5.0"})
+def fetch_yahoo(symbol, range_="3y"):
+    req = urllib.request.Request(YAHOO_URL.format(sym=urllib.parse.quote(symbol), range=range_), headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=30) as r:
         res = json.load(r)["chart"]["result"][0]
     offset = res["meta"].get("gmtoffset", 0)
@@ -72,6 +78,43 @@ def fetch_yahoo(symbol):
             continue
         rows[datetime.fromtimestamp(ts + offset, timezone.utc).date()] = float(v)
     return sorted(rows.items())
+
+
+def contract_symbols(root, today, n=4):
+    """Yahoo symbols for the next n contract months, e.g. BZF27.NYM."""
+    out = []
+    y, m = today.year, today.month
+    for i in range(n):
+        mm = (m - 1 + i) % 12
+        yy = y + (m - 1 + i) // 12
+        out.append(f"{root}{MONTH_CODES[mm]}{yy % 100:02d}.NYM")
+    return out
+
+
+def front_contract(cont_symbol, cont_rows, today):
+    """Splice the nearest live contract onto the continuous series. Returns (rows, label)."""
+    root = FUTURES_ROOT[cont_symbol]
+    last_day = cont_rows[-1][0]
+    for sym in contract_symbols(root, today):
+        try:
+            rows = fetch_yahoo(sym, "6mo")
+        except Exception as e:
+            print(f"  {sym}: {type(e).__name__}")
+            continue
+        if len(rows) < 30 or rows[-1][0] < last_day:
+            print(f"  {sym}: no current data (last {rows[-1][0] if rows else None})")
+            continue
+        # Join at the contract's first date; scale older continuous prices to match it.
+        start = rows[0][0]
+        base = value_on_or_before(cont_rows, start)
+        if not base or base[0] != start or base[1] == 0:
+            print(f"  {sym}: cannot join to continuous series")
+            continue
+        k = rows[0][1] / base[1]
+        older = [(d, v * k) for d, v in cont_rows if d < start]
+        print(f"  front contract {sym}: {rows[-1][0]} {rows[-1][1]} (continuous {cont_rows[-1][1]}, scale {k:.4f})")
+        return older + rows, sym
+    return cont_rows, None
 
 
 def value_on_or_before(rows, target):
@@ -106,8 +149,14 @@ def main():
         if sid in YAHOO:
             try:
                 y = fetch_yahoo(YAHOO[sid])
+                contract = None
+                if YAHOO[sid] in FUTURES_ROOT and len(y) >= 2:
+                    try:
+                        y, contract = front_contract(YAHOO[sid], y, today)
+                    except Exception as e:
+                        print(f"  front contract failed for {sid}: {type(e).__name__}: {e}")
                 if len(y) >= 2 and (not rows or y[-1][0] >= rows[-1][0]):
-                    rows, src = y, "Yahoo Finance"
+                    rows, src = y, "Yahoo Finance" + (f" ({contract})" if contract else "")
             except Exception as e:
                 print(f"Yahoo failed for {sid}: {type(e).__name__}")
         if len(rows) < 2:
