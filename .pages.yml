@@ -1,6 +1,6 @@
 # Settings for the visual editor at https://app.pagescms.org
 # Writing types: Opinion, Analysis, Research
-# Each entry below becomes a section in the editor's left menu, in the same order as the site's menu.
+# Each entry below becomes a section in the editor's left menu, in the same order as the site's menu (About now lives under Home).
 media:
   input: files
   output: /files
@@ -13,8 +13,8 @@ content:
     format: json
     fields:
       - { name: headline, label: Big headline, type: string }
-      - { name: intro, label: Intro paragraph, type: text }
-      - { name: intro_more, label: Second line, type: text }
+      - { name: photo, label: Your photo, type: image, description: "Portrait, ideally 4:5. Shown at the top right of the homepage." }
+      - { name: about, label: About me, type: rich-text, description: "Shown under the headline. The first paragraph appears slightly larger." }
       - { name: themes_title, label: Themes heading, type: string }
       - name: themes
         label: Themes
@@ -83,14 +83,6 @@ content:
           - { name: title, label: Source name, type: string }
           - { name: url, label: Link, type: string }
 
-  - name: about
-    label: About
-    type: file
-    path: content/about.json
-    format: json
-    fields:
-      - { name: photo, label: Your photo, type: image, description: "Portrait, ideally 4:5" }
-      - { name: about, label: About text, type: rich-text }
 
   - name: resume
     label: Resume
