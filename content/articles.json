@@ -1,5 +1,5 @@
 {
-  "intro": "Opinion pieces and research",
+  "intro": "Opinion pieces, slightly deeper analysis and research",
   "articles": [
     {
       "title": "Tariffs Part 2: Electric Boogaloo",
@@ -25,14 +25,7 @@
       "summary": "From the Iran war's oil shock to the sharp repricing of AI stocks, why markets are ending the year on edge, and what could bring relief",
       "featured": false,
       "read_time": "3 min read",
-      "body": "This year, we have seen extreme volatility in the markets, starting with oil prices spiking as the US and Israel went to war with Iran. The disruption in the Strait of Hormuz has caused lots of uncertainty and concern over stability of the world's most precious resource, with countries attempting to scramble and find alternative suppliers or look for other sources of energy. All of this has led to a supply shock that pushed energy prices and inflation all around the world.\n\nAt the same time, we saw the AI market boom as technology and AI-related stocks soared in price, with high corporate earnings being announced and chip supply sold out well into 2027. However, reality hit in the last quarter of 2026 as we see stock prices fall just as sharply as they rose earlier in the year. Many investors were caught off guard, and regulators in Korea, Taiwan and China had to step in to calm the market players and supported buying. Large repricing of technology stocks amid exorbitant valuations will likely continue until the market is convinced it has found fair value.\n\nWhile we are nearing the end of 2026, it seems like the year will end on a somber note for market participants, especially those who are still holding onto the technology stocks that fell dramatically from their all-time high. With expectations of inflation picking up and interest rates rising in December, there is a lot of uncertainty in the market. Furthermore, as a blue wave hit the US Congress, with AI being a key campaign issue, tensions and gridlock between the Democratic Congress and the White House could potentially put more pressure on the stock market.\n\nSome signs of relief could come from:\n\n1. A lasting US-Iran deal and a reopening of the Strait of Hormuz\n2. Clarity on the Democratic Party's goals going forward\n3. Earnings that could convince investors that AI is indeed here to stay in the long run"
-    },
-    {
-      "title": "Coming soon: research paper",
-      "date": "2026-11-25",
-      "type": "Research",
-      "summary": "Published research will be listed here",
-      "featured": false
+      "body": "This year, we have seen extreme volatility in the markets, starting with oil prices spiking as the US and Israel went to war with Iran. The disruption in the Strait of Hormuz has caused lots of uncertainty and concern over stability of the world's most precious resource, with countries attempting to scramble and find alternative suppliers or look for other sources of energy. All of this has led to a supply shock that pushed energy prices and inflation all around the world.\n\nAt the same time, we saw the AI market boom as technology and AI-related stocks soared in price, with high corporate earnings being announced and chip supply sold out well into 2027. However, reality hit in the last quarter of 2026 as we see stock prices fall just as sharply as they rose earlier in the year. Many investors were caught off guard, and regulators in Korea, Taiwan and China had to step in to calm the market players and supported buying. Large repricing of technology stocks amid exorbitant valuations will likely continue until the market is convinced it has found fair value.\n\nWhile we are nearing the end of 2026, it seems like the year will end on a somber note for market participants, especially those who are still holding onto the technology stocks that fell dramatically from their all-time high. With expectations of inflation picking up and interest rates rising in December, there is a lot of uncertainty in the market. Furthermore, as a blue wave hit the US Congress, with AI being a key campaign issue, tensions and gridlock between the Democratic Congress and the White House could potentially put more pressure on the stock market.\n\nSome signs of relief could come from:\n\n1. A lasting US-Iran deal and a reopening of the Strait of Hormuz\n2. Clarity on the Democratic Party's goals going forward\n3. Earnings that could convince investors that AI is indeed here to stay in the long run\n\n"
     }
   ]
 }
