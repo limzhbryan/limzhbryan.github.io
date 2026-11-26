@@ -105,6 +105,10 @@ h2.sec::after { content: ""; flex: 1; height: 1px; background: var(--rule); tran
 .themes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 32px; }
 .themes > div { display: grid; gap: 6px; align-content: start; padding-top: 14px; border-top: 2px solid var(--ink); }
 .themes h3 { font-size: 21px; }
+a.theme { color: inherit; text-decoration: none; transition: border-color .15s; }
+a.theme h3::after { content: " →"; color: var(--accent); transition: margin-left .15s; }
+a.theme:hover { border-top-color: var(--accent); }
+a.theme:hover h3 { color: var(--accent); }
 .themes p { color: var(--muted); font-size: 16.5px; }
 
 /* Article */
@@ -353,12 +357,28 @@ function entryHTML(a, showKind) {
 }
 function photoHTML(src, alt) { return src && safeUrl(src) ? `<img src="${esc(src)}" alt="${esc(alt)}">` : "[Photo]"; }
 
+// Where each homepage box links: chosen in the editor ("Links to"), or guessed from its title.
+const THEME_LINKS = { "Opinion": "#writing-opinion", "Analysis": "#writing-analysis", "Research": "#writing-research", "All writing": "#writing", "Markets": "#markets", "About": "#about", "Resume": "#resume", "Contact": "#contact" };
+function themeLink(t) {
+  if (t.link === "No link") return "";
+  if (THEME_LINKS[t.link]) return THEME_LINKS[t.link];
+  const s = String(t.title || "").toLowerCase();
+  if (s.includes("opinion")) return "#writing-opinion";
+  if (s.includes("analys")) return "#writing-analysis";
+  if (s.includes("research")) return "#writing-research";
+  if (s.includes("market")) return "#markets";
+  return "";
+}
 function renderHome(h) {
   $("home-headline").innerHTML = esc(h.headline).replace(/ &amp; /g, " <i>&amp;</i> ");
   $("home-intro").textContent = h.intro || "";
   $("home-more").textContent = h.intro_more || "";
   $("themes-title").textContent = h.themes_title || "What I write about";
-  $("home-themes").innerHTML = (h.themes || []).map(t => `<div><h3>${esc(t.title)}</h3><p>${esc(t.text)}</p></div>`).join("");
+  $("home-themes").innerHTML = (h.themes || []).map(t => {
+    const href = themeLink(t);
+    const inner = `<h3>${esc(t.title)}</h3><p>${esc(t.text)}</p>`;
+    return href ? `<a class="theme" href="${href}">${inner}</a>` : `<div>${inner}</div>`;
+  }).join("");
 }
 // The About text may be rich text (HTML) or plain text with blank lines between paragraphs.
 // Text from the editor may be rich text (HTML) or plain text: blank lines start new paragraphs,

@@ -23,6 +23,11 @@ content:
         fields:
           - { name: title, label: Title, type: string }
           - { name: text, label: Description, type: text }
+          - name: link
+            label: Links to
+            type: select
+            description: "Page opened when someone clicks this box. Leave empty to guess from the title."
+            options: { values: [Opinion, Analysis, Research, All writing, Markets, About, Resume, Contact, No link] }
 
   - name: articles
     label: Writing
