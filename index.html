@@ -58,13 +58,7 @@ nav a[aria-current="page"] { color: var(--band-ink); box-shadow: inset 0 -2px 0 
 .filters a:hover { color: var(--ink); }
 .filters a[aria-current="true"] { color: var(--ink); box-shadow: inset 0 -2px 0 var(--accent); }
 .entry .kind { display: block; font-size: 13px; font-weight: 600; color: var(--accent); margin-top: 2px; }
-.hero { display: grid; grid-template-columns: minmax(0, 1fr) 260px; gap: 56px; align-items: start; padding-block: 72px 48px; }
-.hero .about-text { display: grid; gap: 14px; margin-top: 32px; max-width: 40em; }
-.hero .about-text p { color: var(--band-muted); font-size: 18px; line-height: 1.65; }
-.hero .about-text p:first-child { color: var(--band-ink); font-size: clamp(20px, 2.2vw, 23px); line-height: 1.5; }
-.hero .about-text a { color: var(--band-ink); }
-.hero .hero-links { font-family: var(--ui); font-size: 15px; color: var(--band-muted); margin-top: 24px; }
-.hero .hero-links a { color: var(--band-ink); }
+.hero { display: grid; grid-template-columns: minmax(0, 1fr); gap: 48px; align-items: end; padding-block: 72px 40px; }
 .hero > * { min-width: 0; }
 .hero h1 { font-size: clamp(48px, 8vw, 92px); font-weight: 500; letter-spacing: -0.025em; line-height: 0.98; }
 .hero h1 i { color: var(--accent); font-weight: 400; }
@@ -186,7 +180,7 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
 @media (max-width: 760px) {
   body { font-size: 18px; }
   .hero { grid-template-columns: 1fr; gap: 28px; padding-block: 48px 24px; }
-  .hero .photo { max-width: 150px; grid-row: 1; }
+  .hero .photo { max-width: 140px; grid-row: 1; }
   .feature { grid-template-columns: 1fr; gap: 20px; }
   .themes { grid-template-columns: 1fr; gap: 20px; }
   .entry { grid-template-columns: 1fr; }
@@ -227,7 +221,7 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
           </div></span>
         </span>
         <a href="#markets" data-nav="markets">Markets</a>
-        <a href="#home" data-nav="home">About</a>
+        <a href="#about" data-nav="about">About</a>
         <a href="#resume" data-nav="resume">Resume</a>
         <a href="#contact" data-nav="contact">Contact</a>
       </nav>
@@ -235,10 +229,9 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
     <div class="hero" id="hero">
       <div>
         <h1 id="home-headline"></h1>
-        <div class="about-text" id="about-body"></div>
-        <p class="hero-links"><a href="#resume">Resume</a> · <a href="#contact">Get in touch</a></p>
+        <p class="intro" id="home-intro"></p>
+        <p><span id="home-more"></span> <a href="#about">More about me</a></p>
       </div>
-      <div class="photo" id="about-photo" role="img" aria-label="Photo of Bryan Lim">[Photo]</div>
     </div>
   </div>
 </header>
@@ -300,6 +293,17 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
     <p class="mk-meta" id="markets-note"></p>
   </div>
 
+  <!-- ABOUT -->
+  <div class="view" data-view="about" hidden>
+    <div class="about-grid">
+      <div class="stack col">
+        <h1 class="page-title">About</h1>
+        <div class="stack" id="about-body"></div>
+        <p class="small"><a href="#resume">Resume</a> · <a href="#contact">Contact</a></p>
+      </div>
+      <div class="photo-light" id="about-photo" role="img" aria-label="Photo">[Photo]</div>
+    </div>
+  </div>
 
   <!-- RESUME -->
   <div class="view col" data-view="resume" hidden>
@@ -354,7 +358,7 @@ function entryHTML(a, showKind) {
 function photoHTML(src, alt) { return src && safeUrl(src) ? `<img src="${esc(src)}" alt="${esc(alt)}">` : "[Photo]"; }
 
 // Where each homepage box links: chosen in the editor ("Links to"), or guessed from its title.
-const THEME_LINKS = { "Opinion": "#writing-opinion", "Analysis": "#writing-analysis", "Research": "#writing-research", "All writing": "#writing", "Markets": "#markets", "About": "#home", "Resume": "#resume", "Contact": "#contact" };
+const THEME_LINKS = { "Opinion": "#writing-opinion", "Analysis": "#writing-analysis", "Research": "#writing-research", "All writing": "#writing", "Markets": "#markets", "About": "#about", "Resume": "#resume", "Contact": "#contact" };
 function themeLink(t) {
   if (t.link === "No link") return "";
   if (THEME_LINKS[t.link]) return THEME_LINKS[t.link];
@@ -367,8 +371,8 @@ function themeLink(t) {
 }
 function renderHome(h) {
   $("home-headline").innerHTML = esc(h.headline).replace(/ &amp; /g, " <i>&amp;</i> ");
-  $("about-photo").innerHTML = photoHTML(h.photo, "Bryan Lim");
-  $("about-body").innerHTML = paras(h.about);
+  $("home-intro").textContent = h.intro || "";
+  $("home-more").textContent = h.intro_more || "";
   $("themes-title").textContent = h.themes_title || "What I write about";
   $("home-themes").innerHTML = (h.themes || []).map(t => {
     const href = themeLink(t);
@@ -395,6 +399,10 @@ function paras(t) {
     if (hd && lines.length === 1) return `<h${hd[1].length + 1}>${inline(hd[2])}</h${hd[1].length + 1}>`;
     return `<p>${lines.map(inline).join("<br>")}</p>`;
   }).join("");
+}
+function renderAbout(a) {
+  $("about-photo").innerHTML = photoHTML(a.photo, "Bryan Lim");
+  $("about-body").innerHTML = paras(a.about);
 }
 function renderContact(c) {
   $("contact-intro").textContent = c.intro || "";
@@ -579,6 +587,7 @@ Promise.allSettled([
   getJSON("content/home.json").then(renderHome),
   getJSON("content/articles.json").then(renderArticles),
   getJSON("content/markets-page.json").then(renderMarketsText),
+  getJSON("content/about.json").then(renderAbout),
   getJSON("content/contact.json").then(renderContact),
   getJSON("content/resume.json").then(renderResume),
 ]).then(route);
