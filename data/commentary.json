@@ -1,26 +1,22 @@
 {
-  "date": "2026-11-25",
-  "headline": "Oil climbs on a Houthi refinery claim, while the Dow shakes off a 1,000-point drop",
+  "date": "2026-11-27",
+  "headline": "Chip stocks lead a Black Friday rally, capping Wall Street's best week in more than a year",
   "paragraphs": [
-    "Oil rose on Wednesday after Yemen's Houthis said they had struck Ras Tanura, Saudi Arabia's largest refinery. Saudi officials said air defences shot down four drones over the site and did not say the refinery was hit. Even so, the claim was enough to put some risk premium back into prices. US crude (WTI) settled almost 3% higher at about US$84.30 a barrel, and Brent traded above US$93 during the session. Short covering before the holiday and uncertainty ahead of Sunday's OPEC+ meeting added to the move.",
-    "Wall Street had a wild session. Hotter-than-expected inflation data, with core PCE at 3.3%, came alongside new 20% tariff plans and another chip sell-off. Together they sent the Dow down more than 1,000 points early on. It recovered to close 0.3% higher at 50,183. The S&P 500 slipped 0.25% and the Nasdaq fell 0.6%, as Nvidia dropped almost 4%. US markets are closed on Thursday for Thanksgiving."
+    "Oil had a choppy, thinly traded session on Friday. Prices rose in Asian hours after a reported Houthi attack on Saudi Arabia's Jazan refinery, which added to worries after this week's strike on Ras Tanura, but much of that rise faded by the close. Brent's January contract ended at about US$95.40, up roughly 0.9% from Wednesday and about 3% on the week, its first weekly gain this month. WTI slipped to around US$83. Attention now turns to Sunday's OPEC+ meeting, where the group is expected to keep January quotas unchanged.",
+    "US stocks rallied in a shortened post-Thanksgiving session as chipmakers bounced back. The Philadelphia Semiconductor index rose nearly 5% and Micron gained more than 7% as worries over AI profitability eased. The Nasdaq jumped 2.3%, the S&P 500 rose 1.6% to 7,297 and the Dow added 1.2% to 50,775. All three gained more than 5% over the week, which AP called the market's best week in more than a year."
   ],
   "sources": [
     {
-      "title": "Reuters via RTÉ: Oil up over 1% as Houthis say they attacked Saudi plant",
-      "url": "https://www.rte.ie/news/business/2026/1125/1600623-world-oil-prices/"
+      "title": "The National: Oil set to post weekly gain as Middle East attacks stoke supply concerns",
+      "url": "https://www.thenationalnews.com/business/energy/2026/11/27/oil-set-to-post-weekly-gain-as-middle-east-attacks-stoke-supply-concerns/"
     },
     {
-      "title": "OilPrice: Oil jumps as Saudi Arabia downs drones over Ras Tanura",
-      "url": "https://oilprice.com/Latest-Energy-News/World-News/Oil-Jumps-Over-2-as-Saudi-Arabia-Downs-Drones-Over-Ras-Tanura.html"
+      "title": "Yahoo Finance: Stocks close holiday week with gains",
+      "url": "https://finance.yahoo.com/markets/live/stock-market-today-firday-november-27-dow-sp-500-nasdaq-black-friday-holiday-091152065.html"
     },
     {
-      "title": "Yahoo Finance: Dow erases losses to end positive",
-      "url": "https://finance.yahoo.com/markets/live/stock-market-today-wednesday-november-25-dow-sp-500-nasdaq-pce-inflation-data-091428237.html"
-    },
-    {
-      "title": "ABC News: Stocks close mixed after Wall Street erases sharp decline",
-      "url": "https://abcnews.com/Business/stocks-tumble-tech-sell-off-resumes-nvidia-falls/story?id=138442070"
+      "title": "AP: How major US stock indexes fared Friday",
+      "url": "https://finance.yahoo.com/markets/world-indices/articles/major-us-stock-indexes-fared-184551517.html"
     }
   ]
 }
