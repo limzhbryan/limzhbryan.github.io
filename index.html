@@ -420,7 +420,7 @@ details.more[open] .more-rows { display: none; }
             <h2 class="sec">Freight</h2>
             <div class="comm-grid" id="comm-freight"></div>
           </section>
-          <section class="stack"><h2 class="sec">Macro Context</h2><p class="muted col">The dollar, rates and equities, only as far as they move commodities</p><div id="b-macro"></div></section>
+          <section class="stack"><h2 class="sec">Macro Context</h2><p class="muted col">The dollar, interest rates, equities and currencies</p><div id="b-macro"></div></section>
         </div>
       </details>
       <p class="mk-meta" id="comm-meta"></p>
@@ -435,7 +435,7 @@ details.more[open] .more-rows { display: none; }
     <div class="mk-panel stack" data-panel="macro" hidden style="gap:56px">
     <section class="stack" id="mk-heat">
       <h2 class="sec">Macro Heat Map</h2>
-      <p class="muted col" id="heat-intro">The latest economic news from the economies that drive commodity demand and supply, shaded from negative (red) to positive (green). Hover over or tap a country to read the headline</p>
+      <p class="muted col" id="heat-intro">The latest economic news from major economies, shaded from negative (red) to positive (green). Hover over or tap a country to read the headline</p>
       <div class="heat-wrap">
         <svg id="heat-map" role="img" aria-label="World map shaded by macro news sentiment"></svg>
         <div class="heat-tip" id="heat-tip" hidden></div>
@@ -802,7 +802,7 @@ function renderCommodities(cm) {
   };
   $("comm-spreads").innerHTML = cm.items.filter(c => !c.proxy).map(cardHtml).join("");
   $("comm-freight").innerHTML = cm.items.filter(c => c.proxy).map(cardHtml).join("");
-  $("comm-meta").textContent = "Spreads and freight: Yahoo Finance futures and ETF prices, refreshed hourly on weekdays. Not covered: " + (cm.not_covered || []).join("; ");
+  $("comm-meta").textContent = "Spreads and freight: Yahoo Finance futures and ETF prices, refreshed hourly on weekdays";
 }
 async function loadInventory() {
   try {

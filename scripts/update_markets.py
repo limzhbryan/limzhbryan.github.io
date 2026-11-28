@@ -286,7 +286,7 @@ def build_commodities(series_rows, today):
         r = get(sym)
         rows = [(d, v) for d, v in r if d >= year_ago]
         c = card(cid, name, desc, "US$ per share", 2, rows, 0.5, 5000,
-                 {"proxy": True, "note": "An ETF proxy, as the Baltic indices are not freely available"})
+                 {"proxy": True, "note": "Tracks freight rate futures through an exchange-traded fund"})
         if c:
             c["change_1d"] = pct(rows[-1][1], rows[-2]) if len(rows) > 1 else None
             m = value_on_or_before(rows, rows[-1][0] - timedelta(days=31))
