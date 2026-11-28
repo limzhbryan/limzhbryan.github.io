@@ -13,6 +13,7 @@ import urllib.parse
 import urllib.request
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 SERIES = [
     # group, FRED id, name, unit, decimals, frequency
@@ -84,13 +85,18 @@ def fetch_yahoo(symbol, range_="3y"):
     with urllib.request.urlopen(req, timeout=30) as r:
         res = json.load(r)["chart"]["result"][0]
     YAHOO_TIME[symbol] = res["meta"].get("regularMarketTime")
-    offset = res["meta"].get("gmtoffset", 0)
+    # Date each bar in the exchange's own time zone, allowing for daylight saving. Using
+    # today's fixed gmtoffset dated futures bars a day early during US summer time.
+    try:
+        tz = ZoneInfo(res["meta"]["exchangeTimezoneName"])
+    except Exception:
+        tz = timezone(timedelta(seconds=res["meta"].get("gmtoffset", 0)))
     closes = res["indicators"]["quote"][0]["close"]
     rows = {}
     for ts, v in zip(res["timestamp"], closes):
         if v is None:
             continue
-        rows[datetime.fromtimestamp(ts + offset, timezone.utc).date()] = float(v)
+        rows[datetime.fromtimestamp(ts, tz).date()] = float(v)
     return sorted(rows.items())
 
 
@@ -106,7 +112,7 @@ def contract_symbols(root, today, n=4):
 
 
 def front_contract(cont_symbol, cont_rows, today):
-    """Use the nearest live contract for recent prices. Returns (rows, symbol, day_change)."""
+    """Use the nearest live contract for recent prices. Returns (rows, symbol, day_change, contract_rows)."""
     root = FUTURES_ROOT[cont_symbol]
     last_day = cont_rows[-1][0]
     for sym in contract_symbols(root, today):
@@ -128,8 +134,8 @@ def front_contract(cont_symbol, cont_rows, today):
         spliced = [(d, v) for d, v in cont_rows if d <= match] + [(d, v) for d, v in rows if d > match]
         day = round((rows[-1][1] / rows[-2][1] - 1) * 100, 2) if rows[-2][1] else None
         print(f"  front contract {sym}: {rows[-1][0]} {rows[-1][1]:.2f} (prev {rows[-2][1]:.2f}, continuous {cont_rows[-1][1]:.2f}, joined after {match})")
-        return spliced, sym, day
-    return cont_rows, None, None
+        return spliced, sym, day, rows
+    return cont_rows, None, None, None
 
 
 # ---------- Accuracy checks ----------
@@ -365,7 +371,7 @@ def main():
     today = datetime.now(timezone.utc).date()
     start = (today - timedelta(days=3 * 365)).isoformat()
     out = {"updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "source": "Yahoo Finance; FRED, Federal Reserve Bank of St. Louis", "series": []}
-    day_change, series_rows = {}, {}
+    day_change, series_rows, contract_rows = {}, {}, {}
     for group, sid, name, unit, decimals, freq in SERIES:
         rows, src, checks, as_of = [], "FRED", [], None
         try:
@@ -379,7 +385,9 @@ def main():
                 contract, day = None, None
                 if YAHOO[sid] in FUTURES_ROOT and len(y) >= 2:
                     try:
-                        y, contract, day = front_contract(YAHOO[sid], y, today)
+                        y, contract, day, crow = front_contract(YAHOO[sid], y, today)
+                        if crow:
+                            contract_rows[sid] = crow
                     except Exception as e:
                         print(f"  front contract failed for {sid}: {type(e).__name__}: {e}")
                 gap = agreement(y, fred_rows) if sid in AGREE_TOL and fred_rows else None
@@ -416,6 +424,12 @@ def main():
             checks.append(f"No new data since {last_d}")
         back = timedelta(days=31) if freq == "daily" else timedelta(days=95)
         prior = value_on_or_before(rows, last_d - back)
+        # For futures, measure the 1-month change on the same live contract, so that a roll
+        # from one contract month to the next is not counted as a price move.
+        crow = contract_rows.get(sid)
+        short_change = pct(last_v, prior)
+        if crow and crow[0][0] <= last_d - back and crow[-1][0] == last_d:
+            short_change = pct(crow[-1][1], value_on_or_before(crow, last_d - back))
         ytd_base = value_on_or_before(rows, date(last_d.year - 1, 12, 31))
         yoy = value_on_or_before(rows, last_d - timedelta(days=365))
         history_start = last_d - timedelta(days=365 if freq == "daily" else 730)
@@ -425,7 +439,7 @@ def main():
             "latest": last_v, "date": last_d.isoformat(), "as_of": as_of, "source": src,
             "stale": stale, "checks": checks,
             "change_1d": day_change.get(sid, pct(last_v, rows[-2])),
-            "change_short": pct(last_v, prior), "change_short_label": "1M" if freq == "daily" else "3M",
+            "change_short": short_change, "change_short_label": "1M" if freq == "daily" else "3M",
             "change_ytd": pct(last_v, ytd_base), "change_1y": pct(last_v, yoy),
             "history": history,
         })
