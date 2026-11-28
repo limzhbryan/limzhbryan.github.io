@@ -241,6 +241,20 @@ details.more[open] .more-rows { display: none; }
 .mk-strip .strip-risk { font-family: var(--ui); font-size: 14px; white-space: nowrap; }
 .mk-strip .strip-risk b { color: var(--st, var(--ink)); }
 .mk-strip .strip-head { flex: 1 1 320px; font-style: italic; }
+.kd-list { display: grid; border-top: 1px solid var(--rule); }
+.kd-row { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 6px 24px; padding: 14px 0; border-bottom: 1px solid var(--rule); }
+.kd-when { font-family: var(--ui); font-variant-numeric: tabular-nums; }
+.kd-cd { display: block; font-size: 17px; font-weight: 600; color: var(--accent); }
+.kd-date { display: block; font-size: 13px; color: var(--muted); margin-top: 2px; }
+.kd-what h3 { font-size: 19px; line-height: 1.3; }
+.kd-what p { font-size: 16px; color: var(--muted); line-height: 1.45; margin-top: 2px; }
+.kd-what .kd-note { display: block; font-family: var(--ui); font-size: 12.5px; color: var(--muted); margin-top: 4px; }
+@media (max-width: 560px) { .kd-row { grid-template-columns: 1fr; gap: 4px; } .kd-cd { display: inline; font-size: 15px; } .kd-date { display: inline; margin-left: 8px; } }
+.hs-dates { display: flex; flex-wrap: wrap; gap: 4px 22px; font-family: var(--ui); font-size: 14px; font-variant-numeric: tabular-nums; }
+.hs-dates .hs-label { color: var(--muted); }
+.hs-dates a { color: var(--ink); text-decoration: none; }
+.hs-dates a:hover { color: var(--accent); }
+.hs-dates em { font-style: normal; font-weight: 600; color: var(--accent); }
 .mk-strip .hs-label { font-family: var(--ui); font-size: 14px; font-style: normal; }
 #heat-map { width: 100%; height: auto; display: block; }
 #heat-map path { stroke: var(--bg); stroke-width: 0.5; vector-effect: non-scaling-stroke; }
@@ -360,6 +374,7 @@ details.more[open] .more-rows { display: none; }
         <a href="#commodities" class="strip-risk" id="hs-curve" hidden></a>
         <a href="#commodities" class="strip-head" id="hs-head" hidden></a>
       </div>
+      <div class="hs-dates" id="hs-dates" hidden></div>
       <p class="mk-meta">Updated automatically each morning from the <a href="#commodities">Commodities &amp; Macro</a> page</p>
     </section>
   </div>
@@ -418,6 +433,12 @@ details.more[open] .more-rows { display: none; }
         <h2 class="sec">Spreads and Curves</h2>
         <p class="muted col">The spreads that oil, refining and LNG desks watch every day</p>
         <div class="comm-grid" id="comm-spreads"><p class="muted small">Loading…</p></div>
+      </section>
+      <section class="stack" id="key-dates" hidden>
+        <h2 class="sec">Key Dates Ahead</h2>
+        <p class="muted col">The scheduled releases and meetings most likely to move commodities over the coming weeks</p>
+        <div class="kd-list" id="kd-list"></div>
+        <p class="mk-meta" id="kd-meta"></p>
       </section>
       <details class="more" id="more">
         <summary><span class="more-label">Metals, Freight and Macro Context</span><span class="more-rows" id="more-rows"></span><span class="more-btn">Show more</span></summary>
@@ -925,6 +946,59 @@ function homeStrip(id, html, label) {
   el.hidden = false; $("home-markets").hidden = false;
   return el;
 }
+// Key Dates Ahead: events in data/calendar.json, refreshed by the daily run from official calendars.
+// "at" is an exact UTC time; "date" is a day with no confirmed time (counted in Singapore time).
+let CAL = [];
+const SGT_DAY = new Intl.DateTimeFormat("en-CA", { timeZone: "Asia/Singapore" });
+const SGT_DATE = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Singapore", weekday: "short", day: "numeric", month: "short" });
+const SGT_TIME = new Intl.DateTimeFormat("en-GB", { timeZone: "Asia/Singapore", hour: "numeric", minute: "2-digit", hour12: true });
+const evStart = e => new Date(e.at || e.date + "T00:00:00+08:00");
+const evEnd = e => e.at ? new Date(e.at) : new Date(e.date + "T23:59:59+08:00");
+function countdown(e, now) {
+  if (!e.at) {
+    const today = new Date(SGT_DAY.format(now) + "T00:00:00+08:00");
+    const n = Math.round((evStart(e) - today) / 864e5);
+    if (e.by) return n <= 0 ? "Due today" : `Within ${n} days`;
+    return n <= 0 ? "Today" : n === 1 ? "Tomorrow" : `In ${n} days`;
+  }
+  const ms = evStart(e) - now;
+  if (ms <= 0) return "Now";
+  const d = Math.floor(ms / 864e5), h = Math.floor(ms % 864e5 / 36e5), m = Math.floor(ms % 36e5 / 6e4);
+  return d >= 1 ? `In ${d}d ${h}h` : h >= 1 ? `In ${h}h ${m}m` : `In ${m}m`;
+}
+function whenText(e) {
+  const d = evStart(e);
+  return e.at ? `${SGT_DATE.format(d)}, ${SGT_TIME.format(d).replace(/\s/g, "").toUpperCase().replace(/(AM|PM)$/, " $1")} SGT` : `${e.by ? "No later than " : ""}${SGT_DATE.format(d)}`;
+}
+function upcoming(max) {
+  const now = new Date(), seen = new Set();
+  return CAL.filter(e => evEnd(e) > now).sort((a, b) => evStart(a) - evStart(b))
+    .filter(e => !seen.has(e.series) && seen.add(e.series)).slice(0, max);
+}
+function renderCalendar() {
+  const now = new Date(), main = upcoming(9), home = upcoming(3);
+  if (main.length) {
+    $("kd-list").innerHTML = main.map(e => `<div class="kd-row"><div class="kd-when"><span class="kd-cd">${esc(countdown(e, now))}</span><span class="kd-date">${esc(whenText(e))}</span></div>
+      <div class="kd-what"><h3>${esc(e.title)}</h3><p>${esc(e.why)}</p><span class="kd-note">${e.note ? esc(e.note) + " · " : ""}${safeUrl(e.url) ? `<a href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.source)}</a>` : esc(e.source || "")}</span></div></div>`).join("");
+    $("key-dates").hidden = false;
+  }
+  if (home.length) {
+    $("hs-dates").innerHTML = `<span class="hs-label">Coming Up:</span>` + home.map(e => `<a href="#commodities">${esc(e.title)} <em>${esc(countdown(e, now).replace(/^\w/, c => c.toLowerCase()))}</em></a>`).join("");
+    $("hs-dates").hidden = false; $("home-markets").hidden = false;
+  }
+}
+async function loadCalendar() {
+  try {
+    const r = await fetch("data/calendar.json", { cache: "no-cache" });
+    if (!r.ok) return;
+    const d = await r.json();
+    CAL = (d.events || []).filter(e => e && e.title && (e.at || e.date));
+    $("kd-meta").textContent = `Times are in Singapore time (SGT). Dates come from each organiser's official calendar and are checked every morning${d.updated ? ", last on " + fmtDate(d.updated) : ""}. Recurring releases show only the next one`;
+    renderCalendar();
+    setInterval(renderCalendar, 60000);
+  } catch (e) { /* the box stays hidden */ }
+}
+loadCalendar();
 async function loadMarkets() {
   const upd = document.getElementById("mk-updated");
   try {

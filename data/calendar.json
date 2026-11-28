@@ -1,0 +1,194 @@
+{
+ "updated": "2026-11-28",
+ "events": [
+  {
+   "series": "opec",
+   "title": "OPEC+ Meeting",
+   "why": "Seven key OPEC+ producers decide how much oil to pump in the coming months, which sets the tone for crude supply",
+   "source": "OPEC",
+   "url": "https://www.opec.org/pr-detail/2033620-1-november-2026.html",
+   "date": "2026-11-29"
+  },
+  {
+   "series": "eia",
+   "title": "US Weekly Oil Stocks",
+   "why": "Shows whether US crude, petrol and diesel stocks built or drew last week, which often moves oil prices on the day",
+   "source": "EIA",
+   "url": "https://www.eia.gov/petroleum/supply/weekly/schedule.php",
+   "at": "2026-12-02T15:30:00Z"
+  },
+  {
+   "series": "cncpi",
+   "title": "China Inflation (CPI and PPI)",
+   "why": "Factory-gate and consumer prices give a read on demand in the world's largest commodity buyer",
+   "source": "National Bureau of Statistics of China",
+   "url": "https://www.stats.gov.cn/english/PressRelease/ReleaseCalendar/202512/t20251226_1962154.html",
+   "at": "2026-12-09T01:30:00Z"
+  },
+  {
+   "series": "eia",
+   "title": "US Weekly Oil Stocks",
+   "why": "Shows whether US crude, petrol and diesel stocks built or drew last week, which often moves oil prices on the day",
+   "source": "EIA",
+   "url": "https://www.eia.gov/petroleum/supply/weekly/schedule.php",
+   "at": "2026-12-09T15:30:00Z"
+  },
+  {
+   "series": "fomc",
+   "title": "US Federal Reserve Decision",
+   "why": "US interest rates move the dollar, and a stronger dollar usually weighs on commodity prices",
+   "source": "Federal Reserve",
+   "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+   "at": "2026-12-09T19:00:00Z",
+   "note": "Two-day meeting, 8–9 Dec (US time)"
+  },
+  {
+   "series": "uscpi",
+   "title": "US Inflation (CPI)",
+   "why": "Inflation shapes where US rates go next, which feeds into the dollar and fuel demand",
+   "source": "US Bureau of Labor Statistics",
+   "url": "https://www.bls.gov/schedule/news_release/cpi.htm",
+   "at": "2026-12-10T13:30:00Z",
+   "note": "November data"
+  },
+  {
+   "series": "cnact",
+   "title": "China Industrial Output and Activity",
+   "why": "Factory output and investment show how much steel, copper and energy China is likely to need",
+   "source": "National Bureau of Statistics of China",
+   "url": "https://www.stats.gov.cn/english/PressRelease/ReleaseCalendar/202512/t20251226_1962154.html",
+   "at": "2026-12-15T02:00:00Z",
+   "note": "November data"
+  },
+  {
+   "series": "eia",
+   "title": "US Weekly Oil Stocks",
+   "why": "Shows whether US crude, petrol and diesel stocks built or drew last week, which often moves oil prices on the day",
+   "source": "EIA",
+   "url": "https://www.eia.gov/petroleum/supply/weekly/schedule.php",
+   "at": "2026-12-16T15:30:00Z"
+  },
+  {
+   "series": "ecb",
+   "title": "European Central Bank Decision",
+   "why": "Sets euro-area interest rates, which moves the euro against the dollar and European demand",
+   "source": "European Central Bank",
+   "url": "https://www.ecb.europa.eu/press/calendars/mgcgc/html/index.en.html",
+   "date": "2026-12-17",
+   "note": "Two-day meeting, 16–17 Dec, followed by a press conference"
+  },
+  {
+   "series": "boj",
+   "title": "Bank of Japan Decision",
+   "why": "Moves the yen, and Japan is one of the largest buyers of LNG and crude",
+   "source": "Bank of Japan",
+   "url": "https://www.boj.or.jp/en/mopo/mpmsche_minu/index.htm",
+   "date": "2026-12-18",
+   "note": "Two-day meeting, 17–18 Dec"
+  },
+  {
+   "series": "sgcpi",
+   "title": "Singapore Inflation (CPI)",
+   "why": "Shows how prices, including transport and energy costs, are moving in Singapore",
+   "source": "Monetary Authority of Singapore",
+   "url": "https://www.mas.gov.sg/monetary-policy/advance-release-calendar",
+   "date": "2026-12-23",
+   "note": "November data"
+  },
+  {
+   "series": "eia",
+   "title": "US Weekly Oil Stocks",
+   "why": "Shows whether US crude, petrol and diesel stocks built or drew last week, which often moves oil prices on the day",
+   "source": "EIA",
+   "url": "https://www.eia.gov/petroleum/supply/weekly/schedule.php",
+   "at": "2026-12-23T15:30:00Z"
+  },
+  {
+   "series": "eia",
+   "title": "US Weekly Oil Stocks",
+   "why": "Shows whether US crude, petrol and diesel stocks built or drew last week, which often moves oil prices on the day",
+   "source": "EIA",
+   "url": "https://www.eia.gov/petroleum/supply/weekly/schedule.php",
+   "at": "2026-12-30T15:30:00Z"
+  },
+  {
+   "series": "cnpmi",
+   "title": "China Factory PMI",
+   "why": "The earliest monthly signal of whether China's factories are growing or shrinking",
+   "source": "National Bureau of Statistics of China",
+   "url": "https://www.stats.gov.cn/english/PressRelease/ReleaseCalendar/202512/t20251226_1962154.html",
+   "at": "2026-12-31T01:30:00Z",
+   "note": "December data"
+  },
+  {
+   "series": "eia",
+   "title": "US Weekly Oil Stocks",
+   "why": "Shows whether US crude, petrol and diesel stocks built or drew last week, which often moves oil prices on the day",
+   "source": "EIA",
+   "url": "https://www.eia.gov/petroleum/supply/weekly/schedule.php",
+   "at": "2027-01-06T15:30:00Z"
+  },
+  {
+   "series": "uscpi",
+   "title": "US Inflation (CPI)",
+   "why": "Inflation shapes where US rates go next, which feeds into the dollar and fuel demand",
+   "source": "US Bureau of Labor Statistics",
+   "url": "https://www.bls.gov/schedule/news_release/cpi.htm",
+   "at": "2027-01-13T13:30:00Z",
+   "note": "December data"
+  },
+  {
+   "series": "eia",
+   "title": "US Weekly Oil Stocks",
+   "why": "Shows whether US crude, petrol and diesel stocks built or drew last week, which often moves oil prices on the day",
+   "source": "EIA",
+   "url": "https://www.eia.gov/petroleum/supply/weekly/schedule.php",
+   "at": "2027-01-13T15:30:00Z"
+  },
+  {
+   "series": "eia",
+   "title": "US Weekly Oil Stocks",
+   "why": "Shows whether US crude, petrol and diesel stocks built or drew last week, which often moves oil prices on the day",
+   "source": "EIA",
+   "url": "https://www.eia.gov/petroleum/supply/weekly/schedule.php",
+   "at": "2027-01-21T17:00:00Z",
+   "note": "Delayed a day for Martin Luther King Jr. Day"
+  },
+  {
+   "series": "boj",
+   "title": "Bank of Japan Decision",
+   "why": "Moves the yen, and Japan is one of the largest buyers of LNG and crude",
+   "source": "Bank of Japan",
+   "url": "https://www.boj.or.jp/en/mopo/mpmsche_minu/index.htm",
+   "date": "2027-01-22",
+   "note": "Two-day meeting, 21–22 Jan, with the quarterly Outlook Report"
+  },
+  {
+   "series": "fomc",
+   "title": "US Federal Reserve Decision",
+   "why": "US interest rates move the dollar, and a stronger dollar usually weighs on commodity prices",
+   "source": "Federal Reserve",
+   "url": "https://www.federalreserve.gov/monetarypolicy/fomccalendars.htm",
+   "date": "2027-01-27",
+   "note": "Two-day meeting, 26–27 Jan (US time)"
+  },
+  {
+   "series": "eia",
+   "title": "US Weekly Oil Stocks",
+   "why": "Shows whether US crude, petrol and diesel stocks built or drew last week, which often moves oil prices on the day",
+   "source": "EIA",
+   "url": "https://www.eia.gov/petroleum/supply/weekly/schedule.php",
+   "at": "2027-01-27T15:30:00Z"
+  },
+  {
+   "series": "mas",
+   "title": "MAS Monetary Policy Statement",
+   "why": "Sets the path of the Singapore dollar, which affects what Singapore pays for imported energy",
+   "source": "Monetary Authority of Singapore",
+   "url": "https://www.mas.gov.sg/monetary-policy/advance-release-calendar",
+   "date": "2027-01-29",
+   "by": true,
+   "note": "Published no later than 29 Jan"
+  }
+ ]
+}
