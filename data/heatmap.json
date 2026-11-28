@@ -1,124 +1,239 @@
 {
-  "updated": "2026-11-28",
-  "countries": [
+ "updated": "2026-11-28",
+ "countries": [
+  {
+   "id": "840",
+   "name": "United States",
+   "items": [
     {
-      "id": "840",
-      "name": "United States",
-      "score": 0.1,
-      "headline": "Q3 growth was revised up to 4.3%, and stocks rebounded as worries over AI profitability eased",
-      "source": "Yahoo Finance",
-      "url": "https://finance.yahoo.com/markets/live/stock-market-today-firday-november-27-dow-sp-500-nasdaq-black-friday-holiday-091152065.html",
-      "date": "2026-11-27"
-    },
-    {
-      "id": "156",
-      "name": "China",
-      "score": -0.3,
-      "headline": "The factory slump likely extended into November, even as exports held up",
-      "source": "Reuters via Investing.com",
-      "url": "https://www.investing.com/news/economic-indicators/chinas-factory-slump-likely-extends-to-november-despite-solid-exports-5053040",
-      "date": "2026-11-27"
-    },
-    {
-      "id": "392",
-      "name": "Japan",
-      "score": -0.1,
-      "headline": "Tokyo core inflation rose to 2.9% in November from 2.6% in October, keeping pressure on the BOJ",
-      "source": "The Japan Times",
-      "url": "https://www.japantimes.co.jp/business/2026/11/27/economy/tokyo-inflation-november/",
-      "date": "2026-11-27"
-    },
-    {
-      "id": "276",
-      "name": "Germany",
-      "score": 0.3,
-      "headline": "The Bundesbank expects growth to pick up in the fourth quarter",
-      "source": "Deutsche Bundesbank",
-      "url": "https://www.bundesbank.de/en/tasks/topics/moderate-growth-for-the-german-economy-1016734",
-      "date": "2026-11-19"
-    },
-    {
-      "id": "250",
-      "name": "France",
-      "score": -0.6,
-      "headline": "GDP shrank 0.1% in the third quarter, raising the risk of recession",
-      "source": "INSEE",
-      "url": "https://www.insee.fr/en/statistiques/9113712",
-      "date": "2026-10-30"
-    },
-    {
-      "id": "356",
-      "name": "India",
-      "score": 0.6,
-      "headline": "Economists expect Q2 FY27 growth to stay above 7% despite headwinds",
-      "source": "Business Today",
-      "url": "https://www.businesstoday.in/latest/economy/story/indias-gdp-growth-likely-to-stay-above-7-in-q2fy27-despite-headwinds-569788-2026-11-27",
-      "date": "2026-11-27"
-    },
-    {
-      "id": "702",
-      "name": "Singapore",
-      "score": 0.8,
-      "headline": "The 2026 growth forecast was raised to around 6% after the economy grew 6.1% in the third quarter",
-      "source": "Ministry of Energy, Trade and Industry",
-      "url": "https://www.meti.gov.sg/newsroom/meti-upgrades-gdp-growth-forecast-for-2026-to--around-6-0-per-cent--and-forecasts-gdp-growth-of--2-5-to-4-5-per-cent--for-2027/",
-      "date": "2026-11-24",
-      "lon": 103.82,
-      "lat": 1.35
-    },
-    {
-      "id": "410",
-      "name": "South Korea",
-      "score": 0.4,
-      "headline": "The Bank of Korea raised rates to 3.25% and lifted growth forecasts as chip exports boom",
-      "source": "Al Jazeera",
-      "url": "https://www.aljazeera.com/economy/2026/11/26/south-koreas-central-bank-hikes-interest-rates-raises-gdp-growth-forecast",
-      "date": "2026-11-26"
-    },
-    {
-      "id": "036",
-      "name": "Australia",
-      "score": -0.4,
-      "headline": "Core inflation accelerated even after RBA rate hikes took rates to an 18-year high",
-      "source": "Reuters via The Star",
-      "url": "https://www.thestar.com.my/business/business-news/2026/11/26/australias-core-inflation-accelerates-after-rba-rate-hikes",
-      "date": "2026-11-26"
-    },
-    {
-      "id": "076",
-      "name": "Brazil",
-      "score": 0.2,
-      "headline": "Mid-November inflation eased and came in below expectations, with the Selic held at 13.75%",
-      "source": "Reuters via WHTC",
-      "url": "https://whtc.com/2026/11/26/brazil-mid-november-inflation-eases-comes-in-below-expectations/",
-      "date": "2026-11-26"
-    },
-    {
-      "id": "364",
-      "name": "Iran",
-      "score": -0.9,
-      "headline": "The rial fell to a fresh record low after new US sanctions",
-      "source": "A News",
-      "url": "https://www.anews.com.tr/world/2026/11/24/iranian-rial-hits-record-low-after-fresh-us-sanctions-target-financial-network",
-      "date": "2026-11-24"
-    },
-    {
-      "id": "682",
-      "name": "Saudi Arabia",
-      "score": -0.5,
-      "headline": "Houthi attacks on the Ras Tanura and Jazan refineries raised supply worries",
-      "source": "The National",
-      "url": "https://www.thenationalnews.com/business/energy/2026/11/27/oil-set-to-post-weekly-gain-as-middle-east-attacks-stoke-supply-concerns/",
-      "date": "2026-11-27"
-    },
-    {
-      "id": "360",
-      "name": "Indonesia",
-      "score": -0.4,
-      "headline": "Bank Indonesia raised rates by 0.25 points to 6.00% to steady the rupiah amid global uncertainty",
-      "source": "Bank Indonesia",
-      "url": "https://www.bi.go.id/en/publikasi/ruang-media/news-release/Pages/sp_2825426.aspx",
-      "date": "2026-11-18"
+     "headline": "Q3 growth was revised up to a 4.3% annual rate from the 3.4% first estimate, led by software investment",
+     "score": 0.6,
+     "source": "US Bureau of Economic Analysis",
+     "url": "https://www.bea.gov/news/2026/gdp-second-estimate-and-corporate-profits-3rd-quarter-2026",
+     "date": "2026-11-25"
     }
-  ]
+   ]
+  },
+  {
+   "id": "156",
+   "name": "China",
+   "items": [
+    {
+     "headline": "The factory slump likely extended into November, even as exports held up",
+     "score": -0.3,
+     "source": "Reuters via Investing.com",
+     "url": "https://www.investing.com/news/economic-indicators/chinas-factory-slump-likely-extends-to-november-despite-solid-exports-5053040",
+     "date": "2026-11-27"
+    },
+    {
+     "headline": "October retail sales grew just 0.4% and fixed-asset investment fell 8.1% in the first ten months, though industrial output rose 4.8%",
+     "score": -0.4,
+     "source": "National Bureau of Statistics of China",
+     "url": "https://www.stats.gov.cn/english/PressRelease//202611/t20261116_1965843.html",
+     "date": "2026-11-16"
+    }
+   ]
+  },
+  {
+   "id": "392",
+   "name": "Japan",
+   "items": [
+    {
+     "headline": "Tokyo core inflation rose to 2.9% in November from 2.6% in October, keeping pressure on the BOJ",
+     "score": -0.1,
+     "source": "The Japan Times",
+     "url": "https://www.japantimes.co.jp/business/2026/11/27/economy/tokyo-inflation-november/",
+     "date": "2026-11-27"
+    },
+    {
+     "headline": "The economy unexpectedly shrank an annualised 0.1% in Q3 as high living costs hit consumption and energy imports rose",
+     "score": -0.4,
+     "source": "Reuters via The Star",
+     "url": "https://www.thestar.com.my/business/business-news/2026/11/16/japan039s-economy-unexpectedly-shrinks-in-july-september-as-consumption-falters",
+     "date": "2026-11-16"
+    }
+   ]
+  },
+  {
+   "id": "276",
+   "name": "Germany",
+   "items": [
+    {
+     "headline": "Q3 growth was revised down to 0.1% as exports fell 1.0% and equipment investment dropped 3.5%",
+     "score": -0.3,
+     "source": "Destatis",
+     "url": "https://www.destatis.de/EN/Press/2026/11/PE26_409_811.html",
+     "date": "2026-11-25"
+    },
+    {
+     "headline": "The Bundesbank expects growth to pick up in the fourth quarter",
+     "score": 0.3,
+     "source": "Deutsche Bundesbank",
+     "url": "https://www.bundesbank.de/en/tasks/topics/moderate-growth-for-the-german-economy-1016734",
+     "date": "2026-11-19"
+    }
+   ]
+  },
+  {
+   "id": "250",
+   "name": "France",
+   "items": [
+    {
+     "headline": "Q3 GDP contraction was revised to 0.2% as exports and construction investment weakened",
+     "score": -0.4,
+     "source": "INSEE",
+     "url": "https://www.insee.fr/en/statistiques/9167414",
+     "date": "2026-11-27"
+    },
+    {
+     "headline": "Inflation is estimated to have eased to 2.9% in November from 3.4% as petroleum product prices fell sharply",
+     "score": 0.2,
+     "source": "INSEE",
+     "url": "https://www.insee.fr/en/statistiques/9162928",
+     "date": "2026-11-27"
+    }
+   ]
+  },
+  {
+   "id": "356",
+   "name": "India",
+   "items": [
+    {
+     "headline": "Economists expect Q2 FY27 growth to stay above 7% despite headwinds",
+     "score": 0.6,
+     "source": "Business Today",
+     "url": "https://www.businesstoday.in/latest/economy/story/indias-gdp-growth-likely-to-stay-above-7-in-q2fy27-despite-headwinds-569788-2026-11-27",
+     "date": "2026-11-27"
+    }
+   ]
+  },
+  {
+   "id": "702",
+   "name": "Singapore",
+   "items": [
+    {
+     "headline": "Q3 growth came in at 6.1% and the 2026 forecast was raised to around 6%, with 2027 growth seen at 2.5% to 4.5%",
+     "score": 0.7,
+     "source": "Singapore Department of Statistics",
+     "url": "https://www.singstat.gov.sg/news/performance-of-singapore-economy-3q2026",
+     "date": "2026-11-24"
+    }
+   ],
+   "lon": 103.82,
+   "lat": 1.35
+  },
+  {
+   "id": "410",
+   "name": "South Korea",
+   "items": [
+    {
+     "headline": "The Bank of Korea raised rates to 3.25% and lifted growth forecasts as chip exports boom",
+     "score": 0.4,
+     "source": "Al Jazeera",
+     "url": "https://www.aljazeera.com/economy/2026/11/26/south-koreas-central-bank-hikes-interest-rates-raises-gdp-growth-forecast",
+     "date": "2026-11-26"
+    },
+    {
+     "headline": "Annual exports topped $1 trillion for the first time as chip exports reached 2.9 times last year's level",
+     "score": 0.8,
+     "source": "Kyunghyang Shinmun",
+     "url": "https://www.khan.co.kr/en/article/202611191434007",
+     "date": "2026-11-19"
+    }
+   ]
+  },
+  {
+   "id": "036",
+   "name": "Australia",
+   "items": [
+    {
+     "headline": "Annual inflation jumped to 4.9% in October and trimmed mean rose to 3.8%, driven by fuel up 32.5% and electricity up 25.2%",
+     "score": -0.4,
+     "source": "Australian Bureau of Statistics",
+     "url": "https://www.abs.gov.au/statistics/economy/price-indexes-and-inflation/consumer-price-index-australia/oct-2026",
+     "date": "2026-11-25"
+    }
+   ]
+  },
+  {
+   "id": "076",
+   "name": "Brazil",
+   "items": [
+    {
+     "headline": "Mid-November inflation eased and came in below expectations, with the Selic held at 13.75%",
+     "score": 0.2,
+     "source": "Reuters via WHTC",
+     "url": "https://whtc.com/2026/11/26/brazil-mid-november-inflation-eases-comes-in-below-expectations/",
+     "date": "2026-11-26"
+    }
+   ]
+  },
+  {
+   "id": "364",
+   "name": "Iran",
+   "items": [
+    {
+     "headline": "The rial fell to a fresh record low after new US sanctions",
+     "score": -0.9,
+     "source": "A News",
+     "url": "https://www.anews.com.tr/world/2026/11/24/iranian-rial-hits-record-low-after-fresh-us-sanctions-target-financial-network",
+     "date": "2026-11-24"
+    },
+    {
+     "headline": "Iran has loaded no oil onto tankers since 25 August under the US blockade, with inflation near 89%",
+     "score": -0.9,
+     "source": "Al Jazeera",
+     "url": "https://www.aljazeera.com/economy/2026/11/11/can-tehran-survive-a-zero-oil-budget-if-us-blockade-on-iran-persists",
+     "date": "2026-11-11",
+     "keep": true
+    }
+   ]
+  },
+  {
+   "id": "682",
+   "name": "Saudi Arabia",
+   "items": [
+    {
+     "headline": "Houthi attacks on the Ras Tanura and Jazan refineries raised supply worries",
+     "score": -0.5,
+     "source": "The National",
+     "url": "https://www.thenationalnews.com/business/energy/2026/11/27/oil-set-to-post-weekly-gain-as-middle-east-attacks-stoke-supply-concerns/",
+     "date": "2026-11-27"
+    },
+    {
+     "headline": "Missiles and drones aimed at Riyadh and the oil-rich Eastern Province were intercepted as Houthi strikes on energy sites escalate",
+     "score": -0.4,
+     "source": "Reuters via bdnews24",
+     "url": "https://bdnews24.com/world/middle-east/pn9mrbg0ac",
+     "date": "2026-11-15"
+    }
+   ]
+  },
+  {
+   "id": "360",
+   "name": "Indonesia",
+   "items": [
+    {
+     "headline": "Bank Indonesia raised its policy rate 25bp to 6.00% to support the rupiah, which was at 18,245 per dollar",
+     "score": -0.3,
+     "source": "Bank Indonesia",
+     "url": "https://www.bi.go.id/en/iru/highlight-news/Pages/BI-Rate-Raised-25-bps-to-6.00-percent-Strengthening-Stability,-Supporting-Economic-Growth.aspx",
+     "date": "2026-11-18"
+    }
+   ]
+  },
+  {
+   "id": "826",
+   "name": "United Kingdom",
+   "items": [
+    {
+     "headline": "Inflation edged up to 3.6% in October as diesel hit a record high, with energy bills forecast to rise 26% in January",
+     "score": -0.4,
+     "source": "ITV News",
+     "url": "https://www.itv.com/news/2026-11-18/uk-inflation-rises-to-36-and-britain-faces-another-squeeze-on-living-standard",
+     "date": "2026-11-18"
+    }
+   ]
+  }
+ ]
 }
