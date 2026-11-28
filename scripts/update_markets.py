@@ -39,7 +39,7 @@ SERIES = [
 YAHOO = {
     "DCOILBRENTEU": "BZ=F", "DCOILWTICO": "CL=F", "DHHNGSP": "NG=F",
     "SP500": "^GSPC", "DJIA": "^DJI", "NASDAQCOM": "^IXIC", "NIKKEI225": "^N225", "VIXCLS": "^VIX",
-    "DEXSIUS": "SGD=X", "DEXCHUS": "CNY=X", "DEXUSEU": "EURUSD=X",
+    "DEXSIUS": "SGD=X", "DEXCHUS": "CNY=X", "DEXUSEU": "EURUSD=X", "DGS10": "^TNX",
     "JKM": "JKM=F", "TTF": "TTF=F", "RBOB": "RB=F", "HEATOIL": "HO=F",
 }
 # Series with no FRED equivalent: Yahoo futures only (still range-checked, stale-checked and time-stamped).
@@ -162,7 +162,7 @@ MAX_MOVE = {"Energy": 15, "Stock markets": 10, "FX & rates": 4}
 MAX_MOVE_ID = {"VIXCLS": 80, "DHHNGSP": 25, "DGS10": 15, "JKM": 25, "TTF": 25}
 # How closely Yahoo must agree with FRED on the same dates (median gap, %). Oil and gas are
 # skipped because FRED publishes spot prices while Yahoo gives futures.
-AGREE_TOL = {"SP500": 0.5, "DJIA": 0.5, "NASDAQCOM": 0.5, "NIKKEI225": 1.0, "VIXCLS": 4.0, "DEXSIUS": 0.6, "DEXCHUS": 0.6, "DEXUSEU": 0.6}
+AGREE_TOL = {"SP500": 0.5, "DJIA": 0.5, "NASDAQCOM": 0.5, "NIKKEI225": 1.0, "VIXCLS": 4.0, "DEXSIUS": 0.6, "DEXCHUS": 0.6, "DEXUSEU": 0.6, "DGS10": 1.5}
 
 
 def agreement(yrows, frows):
@@ -487,6 +487,10 @@ def main():
         except Exception as e:
             print(f"risk {sid} failed: {type(e).__name__}")
             continue
+        # Use the price board's fresher VIX so the two tabs never show different readings.
+        board = series_rows.get(sid)
+        if board and board[-1][0] > rows[-1][0]:
+            rows = [r for r in rows if r[0] < board[0][0]] + list(board)
         if len(rows) < 30:
             continue
         last_d, last_v = rows[-1]
