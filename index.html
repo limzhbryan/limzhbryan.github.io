@@ -242,6 +242,12 @@ details.more[open] .more-rows { display: none; }
 .mk-strip .strip-risk { font-family: var(--ui); font-size: 14px; white-space: nowrap; }
 .mk-strip .strip-risk b { color: var(--st, var(--ink)); }
 .mk-strip .strip-head { flex: 1 1 320px; font-style: italic; }
+.search-box input { width: 100%; max-width: 420px; font-family: var(--ui); font-size: 16px; color: var(--ink); background: var(--bg); border: 1px solid var(--rule); border-radius: 4px; padding: 9px 12px; }
+.search-box input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+.pager { display: flex; flex-wrap: wrap; gap: 8px 18px; align-items: center; font-family: var(--ui); font-size: 15px; margin-top: 8px; }
+.pager button { font: inherit; color: var(--link); background: none; border: 0; padding: 4px 0; cursor: pointer; }
+.pager button:hover { color: var(--accent); }
+.pager [aria-current] { font-weight: 600; color: var(--ink); border-bottom: 2px solid var(--accent); padding: 4px 0; }
 .kd-list { display: grid; border-top: 1px solid var(--rule); }
 .kd-row { display: grid; grid-template-columns: 190px minmax(0, 1fr); gap: 6px 24px; padding: 14px 0; border-bottom: 1px solid var(--rule); }
 .kd-when { font-family: var(--ui); font-variant-numeric: tabular-nums; }
@@ -393,7 +399,9 @@ details.more[open] .more-rows { display: none; }
         <a href="#writing-analysis" data-filter="analysis">Analysis</a>
         <a href="#writing-research" data-filter="research">Research</a>
       </div>
+      <div class="search-box"><input type="search" id="writing-search" placeholder="Search Writing" aria-label="Search Writing" autocomplete="off"></div>
       <div class="list" data-posts="all"></div>
+      <nav class="pager" id="writing-pager" aria-label="Writing pages" hidden></nav>
     </section>
   </div>
 
@@ -625,10 +633,25 @@ function renderArticles(d) {
   renderWriting(WRITING_FILTER);
 }
 let WRITING_FILTER = "all";
-function renderWriting(filter) {
+// Writing list pages: 10 pieces per page. The page links only appear once a list has more than 10.
+const PER_PAGE = 10;
+// Search covers the title, summary, type, outlet, "why it matters" and the full article text.
+let WRITING_QUERY = "";
+const searchText = a => (a._search ||= [a.title, a.summary, kindOf(a), a.venue, a.why_it_matters, String(a.body || "").replace(/<[^>]+>/g, " ")].join(" ").toLowerCase());
+function renderWriting(filter, page = 1) {
   WRITING_FILTER = filter;
-  const items = ARTICLES.filter(a => filter === "all" || kindOf(a).toLowerCase() === filter);
-  document.querySelector('[data-posts="all"]').innerHTML = items.length ? items.map(a => entryHTML(a, true)).join("") : `<p class="muted small">Nothing here yet</p>`;
+  const words = WRITING_QUERY.toLowerCase().split(/\s+/).filter(Boolean);
+  const items = ARTICLES.filter(a => (filter === "all" || kindOf(a).toLowerCase() === filter) && words.every(w => searchText(a).includes(w)));
+  const pages = Math.max(1, Math.ceil(items.length / PER_PAGE));
+  page = Math.min(Math.max(1, page), pages);
+  const shown = items.slice((page - 1) * PER_PAGE, page * PER_PAGE);
+  document.querySelector('[data-posts="all"]').innerHTML = shown.length ? shown.map(a => entryHTML(a, true)).join("") : `<p class="muted small">${words.length ? `No pieces match “${esc(WRITING_QUERY.trim())}”` : "Nothing here yet"}</p>`;
+  const pager = $("writing-pager");
+  pager.hidden = pages < 2;
+  pager.innerHTML = pages < 2 ? "" :
+    (page > 1 ? `<button type="button" data-page="${page - 1}">← Previous</button>` : "") +
+    Array.from({ length: pages }, (_, i) => i + 1).map(n => n === page ? `<span aria-current="page">Page ${n}</span>` : `<button type="button" data-page="${n}">Page ${n}</button>`).join("") +
+    (page < pages ? `<button type="button" data-page="${page + 1}">Next →</button>` : "");
   document.querySelectorAll("[data-filter]").forEach(x => x.setAttribute("aria-current", x.dataset.filter === filter ? "true" : "false"));
   document.querySelectorAll("[data-sub]").forEach(x => { if (x.dataset.sub === filter) x.setAttribute("aria-current", "page"); else x.removeAttribute("aria-current"); });
 }
@@ -1070,6 +1093,13 @@ function route() {
   window.scrollTo(0, 0);
 }
 window.addEventListener("hashchange", route);
+$("writing-search").addEventListener("input", ev => { WRITING_QUERY = ev.target.value; renderWriting(WRITING_FILTER, 1); });
+$("writing-pager").addEventListener("click", ev => {
+  const b = ev.target.closest("[data-page]");
+  if (!b) return;
+  renderWriting(WRITING_FILTER, +b.dataset.page);
+  document.querySelector('[data-view="writing"]').scrollIntoView({ block: "start" });
+});
 $("year").textContent = new Date().getFullYear();
 
 Promise.allSettled([
