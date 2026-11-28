@@ -272,6 +272,47 @@ def build_commodities(series_rows, today):
     return {"items": out, "not_covered": ["Brent–Dubai spread (no free data source)", "Baltic Dry and tanker indices (licensed; ETF proxies shown instead)"]}
 
 
+EIA_ROWS = {  # table4.csv row label -> (id, display name)
+    "Commercial (Excluding SPR)": ("crude", "US commercial crude"),
+    "Cushing": ("cushing", "Cushing, Oklahoma"),
+    "SPR": ("spr", "Strategic Petroleum Reserve"),
+    "Total Motor Gasoline": ("gasoline", "Gasoline"),
+    "Distillate Fuel Oil": ("distillate", "Distillates (diesel, heating oil)"),
+    "Kerosene-Type Jet Fuel": ("jet", "Jet fuel"),
+}
+
+
+def eia_weekly():
+    """US weekly stocks straight from the EIA Weekly Petroleum Status Report tables (public CSV)."""
+    import csv, io
+    def table(n):
+        req = urllib.request.Request(f"https://ir.eia.gov/wpsr/table{n}.csv", headers={"User-Agent": "Mozilla/5.0"})
+        with urllib.request.urlopen(req, timeout=40) as r:
+            return list(csv.reader(io.StringIO(r.read().decode("latin1"))))
+    num = lambda x: float(x.replace(",", ""))
+    t4 = table(4)
+    head = t4[0]
+    week = datetime.strptime(head[1], "%m/%d/%y").date().isoformat()
+    prev = datetime.strptime(head[2], "%m/%d/%y").date().isoformat()
+    items = []
+    for row in t4[1:]:
+        key = row[0].strip()
+        if key in EIA_ROWS and not any(i["id"] == EIA_ROWS[key][0] for i in items):
+            iid, name = EIA_ROWS[key]
+            items.append({"id": iid, "name": name, "level": num(row[1]), "prior": num(row[2]),
+                          "change": num(row[3]), "year_ago": num(row[4]), "yoy_pct": num(row[5])})
+    util = None
+    for row in table(9):
+        if len(row) > 4 and row[1].strip() == "Percent Utilization":
+            util = {"level": num(row[2]), "prior": num(row[3]), "year_ago": num(row[4])}
+            break
+    if len(items) < 5:
+        raise ValueError(f"only {len(items)} EIA rows parsed")
+    return {"week_ending": week, "prior_week": prev, "unit": "million barrels", "items": items,
+            "refinery_utilization": util, "source": "EIA Weekly Petroleum Status Report",
+            "url": "https://www.eia.gov/petroleum/supply/weekly/"}
+
+
 def main():
     key = os.environ.get("FRED_API_KEY", "").strip()
     if not key:
@@ -348,6 +389,11 @@ def main():
         out["commodities"] = build_commodities(series_rows, today)
     except Exception as e:
         print(f"commodities failed: {type(e).__name__}: {e}")
+    try:
+        out["eia_weekly"] = eia_weekly()
+        print("ok EIA weekly stocks, week ending", out["eia_weekly"]["week_ending"])
+    except Exception as e:
+        print(f"EIA weekly failed: {type(e).__name__}: {e}")
     out["risk"] = []
     rstart = (today - timedelta(days=10 * 365)).isoformat()
     for sid, name, desc, unit, dec, kind, amber, red in RISK:
