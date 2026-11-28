@@ -348,6 +348,8 @@ def eia_weekly():
             a = None
         if a is not None:
             target = util if it["id"] == "util" else it
+            if it["id"] != "util":
+                a = a / 1000  # history is in thousand barrels; table4 is in million barrels
             target["avg_5y"] = round(a, 3 if it["id"] != "util" else 1)
             if it["id"] != "util":
                 target["vs_avg_pct"] = round((it["level"] / a - 1) * 100, 1)
