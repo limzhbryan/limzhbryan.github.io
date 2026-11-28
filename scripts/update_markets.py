@@ -76,10 +76,14 @@ def fetch(series_id, start, key):
     return rows
 
 
+YAHOO_TIME = {}   # symbol -> time of Yahoo's latest quote (unix seconds)
+
+
 def fetch_yahoo(symbol, range_="3y"):
     req = urllib.request.Request(YAHOO_URL.format(sym=urllib.parse.quote(symbol), range=range_), headers={"User-Agent": "Mozilla/5.0"})
     with urllib.request.urlopen(req, timeout=30) as r:
         res = json.load(r)["chart"]["result"][0]
+    YAHOO_TIME[symbol] = res["meta"].get("regularMarketTime")
     offset = res["meta"].get("gmtoffset", 0)
     closes = res["indicators"]["quote"][0]["close"]
     rows = {}
@@ -128,6 +132,34 @@ def front_contract(cont_symbol, cont_rows, today):
     return cont_rows, None, None
 
 
+# ---------- Accuracy checks ----------
+# Largest believable one-day move by group (%); bigger moves are held back as likely bad data.
+MAX_MOVE = {"Energy": 15, "Stock markets": 10, "FX & rates": 4}
+MAX_MOVE_ID = {"VIXCLS": 80, "DHHNGSP": 25, "DGS10": 15}
+# How closely Yahoo must agree with FRED on the same dates (median gap, %). Oil and gas are
+# skipped because FRED publishes spot prices while Yahoo gives futures.
+AGREE_TOL = {"SP500": 0.5, "DJIA": 0.5, "NASDAQCOM": 0.5, "NIKKEI225": 1.0, "VIXCLS": 4.0, "DEXSIUS": 0.6, "DEXCHUS": 0.6}
+
+
+def agreement(yrows, frows):
+    """Median absolute % gap between Yahoo and FRED over their last 10 shared dates."""
+    f = dict(frows)
+    gaps = [abs(v / f[d] - 1) * 100 for d, v in yrows if d in f and f[d]][-10:]
+    if len(gaps) < 3:
+        return None
+    gaps.sort()
+    return gaps[len(gaps) // 2]
+
+
+def business_days_between(a, b):
+    n, d = 0, a
+    while d < b:
+        d += timedelta(days=1)
+        if d.weekday() < 5:
+            n += 1
+    return n
+
+
 def value_on_or_before(rows, target):
     best = None
     for d, v in rows:
@@ -153,11 +185,12 @@ def main():
     out = {"updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "source": "Yahoo Finance; FRED, Federal Reserve Bank of St. Louis", "series": []}
     day_change = {}
     for group, sid, name, unit, decimals, freq in SERIES:
-        rows, src = [], "FRED"
+        rows, src, checks, as_of = [], "FRED", [], None
         try:
             rows = fetch(sid, start, key)
         except Exception as e:
             print(f"FRED failed for {sid}: {type(e).__name__}")
+        fred_rows = rows
         if sid in YAHOO:
             try:
                 y = fetch_yahoo(YAHOO[sid])
@@ -167,16 +200,37 @@ def main():
                         y, contract, day = front_contract(YAHOO[sid], y, today)
                     except Exception as e:
                         print(f"  front contract failed for {sid}: {type(e).__name__}: {e}")
-                if len(y) >= 2 and (not rows or y[-1][0] >= rows[-1][0]):
+                gap = agreement(y, fred_rows) if sid in AGREE_TOL and fred_rows else None
+                if gap is not None and gap > AGREE_TOL[sid]:
+                    checks.append(f"Yahoo and FRED differed by {gap:.2f}%, so FRED is shown")
+                    print(f"  CHECK {sid}: Yahoo vs FRED gap {gap:.2f}% > {AGREE_TOL[sid]}%, using FRED")
+                elif len(y) >= 2 and (not rows or y[-1][0] >= rows[-1][0]):
                     rows, src = y, "Yahoo Finance" + (f" ({contract})" if contract else "")
+                    t = YAHOO_TIME.get(contract or YAHOO[sid])
+                    if t and datetime.fromtimestamp(t, timezone.utc).date() >= y[-1][0] - timedelta(days=1):
+                        as_of = datetime.fromtimestamp(t, timezone.utc).strftime("%Y-%m-%dT%H:%MZ")
                     if day is not None:
                         day_change[sid] = day
+                    if gap is not None:
+                        print(f"  {sid}: Yahoo agrees with FRED (median gap {gap:.2f}%)")
             except Exception as e:
                 print(f"Yahoo failed for {sid}: {type(e).__name__}")
         if len(rows) < 2:
             print(f"skip {sid}: not enough data")
             continue
+        # Hold back an implausible latest move rather than publish it.
+        limit = MAX_MOVE_ID.get(sid, MAX_MOVE.get(group, 15))
+        move = day_change.get(sid, pct(rows[-1][1], rows[-2]))
+        if move is not None and abs(move) > limit and len(rows) > 2:
+            checks.append(f"A {move:+.1f}% move on {rows[-1][0]} failed the range check and was held back")
+            print(f"  CHECK {sid}: {move:+.1f}% move held back")
+            rows = rows[:-1]
+            day_change.pop(sid, None)
+            as_of = None
         last_d, last_v = rows[-1]
+        stale = business_days_between(last_d, today) > (4 if freq == "daily" else 45)
+        if stale:
+            checks.append(f"No new data since {last_d}")
         back = timedelta(days=31) if freq == "daily" else timedelta(days=95)
         prior = value_on_or_before(rows, last_d - back)
         ytd_base = value_on_or_before(rows, date(last_d.year - 1, 12, 31))
@@ -185,13 +239,14 @@ def main():
         history = [[d.isoformat(), round(v, decimals + 2)] for d, v in rows if d >= history_start]
         out["series"].append({
             "group": group, "id": sid, "name": name, "unit": unit, "decimals": decimals, "frequency": freq,
-            "latest": last_v, "date": last_d.isoformat(), "source": src,
+            "latest": last_v, "date": last_d.isoformat(), "as_of": as_of, "source": src,
+            "stale": stale, "checks": checks,
             "change_1d": day_change.get(sid, pct(last_v, rows[-2])),
             "change_short": pct(last_v, prior), "change_short_label": "1M" if freq == "daily" else "3M",
             "change_ytd": pct(last_v, ytd_base), "change_1y": pct(last_v, yoy),
             "history": history,
         })
-        print(f"ok {sid} ({src}): {last_d} {last_v}")
+        print(f"ok {sid} ({src}): {last_d} {last_v}" + (f" as of {as_of}" if as_of else "") + (f" [{'; '.join(checks)}]" if checks else ""))
     out["risk"] = []
     rstart = (today - timedelta(days=10 * 365)).isoformat()
     for sid, name, desc, unit, dec, kind, amber, red in RISK:

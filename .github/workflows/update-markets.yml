@@ -2,7 +2,8 @@ name: Update market data
 
 on:
   schedule:
-    - cron: "30 22 * * *"   # 06:30 Singapore time, every day
+    - cron: "30 22 * * *"   # 06:30 Singapore time, every day (after the US close)
+    - cron: "41 0-21 * * 1-5"   # hourly on weekdays while Asian, European and US markets trade
   workflow_dispatch:
   push:
     branches: [market-insights]
