@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 760 430" font-family="Georgia, 'Times New Roman', serif" font-size="13" role="img" aria-label="Without Indonesian gas, LNG needs nearly fill the terminal in 2029">
+<rect width="760" height="430" rx="8" fill="#FBFBFA"/>
+<text x="20" y="34" font-size="19" font-weight="600" fill="#18202B">Without Indonesian gas, LNG needs nearly fill the terminal in 2029</text>
+<text x="20" y="58" fill="#646B74">LNG Singapore needs for its own use, by scenario, against terminal room left after reloads and ship fuel</text>
+<text x="20" y="76" fill="#646B74">Million tonnes a year</text>
+<line x1="56" x2="580" y1="370.0" y2="370.0" stroke="#E2E4E7"/><text x="46" y="374.0" text-anchor="end" fill="#646B74">0</text>
+<line x1="56" x2="580" y1="301.5" y2="301.5" stroke="#E2E4E7"/><text x="46" y="305.5" text-anchor="end" fill="#646B74">4</text>
+<line x1="56" x2="580" y1="233.0" y2="233.0" stroke="#E2E4E7"/><text x="46" y="237.0" text-anchor="end" fill="#646B74">8</text>
+<line x1="56" x2="580" y1="164.5" y2="164.5" stroke="#E2E4E7"/><text x="46" y="168.5" text-anchor="end" fill="#646B74">12</text>
+<line x1="56" x2="580" y1="96.0" y2="96.0" stroke="#E2E4E7"/><text x="46" y="100.0" text-anchor="end" fill="#646B74">16</text>
+<text x="56.0" y="392" text-anchor="middle" fill="#646B74">2025</text>
+<text x="160.8" y="392" text-anchor="middle" fill="#646B74">2026</text>
+<text x="265.6" y="392" text-anchor="middle" fill="#646B74">2027</text>
+<text x="370.4" y="392" text-anchor="middle" fill="#646B74">2028</text>
+<text x="475.20000000000005" y="392" text-anchor="middle" fill="#646B74">2029</text>
+<text x="580.0" y="392" text-anchor="middle" fill="#646B74">2030</text>
+<line x1="422.79999999999995" x2="422.79999999999995" y1="100" y2="370" stroke="#7A7F86" stroke-dasharray="2 3"/><text x="416.79999999999995" y="108" text-anchor="end" fill="#646B74">Indonesian contracts end, late 2028</text>
+<polyline points="56.0,198.75 160.8,202.17499999999998 265.6,205.6 370.4,209.025 475.20000000000005,212.45000000000002 580.0,147.375" fill="none" stroke="#7A7F86" stroke-width="2" stroke-dasharray="6 4"/>
+<text x="416.79999999999995" y="197.025" text-anchor="end" fill="#646B74">Terminal room: 9.2 in 2029</text>
+<text x="590.0" y="151.375" fill="#646B74">Terminal room 13</text>
+<polyline points="56.0,279.58 160.8,278.72375 265.6,278.03875 370.4,277.35375 475.20000000000005,276.84 580.0,276.32625" fill="none" stroke="#9AA1AA" stroke-opacity="1" stroke-width="2"/>
+<circle cx="56.0" cy="279.58" r="3" fill="#9AA1AA" fill-opacity="1"/>
+<circle cx="160.8" cy="278.72375" r="3" fill="#9AA1AA" fill-opacity="1"/>
+<circle cx="265.6" cy="278.03875" r="3" fill="#9AA1AA" fill-opacity="1"/>
+<circle cx="370.4" cy="277.35375" r="3" fill="#9AA1AA" fill-opacity="1"/>
+<circle cx="475.20000000000005" cy="276.84" r="3" fill="#9AA1AA" fill-opacity="1"/>
+<circle cx="580.0" cy="276.32625" r="3" fill="#9AA1AA" fill-opacity="1"/>
+<text x="590.0" y="280.32625" fill="#646B74">Base 5.5</text>
+<polyline points="56.0,273.24375 160.8,268.10625 265.6,263.14 370.4,258.51625 475.20000000000005,254.06375000000003 580.0,249.78250000000003" fill="none" stroke="#C9CDD2" stroke-opacity="1" stroke-width="2"/>
+<circle cx="56.0" cy="273.24375" r="3" fill="#C9CDD2" fill-opacity="1"/>
+<circle cx="160.8" cy="268.10625" r="3" fill="#C9CDD2" fill-opacity="1"/>
+<circle cx="265.6" cy="263.14" r="3" fill="#C9CDD2" fill-opacity="1"/>
+<circle cx="370.4" cy="258.51625" r="3" fill="#C9CDD2" fill-opacity="1"/>
+<circle cx="475.20000000000005" cy="254.06375000000003" r="3" fill="#C9CDD2" fill-opacity="1"/>
+<circle cx="580.0" cy="249.78250000000003" r="3" fill="#C9CDD2" fill-opacity="1"/>
+<text x="590.0" y="253.78250000000003" fill="#646B74">Data-centre boom 7.0</text>
+<polyline points="56.0,273.24375 160.8,268.10625 265.6,263.14 370.4,258.51625 475.20000000000005,204.74375 580.0,200.4625" fill="none" stroke="#1E3D63" stroke-opacity="0.45" stroke-width="2"/>
+<circle cx="56.0" cy="273.24375" r="3" fill="#1E3D63" fill-opacity="0.45"/>
+<circle cx="160.8" cy="268.10625" r="3" fill="#1E3D63" fill-opacity="0.45"/>
+<circle cx="265.6" cy="263.14" r="3" fill="#1E3D63" fill-opacity="0.45"/>
+<circle cx="370.4" cy="258.51625" r="3" fill="#1E3D63" fill-opacity="0.45"/>
+<circle cx="475.20000000000005" cy="204.74375" r="3" fill="#1E3D63" fill-opacity="0.45"/>
+<circle cx="580.0" cy="200.4625" r="3" fill="#1E3D63" fill-opacity="0.45"/>
+<text x="590.0" y="204.4625" fill="#646B74">Combined 9.9</text>
+<polyline points="56.0,279.58 160.8,278.72375 265.6,278.03875 370.4,277.35375 475.20000000000005,227.51999999999998 580.0,227.00625" fill="none" stroke="#1E3D63" stroke-opacity="1" stroke-width="3.5"/>
+<circle cx="56.0" cy="279.58" r="3" fill="#1E3D63" fill-opacity="1"/>
+<circle cx="160.8" cy="278.72375" r="3" fill="#1E3D63" fill-opacity="1"/>
+<circle cx="265.6" cy="278.03875" r="3" fill="#1E3D63" fill-opacity="1"/>
+<circle cx="370.4" cy="277.35375" r="3" fill="#1E3D63" fill-opacity="1"/>
+<circle cx="475.20000000000005" cy="227.51999999999998" r="3" fill="#1E3D63" fill-opacity="1"/>
+<circle cx="580.0" cy="227.00625" r="3" fill="#1E3D63" fill-opacity="1"/>
+<text x="590.0" y="231.00625" fill="#18202B" font-weight="600">Indonesia exit 8.3</text>
+</svg>
