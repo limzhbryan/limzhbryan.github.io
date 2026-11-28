@@ -846,7 +846,7 @@ function renderTicker(data) {
   const track = $("tk-track");
   track.innerHTML = `<span class="tk-set">${items}</span><span class="tk-set tk-dup" aria-hidden="true">${items}</span>`;   // doubled so the scroll loops seamlessly
   track.style.setProperty("--tk-dur", Math.max(40, data.series.length * 5) + "s");
-  $("tk-note").textContent = "Same prices as the board below, refreshed hourly on weekdays. Each price is the latest available at the time shown on the board";
+  $("tk-note").innerHTML = 'Same prices as the board below, refreshed hourly on weekdays. For live quotes, see <a href="https://www.tradingview.com/markets/" target="_blank" rel="noopener">TradingView ↗</a> (external site; its prices can differ slightly from the board, for example where it shows CFDs rather than futures)';
   $("mk-ticker").hidden = false;
 }
 async function loadMarkets() {
