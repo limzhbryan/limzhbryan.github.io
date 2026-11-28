@@ -151,7 +151,7 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
 /* Commodities & Macro: my take */
 .my-take { padding: 20px 24px; background: color-mix(in srgb, var(--ink) 4%, var(--bg)); border-left: 3px solid var(--accent); display: grid; gap: 12px; }
 .my-take .sec { margin: 0; }
-.my-take p { font-size: 18px; line-height: 1.65; }
+.my-take p { font-size: 18px; line-height: 1.65; max-width: 80ch; }
 .my-take p.mk-meta { font-size: 13px; line-height: 1.5; }
 .my-take h3 { font-size: clamp(22px, 2.6vw, 28px); font-weight: 500; line-height: 1.2; }
 details.more { border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 14px 0; }
@@ -424,7 +424,7 @@ details.more[open] .more-rows { display: none; }
       <a href="#key-dates" data-mtab="dates">Key Dates</a>
     </nav>
     <div class="mk-panel stack" data-panel="comm" style="gap:48px">
-      <section class="my-take col" id="my-take" hidden>
+      <section class="my-take" id="my-take" hidden>
         <h2 class="sec">Morning Brief</h2>
         <div id="my-take-body" class="stack" style="gap:12px"></div>
         <p class="mk-meta" id="my-take-meta"></p>
