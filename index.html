@@ -166,9 +166,9 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
 .mk-head { font-family: var(--ui); font-size: 12px; color: var(--muted); }
 .mk-head .mk-row { border-top: 0; padding-block: 0 6px; }
 .mk-summary { font-size: 19px; line-height: 1.65; }
-#mk-risk { --green: #3B7D52; --amber: #B7832B; --red: #B5412E; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) #mk-risk { --green: #5FA676; --amber: #D9A646; --red: #D2654F; } }
-:root[data-theme="dark"] #mk-risk { --green: #5FA676; --amber: #D9A646; --red: #D2654F; }
+[data-view="markets"] { --green: #3B7D52; --amber: #B7832B; --red: #B5412E; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) [data-view="markets"] { --green: #5FA676; --amber: #D9A646; --red: #D2654F; } }
+:root[data-theme="dark"] [data-view="markets"] { --green: #5FA676; --amber: #D9A646; --red: #D2654F; }
 .risk-head { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 20px; align-items: baseline; padding: 18px 20px; border-left: 4px solid var(--st); background: color-mix(in srgb, var(--st) 8%, var(--bg)); }
 .risk-head .lvl { font-size: clamp(26px, 3vw, 32px); font-weight: 500; color: var(--st); }
 .risk-head p { font-size: 18px; line-height: 1.55; }
@@ -185,6 +185,14 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) #mk-heat { --neg: #D2654F; --pos: #5FA676; } }
 :root[data-theme="dark"] #mk-heat { --neg: #D2654F; --pos: #5FA676; }
 .heat-wrap { position: relative; }
+.mk-tabs { font-size: 16px; gap: 28px; border-bottom: 1px solid var(--rule); margin-top: -20px; }
+.mk-tabs a { padding-bottom: 10px; }
+.mk-strip { display: flex; flex-wrap: wrap; gap: 6px 24px; align-items: baseline; padding: 12px 16px; background: color-mix(in srgb, var(--ink) 4%, var(--bg)); border-left: 3px solid var(--accent); font-size: 16px; }
+.mk-strip a { color: var(--ink); text-decoration: none; }
+.mk-strip a:hover { color: var(--accent); }
+.mk-strip .strip-risk { font-family: var(--ui); font-size: 14px; white-space: nowrap; }
+.mk-strip .strip-risk b { color: var(--st, var(--ink)); }
+.mk-strip .strip-head { flex: 1 1 320px; font-style: italic; }
 #heat-map { width: 100%; height: auto; display: block; }
 #heat-map path { stroke: var(--bg); stroke-width: 0.5; vector-effect: non-scaling-stroke; }
 #heat-map .has { cursor: pointer; }
@@ -326,11 +334,25 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
       <p id="markets-intro"></p>
       <p class="mk-meta" id="mk-updated">Loading the latest data…</p>
     </div>
+    <div class="mk-strip" id="mk-strip" hidden>
+      <a href="#risk-monitor" class="strip-risk" id="strip-risk"></a>
+      <a href="#markets" class="strip-head" id="strip-head"></a>
+    </div>
+    <nav class="filters mk-tabs" aria-label="Markets sections">
+      <a href="#markets" data-mtab="today">Today</a>
+      <a href="#macro-map" data-mtab="map">Macro map</a>
+      <a href="#risk-monitor" data-mtab="risk">Risk monitor</a>
+    </nav>
+    <div class="mk-panel stack" data-panel="today" style="gap:48px">
     <section class="stack col" id="mk-today">
       <h2 class="sec">Today in markets</h2>
       <p class="mk-summary" id="mk-summary">The daily summary appears here once the latest data has loaded</p>
       <p class="mk-meta">Written automatically each morning from the latest closing prices of oil and US stocks</p>
     </section>
+    <section class="stack" id="mk-board" aria-live="polite"></section>
+    <p class="mk-meta" id="markets-note"></p>
+    </div>
+    <div class="mk-panel" data-panel="map" hidden>
     <section class="stack" id="mk-heat">
       <h2 class="sec">Macro heat map</h2>
       <p class="muted col" id="heat-intro">The latest economic news from major economies, shaded from negative (red) to positive (green). Hover over or tap a country to read the headline</p>
@@ -342,14 +364,15 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
       <div class="heat-list" id="heat-list"></div>
       <p class="mk-meta" id="heat-meta"></p>
     </section>
+    </div>
+    <div class="mk-panel" data-panel="risk" hidden>
     <section class="stack" id="mk-risk" hidden>
       <h2 class="sec">Market risk monitor</h2>
       <div class="risk-head" id="risk-head"></div>
       <div class="risk-grid" id="risk-grid"></div>
       <p class="mk-meta">Each gauge turns amber or red when it crosses a level that has historically gone with market stress. Data: FRED, Federal Reserve Bank of St. Louis. Updated every morning</p>
     </section>
-    <section class="stack" id="mk-board" aria-live="polite"></section>
-    <p class="mk-meta" id="markets-note"></p>
+    </div>
   </div>
 
   <!-- ABOUT -->
@@ -580,6 +603,7 @@ async function loadCommentary() {
     const box = document.getElementById("mk-today");
     const esc = s => String(s).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
     const srcs = (c.sources || []).filter(s => /^https?:\/\//.test(s.url)).map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a>`).join(" · ");
+    if (c.headline) { $("strip-head").textContent = c.headline; $("mk-strip").hidden = false; }
     box.innerHTML = `<h2 class="sec">Today in markets</h2>
       ${c.headline ? `<h3 class="mk-headline">${esc(c.headline)}</h3>` : ""}
       ${c.paragraphs.map(p => `<p class="mk-summary">${esc(p)}</p>`).join("")}
@@ -677,6 +701,8 @@ function renderRisk(list) {
   text = text.charAt(0).toUpperCase() + text.slice(1);
   const head = $("risk-head"); head.style.setProperty("--st", `var(--${overall})`);
   head.innerHTML = `<span class="lvl">${word}</span><p>${esc(text)}</p>`;
+  const sr = $("strip-risk"); sr.style.setProperty("--st", `var(--${overall})`);
+  sr.innerHTML = `Risk monitor: <b>${word}</b>`; $("mk-strip").hidden = false;
   $("risk-grid").innerHTML = list.map(r => `<div class="risk-card" style="--st:var(--${r.status})">
     <h3>${esc(r.name)}</h3><span class="desc">${esc(r.desc)}</span>
     <span class="val">${riskValue(r)} <span class="st">${RISK_WORD[r.status]}</span></span>
@@ -721,6 +747,8 @@ async function loadMarkets() {
 loadMarkets();
 
 // ---------- Routing ----------
+// Markets tabs: #markets (Today), #macro-map, #risk-monitor.
+const MARKET_TABS = { "markets": "today", "macro-map": "map", "risk-monitor": "risk" };
 const views = [...document.querySelectorAll(".view")];
 const hero = $("hero");
 function route() {
@@ -728,6 +756,7 @@ function route() {
   let target = name;
   if (name.startsWith("article-")) target = renderArticle(name.slice(8)) ? "article" : "writing";
   else if (["writing-opinion", "writing-analysis", "writing-research"].includes(name)) target = "writing";
+  else if (name in MARKET_TABS) target = "markets";
   else if (!views.some(v => v.dataset.view === name)) target = "home";
   if (target !== "article") document.title = "Bryan Lim";
   views.forEach(v => { v.hidden = v.dataset.view !== target; });
@@ -736,7 +765,12 @@ function route() {
   document.querySelectorAll("[data-nav]").forEach(a => {
     if (a.dataset.nav === navKey) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
   });
-  if (target === "markets") loadHeat();
+  if (target === "markets") {
+    const tab = MARKET_TABS[name] || "today";
+    document.querySelectorAll(".mk-panel").forEach(p => { p.hidden = p.dataset.panel !== tab; });
+    document.querySelectorAll("[data-mtab]").forEach(a => a.setAttribute("aria-current", a.dataset.mtab === tab ? "true" : "false"));
+    loadHeat();
+  }
   if (target === "writing") renderWriting(name.startsWith("writing-") ? name.slice(8) : "all");
   if (document.activeElement && document.activeElement.closest(".has-sub")) document.activeElement.blur();
   window.scrollTo(0, 0);
