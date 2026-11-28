@@ -3,6 +3,7 @@
   "articles": [
     {
       "title": "Tariffs Part 2: Electric Boogaloo",
+      "status": "Published",
       "date": "2026-11-25",
       "type": "Opinion",
       "summary": "Tariffs 101 for those who do not know what it is",
@@ -11,6 +12,7 @@
     },
     {
       "title": "How Supply Shock from the Strait of Hormuz Moves into Supermarket Prices",
+      "status": "Published",
       "date": "2026-11-25",
       "type": "Opinion",
       "summary": "This piece teaches those who are unsure about how macroeconomic events can translate into daily prices, through our real life example on the Strait of Hormuz",
@@ -19,6 +21,7 @@
     },
     {
       "title": "2026 in Markets: An Oil Shock, an AI Reckoning and a Sombre Finish",
+      "status": "Published",
       "date": "2026-11-25",
       "type": "Opinion",
       "summary": "From the Iran war's oil shock to the sharp repricing of AI stocks, why markets are ending the year on edge, and what could bring relief",
@@ -27,6 +30,7 @@
     },
     {
       "title": "The Singapore Instability",
+      "status": "Published",
       "date": "2026-11-26",
       "type": "Analysis",
       "summary": "Macroeconomic concerns have caused global uncertainty. As such, what can Singaporeans expect, and how should we prepare for it?",
@@ -35,10 +39,11 @@
     },
     {
       "title": "Singapore's LNG Balance",
+      "status": "Draft",
       "date": "2026-11-26",
       "type": "Analysis",
       "featured": false,
-      "body": "About 95% of Singapore's energy mix comes from natural gas, and we import all of it (Energy Market Authority[EMA], 2026b). This year, Middle East tensions and an 18-day cut in piped gas from Indonesia have highlighted some vulnerability in our import-dependent energy mix. While Singapore has sufficient fuel stockpiles and intends to invest into energy storage capabilities (EDB, 2026), it will take sometime before we can reduce our reliance on imported gas.\n\n\n\n## Our gas usage\n\nWe need to highlight how our gas is being used. The obvious one is power, and we can use EMA's forecast of Singapore's electricity generation to have an understanding of how our power usage will grow in the coming years, and analyse whether our supply is sufficient. The EMA forecasts that Singapore's electricity generation will grow from 60.1 terawatt-hours (TWh) in 2025 to 67.6 TWh by 2030 in the base case (EMA, 2025).\n\n\n\n## Origin of imports\n\nSingapore gets its gas in two ways - pipeline or shipping of liquefied natural gas (LNG). IN 2025, 43% of our gas is supplied through pipelines from Malaysia and Indonesia, while the remaining 57% was supplied as LNG, gas chilled to a liquid state so that it can be shipped by tanker (RecordOwl, 2026). \n\nPipelines are the cheap and steady base, as infrastructure is already present, and is not vulnerable to tanker supply or freight cost volatility. LNG is however, a flexible top-up option to fill whatever gap that the pipelines are not able to supply. Hence, this analysis piece aims to look at the supply-demand balance in Singapore, as our demand for electricity increases and our attempts to reduce reliance on individual countries.\n\nWe can analyse it through the following model:\n\nLNG required = gas for power + gas for industry - pipeline gas supply\n\n\n\n## Need for diversification\n\nWhile we do have contractual agreements with our neighbours Malaysia and Indonesia, it is essential for us to understand that tensions can potentially cause issues in our power generation. In October 2026, the 18-day supply cut from Indonesia was not without reason. Since September, smoke from Indonesia’s worst forest fires in more than 10 years has drifted over its Southeast Asian contemporaries, such as Singapore, Malaysia and Timor-Leste (The Star, 2026a)."
+      "body": "About 95% of Singapore's energy mix comes from natural gas, and we import all of it (Energy Market Authority[EMA], 2026b). This year, Middle East tensions and an 18-day cut in piped gas from Indonesia have highlighted some vulnerability in our import-dependent energy mix. While Singapore has sufficient fuel stockpiles and intends to invest into energy storage capabilities (EDB, 2026), it will take sometime before we can reduce our reliance on imported gas.\n\n\n\n## Our gas usage\n\nWe need to highlight how our gas is being used. The obvious one is power, and we can use EMA's forecast of Singapore's electricity generation to have an understanding of how our power usage will grow in the coming years, and analyse whether our supply is sufficient. The EMA forecasts that Singapore's electricity generation will grow from 60.1 terawatt-hours (TWh) in 2025 to 67.6 TWh by 2030 in the base case (EMA, 2025).\n\n\n\n## Origin of imports\n\nSingapore gets its gas in two ways - pipeline or shipping of liquefied natural gas (LNG). IN 2025, 43% of our gas is supplied through pipelines from Malaysia and Indonesia, while the remaining 57% was supplied as LNG, gas chilled to a liquid state so that it can be shipped by tanker (RecordOwl, 2026). \n\nPipelines are the cheap and steady base, as infrastructure is already present, and is not vulnerable to tanker supply or freight cost volatility. LNG is however, a flexible top-up option to fill whatever gap that the pipelines are not able to supply. Hence, this analysis piece aims to look at the supply-demand balance in Singapore, as our demand for electricity increases and our attempts to reduce reliance on individual countries.\n\nWe can analyse it through the following model:\n\nLNG required = gas for power + gas for industry - pipeline gas supply\n\n\n\n## Need for diversification\n\nWhile we do have contractual agreements with our neighbours Malaysia and Indonesia, it is essential for us to understand that tensions can potentially cause issues in our power generation. In October 2026, the 18-day supply cut from Indonesia was not without reason. Since September, smoke from Indonesia’s worst forest fires in more than 10 years has drifted over its Southeast Asian contemporaries, such as Singapore, Malaysia and Timor-Leste (The Star, 2026a). Singapore's Home Affairs Minister K. Shanmugam called the haze \"entirely \"preventable\" and promised that Singapore will take legal action against the companies responsible (AFP, 2026; Tanamal & Karzai, 2026). Over in Indonesia, President Prabowo criticised countries that \"insult\" Indonesia, without naming any (AFP, 2026). Days later, Indonesia cut pipeline gas to Singapore, stating that it was to protect gas supply for its own power plants, and not linking the cut to the haze (AFP, 2026). Nonetheless, the timing was hard to miss, and Singapore Prime Minister Lawrence Wong said that contract holders should \"honour their commitments\". In response, Energy Minister Bahlil Lahadalia replied that Singapore should not lecture Indonesia, and said deliveries still met the contract minus (Tanamal & Karzai, 2026).\n\nTensions have since cooled, with the two foreign ministers meeting in Jakarta on 27 October and discussing a joint task task force on the fires, with Singapore offering to share data on companies linked to the burning (The Star, 2026a). Despite this, it shows how important it is for Singapore to look for alternative sources of supply, as we are still highly dependent on pipeline gas from two countries and any issues arising between Singapore and its supplier could put Singapore's energy supply at risk.\n\n"
     }
   ]
 }
