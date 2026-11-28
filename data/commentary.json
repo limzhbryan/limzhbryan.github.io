@@ -1,22 +1,19 @@
 {
-  "date": "2026-11-27",
-  "headline": "Chip stocks lead a Black Friday rally, capping Wall Street's best week in more than a year",
-  "paragraphs": [
-    "Oil had a choppy, thinly traded session on Friday. Prices rose in Asian hours after a reported Houthi attack on Saudi Arabia's Jazan refinery, which added to worries after this week's strike on Ras Tanura, but much of that rise faded by the close. Brent's January contract ended at about US$95.40, up roughly 0.9% from Wednesday and about 3% on the week, its first weekly gain this month. WTI slipped to around US$83. Attention now turns to Sunday's OPEC+ meeting, where the group is expected to keep January quotas unchanged.",
-    "US stocks rallied in a shortened post-Thanksgiving session as chipmakers bounced back. The Philadelphia Semiconductor index rose nearly 5% and Micron gained more than 7% as worries over AI profitability eased. The Nasdaq jumped 2.3%, the S&P 500 rose 1.6% to 7,297 and the Dow added 1.2% to 50,775. All three gained more than 5% over the week, which AP called the market's best week in more than a year."
-  ],
-  "sources": [
-    {
-      "title": "The National: Oil set to post weekly gain as Middle East attacks stoke supply concerns",
-      "url": "https://www.thenationalnews.com/business/energy/2026/11/27/oil-set-to-post-weekly-gain-as-middle-east-attacks-stoke-supply-concerns/"
-    },
-    {
-      "title": "Yahoo Finance: Stocks close holiday week with gains",
-      "url": "https://finance.yahoo.com/markets/live/stock-market-today-firday-november-27-dow-sp-500-nasdaq-black-friday-holiday-091152065.html"
-    },
-    {
-      "title": "AP: How major US stock indexes fared Friday",
-      "url": "https://finance.yahoo.com/markets/world-indices/articles/major-us-stock-indexes-fared-184551517.html"
-    }
-  ]
+ "date": "2026-11-27",
+ "headline": "Oil stays tight as buyers pay up for prompt barrels, and diesel is still the pinch point",
+ "paragraphs": [
+  "The oil market is still tight, and the futures curve tells us that quite clearly. Brent's front month is trading about US$12.50 a barrel above the contract six months out, which means buyers are paying a big premium to get oil now rather than later. As long as shipping through the Strait of Hormuz remains disrupted, I do not see that premium going away quickly.",
+  "At the same time, diesel is where the real squeeze is. US distillate stocks are about 6% below their five-year average, even with refineries running at close to full capacity. Hence, refining margins are still fairly wide, although they have come off over the past month. In gas, Asia and Europe are paying almost the same price for LNG, so cargoes have little reason to favour one region over the other for now.",
+  "What should we watch? Sunday's OPEC+ meeting, any news on shipping through Hormuz, and whether US diesel stocks finally start to rebuild."
+ ],
+ "sources": [
+  {
+   "title": "The National: Oil set to post weekly gain as Middle East attacks stoke supply concerns",
+   "url": "https://www.thenationalnews.com/business/energy/2026/11/27/oil-set-to-post-weekly-gain-as-middle-east-attacks-stoke-supply-concerns/"
+  },
+  {
+   "title": "EIA Weekly Petroleum Status Report",
+   "url": "https://www.eia.gov/petroleum/supply/weekly/"
+  }
+ ]
 }

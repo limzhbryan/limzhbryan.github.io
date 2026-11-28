@@ -151,6 +151,18 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
 .my-take { padding: 20px 24px; background: color-mix(in srgb, var(--ink) 4%, var(--bg)); border-left: 3px solid var(--accent); display: grid; gap: 12px; }
 .my-take .sec { margin: 0; }
 .my-take p { font-size: 18px; line-height: 1.65; }
+.my-take p.mk-meta { font-size: 13px; line-height: 1.5; }
+.my-take h3 { font-size: clamp(22px, 2.6vw, 28px); font-weight: 500; line-height: 1.2; }
+details.more { border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 14px 0; }
+details.more > summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; align-items: baseline; }
+details.more > summary::-webkit-details-marker { display: none; }
+.more-label { font-family: var(--serif, inherit); font-style: italic; font-size: 22px; }
+.more-btn { font-family: var(--ui); font-size: 14px; color: var(--link); white-space: nowrap; }
+.more-btn::after { content: " ↓"; }
+details.more[open] .more-btn::after { content: " ↑"; }
+details.more[open] .more-rows { display: none; }
+.more-rows { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px 22px; font-family: var(--ui); font-size: 14px; font-variant-numeric: tabular-nums; color: var(--muted); }
+.more-rows b { color: var(--ink); font-weight: 500; margin-right: 4px; }
 /* Markets */
 .mk-meta { font-family: var(--ui); font-size: 14px; color: var(--muted); }
 .mk-group { display: grid; gap: 0; }
@@ -377,11 +389,10 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
     <div class="mk-strip" id="mk-strip" hidden>
       <a href="#macro-drivers" class="strip-risk" id="strip-risk"></a>
       <a href="#commodities" class="strip-risk" id="strip-curve" hidden></a>
-      <a href="#daily-note" class="strip-head" id="strip-head"></a>
+      <a href="#commodities" class="strip-head" id="strip-head"></a>
     </div>
     <nav class="filters mk-tabs" aria-label="Commodities and macro sections">
       <a href="#commodities" data-mtab="comm">Commodities</a>
-      <a href="#daily-note" data-mtab="note">Daily note</a>
       <a href="#inventories" data-mtab="inv">Inventories</a>
       <a href="#macro-drivers" data-mtab="macro">Macro drivers</a>
     </nav>
@@ -389,7 +400,7 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
       <section class="my-take col" id="my-take" hidden>
         <h2 class="sec">My take</h2>
         <div id="my-take-body" class="stack" style="gap:12px"></div>
-        <p class="mk-meta" id="my-take-date"></p>
+        <p class="mk-meta" id="my-take-meta"></p>
       </section>
       <section class="stack"><h2 class="sec">Energy</h2><div id="b-energy" aria-live="polite"><p class="muted small">Loading…</p></div></section>
       <section class="stack" id="mk-comm">
@@ -397,20 +408,19 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
         <p class="muted col">The spreads that oil, refining and LNG desks watch every day</p>
         <div class="comm-grid" id="comm-spreads"><p class="muted small">Loading…</p></div>
       </section>
-      <section class="stack"><h2 class="sec">Metals</h2><div id="b-metals"></div></section>
-      <section class="stack">
-        <h2 class="sec">Freight</h2>
-        <div class="comm-grid" id="comm-freight"></div>
-      </section>
-      <section class="stack"><h2 class="sec">Macro context</h2><p class="muted col">The dollar, rates and equities, only as far as they move commodities</p><div id="b-macro"></div></section>
+      <details class="more" id="more">
+        <summary><span class="more-label">Metals, freight and macro context</span><span class="more-rows" id="more-rows"></span><span class="more-btn">Show more</span></summary>
+        <div class="stack" style="gap:48px;margin-top:32px">
+          <section class="stack"><h2 class="sec">Metals</h2><div id="b-metals"></div></section>
+          <section class="stack">
+            <h2 class="sec">Freight</h2>
+            <div class="comm-grid" id="comm-freight"></div>
+          </section>
+          <section class="stack"><h2 class="sec">Macro context</h2><p class="muted col">The dollar, rates and equities, only as far as they move commodities</p><div id="b-macro"></div></section>
+        </div>
+      </details>
       <p class="mk-meta" id="comm-meta"></p>
       <p class="mk-meta" id="markets-note"></p>
-    </div>
-    <div class="mk-panel stack" data-panel="note" hidden style="gap:32px">
-    <section class="stack col" id="mk-today">
-      <h2 class="sec">Daily note</h2>
-      <p class="mk-summary" id="mk-summary">The daily note appears here once the latest data has loaded</p>
-    </section>
     </div>
     <div class="mk-panel stack" data-panel="inv" hidden>
       <section class="stack col" id="mk-inv">
@@ -564,11 +574,7 @@ function renderContact(c) {
 function renderMarketsText(m) {
   $("markets-intro").textContent = m.intro || "";
   $("markets-note").textContent = m.note || "";
-  if (m.my_take && String(m.my_take).trim()) {
-    $("my-take-body").innerHTML = paras(m.my_take);
-    $("my-take-date").textContent = m.my_take_date ? "Updated " + fmtDate(m.my_take_date) : "";
-    $("my-take").hidden = false;
-  }
+
 }
 
 function renderArticles(d) {
@@ -669,22 +675,19 @@ function summarize(data) {
   return out.join(" ");
 }
 
-// Daily commentary on oil and US stocks (data/commentary.json), written each morning with sources.
+// "My take": the latest daily note (data/commentary.json), rewritten each morning. Only the latest note is kept.
 async function loadCommentary() {
   try {
     const r = await fetch("data/commentary.json", { cache: "no-cache" });
     if (!r.ok) return;
     const c = await r.json();
     if (!c.paragraphs || !c.paragraphs.length) return;
-    const box = document.getElementById("mk-today");
-    const esc = s => String(s).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
     const srcs = (c.sources || []).filter(s => /^https?:\/\//.test(s.url)).map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a>`).join(" · ");
     if (c.headline) { $("strip-head").textContent = c.headline; $("mk-strip").hidden = false; }
-    box.innerHTML = `<h2 class="sec">Daily note</h2>
-      ${c.headline ? `<h3 class="mk-headline">${esc(c.headline)}</h3>` : ""}
-      ${c.paragraphs.map(p => `<p class="mk-summary">${esc(p)}</p>`).join("")}
-      <p class="mk-meta">${esc(fmtDate(c.date))} · Automated commentary, written each morning from the day's market data and news${srcs ? " · Sources: " + srcs : ""}</p>`;
-  } catch (e) { /* keep the data-only summary */ }
+    $("my-take-body").innerHTML = `${c.headline ? `<h3>${esc(c.headline)}</h3>` : ""}${c.paragraphs.map(p => `<p>${esc(p)}</p>`).join("")}`;
+    $("my-take-meta").innerHTML = `${esc(fmtDate(c.date))} · Updated each morning${srcs ? " · Sources: " + srcs : ""}`;
+    $("my-take").hidden = false;
+  } catch (e) { /* box stays hidden */ }
 }
 
 // Macro heat map: reads data/heatmap.json (refreshed each morning with the commentary).
@@ -898,7 +901,10 @@ async function loadMarkets() {
     $("b-macro").innerHTML = boardFor("Macro context");
     const curve = (data.commodities && data.commodities.items || []).find(c => c.id === "brent_curve");
     if (curve) { const sc = $("strip-curve"); sc.innerHTML = `Brent curve: <b>${esc(curve.shape)}</b>`; sc.hidden = false; $("mk-strip").hidden = false; }
-    const sum = summarize(data); if (sum) document.getElementById("mk-summary").textContent = sum;
+    const pick = id => data.series.find(x => x.id === id);
+    $("more-rows").innerHTML = ["GOLD", "COPPER", "DXY", "DGS10"].map(pick).filter(Boolean).map(x => {
+      const d = dayChange(x); return `<span><b>${esc(TK_SHORT[x.id] || x.name)}</b>${fmtNum(x.latest, x.decimals)}${x.unit === "%" ? "%" : ""}${d == null ? "" : ` <span class="${d > 0 ? "up" : d < 0 ? "down" : ""}">${d > 0 ? "+" : ""}${d.toFixed(2)}%</span>`}</span>`;
+    }).join("");
     loadCommentary();
     renderRisk(data.risk);
     renderTicker(data);
@@ -915,8 +921,8 @@ loadMarkets();
 // ---------- Routing ----------
 // Markets tabs: #markets (Today), #macro-map, #risk-monitor.
 // Old links (#markets, #macro-map, #risk-monitor) still work and land on the matching tab.
-const MARKET_TABS = { "commodities": "comm", "markets": "comm", "daily-note": "note", "inventories": "inv",
-  "macro-drivers": "macro", "macro-map": "macro", "risk-monitor": "macro" };
+const MARKET_TABS = { "commodities": "comm", "markets": "comm", "inventories": "inv",
+  "macro-drivers": "macro", "macro-map": "macro", "risk-monitor": "macro", "daily-note": "comm" };
 const views = [...document.querySelectorAll(".view")];
 const hero = $("hero");
 function route() {

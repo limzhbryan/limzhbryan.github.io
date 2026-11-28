@@ -64,12 +64,10 @@ content:
     format: json
     fields:
       - { name: intro, label: Intro at the top, type: text }
-      - { name: my_take, label: My take (shown first on the Commodities tab), type: rich-text, description: "Your view on the market in a few short paragraphs. Leave empty to hide the box." }
-      - { name: my_take_date, label: My take last updated, type: date, options: { format: yyyy-MM-dd } }
       - { name: note, label: Data note at the bottom, type: text }
 
   - name: commentary
-    label: Daily note
+    label: My take (updated each morning)
     type: file
     path: data/commentary.json
     format: json
