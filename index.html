@@ -187,6 +187,23 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
 @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) #mk-heat { --neg: #D2654F; --pos: #5FA676; } }
 :root[data-theme="dark"] #mk-heat { --neg: #D2654F; --pos: #5FA676; }
 .heat-wrap { position: relative; }
+.comm-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 0 32px; }
+.comm-card { display: grid; gap: 6px; align-content: start; padding: 16px 0 22px; border-top: 2px solid var(--ink); }
+.comm-card h3 { font-size: 21px; }
+.comm-card .desc { font-family: var(--ui); font-size: 13px; color: var(--muted); line-height: 1.4; }
+.comm-card .val { font-family: var(--ui); font-size: 26px; font-weight: 600; font-variant-numeric: tabular-nums; }
+.comm-card .val small { font-size: 13px; font-weight: 400; color: var(--muted); margin-left: 4px; }
+.comm-card .chg { font-family: var(--ui); font-size: 13.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.comm-card .chg .up { color: #3B7D52; } .comm-card .chg .down { color: #B5412E; }
+.comm-card .note { font-size: 15.5px; color: var(--muted); line-height: 1.45; }
+.comm-card .tag { font-family: var(--ui); font-size: 12px; font-weight: 600; color: var(--accent); }
+.comm-card svg { width: 100%; height: 44px; display: block; }
+.comm-card svg.curve { height: 90px; overflow: visible; }
+.comm-card svg.curve text { font-family: var(--ui); font-size: 10px; fill: var(--muted); }
+.inv-table { width: 100%; border-collapse: collapse; font-family: var(--ui); font-size: 14.5px; font-variant-numeric: tabular-nums; }
+.inv-table th, .inv-table td { padding: 8px 6px; border-top: 1px solid var(--rule); text-align: right; }
+.inv-table th:first-child, .inv-table td:first-child { text-align: left; }
+.inv-table th { font-weight: 500; color: var(--muted); font-size: 12.5px; }
 .mk-tabs { font-size: 16px; gap: 28px; border-bottom: 1px solid var(--rule); margin-top: -20px; }
 .mk-tabs a { padding-bottom: 10px; }
 .mk-ticker { display: grid; gap: 4px; min-height: 64px; }
@@ -348,6 +365,7 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
     </div>
     <nav class="filters mk-tabs" aria-label="Markets sections">
       <a href="#markets" data-mtab="today">Today</a>
+      <a href="#commodities" data-mtab="comm">Commodities</a>
       <a href="#macro-map" data-mtab="map">Macro map</a>
       <a href="#risk-monitor" data-mtab="risk">Risk monitor</a>
     </nav>
@@ -359,6 +377,18 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
     </section>
     <section class="stack" id="mk-board" aria-live="polite"></section>
     <p class="mk-meta" id="markets-note"></p>
+    </div>
+    <div class="mk-panel stack" data-panel="comm" hidden style="gap:48px">
+      <section class="stack" id="mk-comm">
+        <h2 class="sec">Commodities dashboard</h2>
+        <p class="muted col">The spreads and curves that oil, refining, LNG and shipping desks watch every day</p>
+        <div class="comm-grid" id="comm-grid"><p class="muted small">Loading…</p></div>
+        <p class="mk-meta" id="comm-meta"></p>
+      </section>
+      <section class="stack col" id="mk-inv" hidden>
+        <h2 class="sec">Weekly inventory note</h2>
+        <div id="inv-body" class="stack" style="gap:16px"></div>
+      </section>
     </div>
     <div class="mk-panel" data-panel="map" hidden>
     <section class="stack" id="mk-heat">
@@ -671,6 +701,61 @@ async function loadHeat() {
   }
 }
 
+// Commodities dashboard: reads data.commodities from markets.json.
+const sgn = (v, d) => (v > 0 ? "+" : v < 0 ? "−" : "") + fmtNum(Math.abs(v), d);
+function commSpark(hist) {
+  if (!hist || hist.length < 2) return "";
+  const vals = hist.map(x => x[1]), min = Math.min(...vals, 0 > Math.min(...vals) ? 0 : Math.min(...vals)), max = Math.max(...vals), span = max - min || 1, w = 300, ht = 44, pad = 3;
+  const y = v => (ht - pad - (v - min) / span * (ht - 2 * pad)).toFixed(1);
+  const pts = vals.map((v, i) => `${(i / (vals.length - 1) * w).toFixed(1)},${y(v)}`);
+  const zero = min < 0 && max > 0 ? `<line x1="0" x2="${w}" y1="${y(0)}" y2="${y(0)}" stroke="var(--rule)" stroke-dasharray="3 3"/>` : "";
+  return `<svg viewBox="0 0 ${w} ${ht}" preserveAspectRatio="none" aria-hidden="true">${zero}<polyline fill="none" stroke="var(--link)" stroke-width="1.5" vector-effect="non-scaling-stroke" points="${pts.join(" ")}"/></svg>`;
+}
+function curveChart(curve) {
+  const vals = curve.map(c => c.price), min = Math.min(...vals), max = Math.max(...vals), span = max - min || 1, w = 300, ht = 70, padx = 14;
+  const x = i => (padx + i / (curve.length - 1) * (w - 2 * padx)).toFixed(1), y = v => (8 + (1 - (v - min) / span) * (ht - 16)).toFixed(1);
+  const mon = c => ({ F: "Jan", G: "Feb", H: "Mar", J: "Apr", K: "May", M: "Jun", N: "Jul", Q: "Aug", U: "Sep", V: "Oct", X: "Nov", Z: "Dec" }[c.contract.slice(2, 3)] || "");
+  return `<svg class="curve" viewBox="0 0 ${w} ${ht + 16}" aria-label="Brent futures curve">
+    <polyline fill="none" stroke="var(--link)" stroke-width="1.5" points="${curve.map((c, i) => `${x(i)},${y(c.price)}`).join(" ")}"/>
+    ${curve.map((c, i) => `<circle cx="${x(i)}" cy="${y(c.price)}" r="2.5" fill="var(--accent)"/><text x="${x(i)}" y="${ht + 12}" text-anchor="middle">${mon(c)}</text>`).join("")}
+  </svg>`;
+}
+function renderCommodities(cm) {
+  if (!cm || !cm.items || !cm.items.length) { $("comm-grid").innerHTML = `<p class="muted small">Commodity data is updating, please check back shortly</p>`; return; }
+  $("comm-grid").innerHTML = cm.items.map(c => {
+    const pctMode = c.change_is_pct;
+    const ch = (v, lbl) => v == null ? "" : `<span class="${v > 0 ? "up" : v < 0 ? "down" : ""}">${pctMode ? sgn(v, 1) + "%" : sgn(v, c.decimals)}</span> ${lbl}`;
+    const value = c.id === "brent_curve" ? `${sgn(c.value, 2)}<small>${esc(c.unit)}</small>` : `${pctMode ? fmtNum(c.value, 2) : sgn(c.value, c.decimals).replace(/^\+/, c.value > 0 ? "+" : "")}<small>${esc(c.unit)}</small>`;
+    const extra = c.id === "jkm_ttf" && c.jkm != null ? `<span class="chg">JKM ${fmtNum(c.jkm, 2)} · TTF ${fmtNum(c.ttf, 2)} US$/MMBtu</span>` : "";
+    return `<div class="comm-card">
+      <h3>${esc(c.name)}${c.shape ? ` <span class="tag">${esc(c.shape)}</span>` : ""}${c.proxy ? ` <span class="tag">proxy</span>` : ""}</h3>
+      <span class="desc">${esc(c.desc)}</span>
+      <span class="val">${value}</span>
+      ${extra}
+      ${c.curve ? curveChart(c.curve) : `<span class="chg">${[ch(c.change_1d, "1D"), ch(c.change_1m, "1M")].filter(Boolean).join(" · ")}</span>${commSpark(c.history)}`}
+      ${c.note ? `<span class="note">${esc(c.note)}</span>` : ""}
+      ${(c.checks || []).map(k => `<span class="desc" style="color:var(--accent)">${esc(k)}</span>`).join("")}
+      <span class="desc">As of ${esc(fmtDate(c.date))}</span>
+    </div>`;
+  }).join("");
+  $("comm-meta").textContent = "Data: Yahoo Finance futures and ETF prices, refreshed hourly on weekdays. Not covered: " + (cm.not_covered || []).join("; ");
+}
+async function loadInventory() {
+  try {
+    const r = await fetch("data/inventory.json", { cache: "no-cache" });
+    if (!r.ok) return;
+    const n = await r.json();
+    if (!n.paragraphs || !n.paragraphs.length) return;
+    const rows = (n.table || []).map(t => `<tr><td>${esc(t.name)}</td><td>${esc(t.level)}</td><td>${esc(t.change)}</td></tr>`).join("");
+    const srcs = (n.sources || []).filter(s => /^https?:\/\//.test(s.url)).map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a>`).join(" · ");
+    $("inv-body").innerHTML = `${n.headline ? `<h3 style="font-size:24px">${esc(n.headline)}</h3>` : ""}
+      ${n.paragraphs.map(p => `<p class="mk-summary">${esc(p)}</p>`).join("")}
+      ${rows ? `<table class="inv-table"><thead><tr><th>Stocks</th><th>Level</th><th>Weekly change</th></tr></thead><tbody>${rows}</tbody></table>` : ""}
+      <p class="mk-meta">${esc(n.period || "")}${srcs ? " · Sources: " + srcs : ""}</p>`;
+    $("mk-inv").hidden = false;
+  } catch (e) { /* no note yet */ }
+}
+
 // Market risk monitor: reads data.risk from markets.json (FRED series, refreshed daily).
 const RISK_WORD = { green: "Calm", amber: "Elevated", red: "High" };
 function riskValue(r) {
@@ -772,6 +857,8 @@ async function loadMarkets() {
     const sum = summarize(data); if (sum) document.getElementById("mk-summary").textContent = sum;
     loadCommentary();
     renderRisk(data.risk);
+    renderCommodities(data.commodities);
+    loadInventory();
     const u = new Date(data.updated.replace("Z", ":00Z"));
     upd.textContent = "Last refreshed " + u.toLocaleString("en-GB", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Singapore" }) + " (Singapore time). Prices refresh hourly on weekdays and are checked against FRED before they are shown";
   } catch (e) {
@@ -782,7 +869,7 @@ loadMarkets();
 
 // ---------- Routing ----------
 // Markets tabs: #markets (Today), #macro-map, #risk-monitor.
-const MARKET_TABS = { "markets": "today", "macro-map": "map", "risk-monitor": "risk" };
+const MARKET_TABS = { "markets": "today", "commodities": "comm", "macro-map": "map", "risk-monitor": "risk" };
 const views = [...document.querySelectorAll(".view")];
 const hero = $("hero");
 function route() {

@@ -1,0 +1,8 @@
+name: probe inventory sources
+on: workflow_dispatch
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: python -u scripts/probe_inventory.py
