@@ -224,9 +224,9 @@ def main():
         spark = [[d.isoformat(), round(v, dec + 2)] for d, v in rows if d >= last_d - timedelta(days=365)]
         out["risk"].append({"id": sid, "name": name, "desc": desc, "unit": unit, "decimals": dec, "kind": kind,
                             "value": round(value, dec + 2), "level": round(last_v, dec + 2), "date": last_d.isoformat(),
-                            "status": status, "amber": amber, "red": red, "pctile_10y": round(share * 100),
+                            "status": status, "amber": amber, "red": red, "pctile": round(share * 100), "since": rows[0][0].year,
                             "history": spark})
-        print(f"risk {sid}: {last_d} {value:.2f} {status} (worse than {share:.0%} of the past 10 years)")
+        print(f"risk {sid}: {last_d} {value:.2f} {status} (worse than {share:.0%} of readings since {rows[0][0].year})")
     if not out["series"]:
         raise SystemExit("No series fetched; keeping the previous file.")
     OUT.parent.mkdir(parents=True, exist_ok=True)
