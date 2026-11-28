@@ -43,6 +43,16 @@ YAHOO_URL = "https://query1.finance.yahoo.com/v8/finance/chart/{sym}?range={rang
 FUTURES_ROOT = {"BZ=F": "BZ", "CL=F": "CL", "NG=F": "NG"}
 MONTH_CODES = "FGHJKMNQUVXZ"
 URL = "https://api.stlouisfed.org/fred/series/observations?series_id={id}&observation_start={start}&file_type=json&api_key={key}"
+# Market risk monitor: FRED series with fixed, published-style thresholds.
+# kind "level": higher is worse; "below": lower is worse; "change": 1-month % change, higher is worse.
+RISK = [
+    # id, name, what it measures, unit, decimals, kind, amber, red
+    ("BAMLH0A0HYM2", "Credit stress", "US high-yield bond spread over Treasuries", "%", 2, "level", 4.0, 6.0),
+    ("VIXCLS", "Fear gauge", "VIX, expected S&P 500 volatility", "index", 1, "level", 20.0, 30.0),
+    ("T10Y2Y", "Recession signal", "10-year minus 2-year Treasury yield", "pts", 2, "below", 0.25, 0.0),
+    ("STLFSI4", "Financial stress", "St. Louis Fed Financial Stress Index (0 = average)", "index", 2, "level", 0.0, 1.0),
+    ("DTWEXBGS", "Dollar squeeze", "Broad US dollar index, change over the past month", "%", 1, "change", 1.5, 3.0),
+]
 OUT = Path(__file__).resolve().parent.parent / "data" / "markets.json"
 
 
@@ -182,6 +192,41 @@ def main():
             "history": history,
         })
         print(f"ok {sid} ({src}): {last_d} {last_v}")
+    out["risk"] = []
+    rstart = (today - timedelta(days=10 * 365)).isoformat()
+    for sid, name, desc, unit, dec, kind, amber, red in RISK:
+        try:
+            rows = fetch(sid, rstart, key)
+        except Exception as e:
+            print(f"risk {sid} failed: {type(e).__name__}")
+            continue
+        if len(rows) < 30:
+            continue
+        last_d, last_v = rows[-1]
+        if kind == "change":
+            prior = value_on_or_before(rows, last_d - timedelta(days=30))
+            value = pct(last_v, prior)
+            if value is None:
+                continue
+            hist_vals = []
+            for d, v in rows:
+                p = value_on_or_before(rows, d - timedelta(days=30))
+                if p and p[1]:
+                    hist_vals.append((v / p[1] - 1) * 100)
+        else:
+            value, hist_vals = last_v, [v for _, v in rows]
+        if kind == "below":
+            status = "red" if value < red else "amber" if value < amber else "green"
+            share = sum(1 for v in hist_vals if v >= value) / len(hist_vals)   # share of days with a less worrying reading
+        else:
+            status = "red" if value >= red else "amber" if value >= amber else "green"
+            share = sum(1 for v in hist_vals if v <= value) / len(hist_vals)
+        spark = [[d.isoformat(), round(v, dec + 2)] for d, v in rows if d >= last_d - timedelta(days=365)]
+        out["risk"].append({"id": sid, "name": name, "desc": desc, "unit": unit, "decimals": dec, "kind": kind,
+                            "value": round(value, dec + 2), "level": round(last_v, dec + 2), "date": last_d.isoformat(),
+                            "status": status, "amber": amber, "red": red, "pctile_10y": round(share * 100),
+                            "history": spark})
+        print(f"risk {sid}: {last_d} {value:.2f} {status} (worse than {share:.0%} of the past 10 years)")
     if not out["series"]:
         raise SystemExit("No series fetched; keeping the previous file.")
     OUT.parent.mkdir(parents=True, exist_ok=True)
