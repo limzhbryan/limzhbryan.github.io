@@ -152,7 +152,8 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
 .my-take { padding: 20px 24px; background: color-mix(in srgb, var(--ink) 4%, var(--bg)); border-left: 3px solid var(--accent); display: grid; gap: 12px; }
 .my-take .sec { margin: 0; }
 .my-take p { font-size: 18px; line-height: 1.65; max-width: 80ch; }
-.my-take p.mk-meta { font-size: 13px; line-height: 1.5; }
+.my-take p.mk-meta { font-size: 12.5px; line-height: 1.55; max-width: none; margin-top: 10px; padding-top: 14px; border-top: 1px solid var(--rule); }
+.my-take p.mk-meta .kd-src { display: block; margin-top: 2px; }
 .my-take h3 { font-size: clamp(22px, 2.6vw, 28px); font-weight: 500; line-height: 1.2; }
 details.more { border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 14px 0; }
 details.more > summary { list-style: none; cursor: pointer; display: grid; grid-template-columns: 1fr auto; gap: 8px 16px; align-items: baseline; }
@@ -728,7 +729,7 @@ async function loadCommentary() {
     const srcs = (c.sources || []).filter(s => /^https?:\/\//.test(s.url)).map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a>`).join(" · ");
     if (c.headline) { $("strip-head").textContent = c.headline; $("mk-strip").hidden = false; homeStrip("hs-head", c.headline, "Morning Brief: "); }
     $("my-take-body").innerHTML = `${c.headline ? `<h3>${esc(c.headline)}</h3>` : ""}${c.paragraphs.map(p => `<p>${esc(p)}</p>`).join("")}`;
-    $("my-take-meta").innerHTML = `${esc(fmtDate(c.date))} · Compiled automatically each morning from the latest prices on this page and the news sources linked here${srcs ? " · Sources: " + srcs : ""}`;
+    $("my-take-meta").innerHTML = `${esc(fmtDate(c.date))} · Compiled automatically each morning from the latest prices on this page and the news sources linked here${srcs ? `<span class="kd-src">Sources: ${srcs}</span>` : ""}`;
     $("my-take").hidden = false;
   } catch (e) { /* box stays hidden */ }
 }
