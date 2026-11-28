@@ -121,7 +121,7 @@ content:
         list: true
         fields:
           - { name: organisation, label: Where, type: string }
-          - { name: role, label: What you taught, type: string }
+          - { name: role, label: What you taught, type: text, description: "One subject per line." }
           - { name: dates, label: Dates, type: string }
       - name: leadership
         label: Leadership
