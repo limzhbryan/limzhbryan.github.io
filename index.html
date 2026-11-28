@@ -362,10 +362,6 @@ details.more[open] .more-rows { display: none; }
       </div>
       <p class="mk-meta">Updated automatically each morning from the <a href="#commodities">Commodities &amp; Macro</a> page</p>
     </section>
-    <section class="stack" style="gap:24px">
-      <h2 class="sec" id="themes-title">What I Write About</h2>
-      <div class="themes" id="home-themes"></div>
-    </section>
   </div>
 
   <!-- WRITING -->
@@ -547,12 +543,6 @@ function renderHome(h) {
   $("home-headline").innerHTML = esc(h.headline).replace(/ &amp; /g, " <i>&amp;</i> ");
   $("home-intro").textContent = h.intro || "";
   $("home-more").textContent = h.intro_more || "";
-  $("themes-title").textContent = h.themes_title || "What I write about";
-  $("home-themes").innerHTML = (h.themes || []).map(t => {
-    const href = themeLink(t);
-    const inner = `<h3>${esc(t.title)}</h3><p>${esc(t.text)}</p>`;
-    return href ? `<a class="theme" href="${href}">${inner}</a>` : `<div>${inner}</div>`;
-  }).join("");
 }
 // The About text may be rich text (HTML) or plain text with blank lines between paragraphs.
 // Text from the editor may be rich text (HTML) or plain text: blank lines start new paragraphs,
@@ -595,7 +585,7 @@ function renderMarketsText(m) {
 
 function renderArticles(d) {
   $("writing-intro").textContent = d.intro || "";
-  ARTICLES = (d.articles || []).filter(a => a && a.title).map(a => ({ ...a, slug: slugify(a.title) }))
+  ARTICLES = (d.articles || []).filter(a => a && a.title && String(a.status || "Published").toLowerCase() !== "draft").map(a => ({ ...a, slug: slugify(a.title) }))
     .sort((a, b) => (!a.date - !b.date) || String(b.date).localeCompare(String(a.date)));
   const feat = ARTICLES.find(a => a.featured) || ARTICLES[0];
   if (feat) {

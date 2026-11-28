@@ -1,33 +1,5 @@
 {
   "headline": "International Trade & the Economy",
   "intro": "Hi! I am Bryan, an Economics PhD student at Nanyang Technological University in Singapore. I'm interested in global markets such as why prices move, how trade flows shift, and how politics changes both.",
-  "intro_more": "Before pursuing my PhD, I spent two years at S&P Global as a price assessment specialist, covering movements in commodity prices",
-  "themes_title": "What You Can Find Here",
-  "themes": [
-    {
-      "title": "Opinion",
-      "text": "Short pieces on the news of the day, with simple explanations for anyone new to the topic",
-      "link": "Opinion"
-    },
-    {
-      "title": "Analysis",
-      "text": "Data-heavy deep dives into commodities, trade and the economy, with charts and numbers to back them up",
-      "link": "Analysis"
-    },
-    {
-      "title": "Research Papers",
-      "text": "The research I am working on, from international trade to economic statecraft",
-      "link": "Research"
-    },
-    {
-      "title": "Commodities & Macro",
-      "text": "A morning brief, live prices for oil, gas, LNG, metals and freight, a weekly inventory note on US and Singapore oil stocks, and a map of the macro news behind them",
-      "link": "Commodities & Macro"
-    },
-    {
-      "title": "Resume",
-      "text": "My experience, from assessing commodity prices at S&P Global to teaching economics",
-      "link": "Resume"
-    }
-  ]
+  "intro_more": "Before pursuing my PhD, I spent two years at S&P Global as a price assessment specialist, covering movements in commodity prices"
 }

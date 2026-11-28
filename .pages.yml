@@ -15,19 +15,6 @@ content:
       - { name: headline, label: Big Headline, type: string }
       - { name: intro, label: Intro paragraph, type: text }
       - { name: intro_more, label: Second line, type: text }
-      - { name: themes_title, label: Themes Heading, type: string }
-      - name: themes
-        label: Themes
-        type: object
-        list: true
-        fields:
-          - { name: title, label: Title, type: string }
-          - { name: text, label: Description, type: text }
-          - name: link
-            label: Links to
-            type: select
-            description: "Page opened when someone clicks this box. Leave empty to guess from the title."
-            options: { values: [Opinion, Analysis, Research, All writing, Commodities & Macro, About, Resume, Contact, No link] }
 
   - name: articles
     label: Writing
@@ -42,6 +29,12 @@ content:
         list: true
         fields:
           - { name: title, label: Title, type: string, required: true }
+          - name: status
+            label: Status
+            type: select
+            default: Published
+            description: "Draft keeps the piece hidden on the live site. Switch to Published when it is ready."
+            options: { values: [Published, Draft] }
           - { name: date, label: Date, type: date, options: { format: yyyy-MM-dd } }
           - name: type
             label: Type
