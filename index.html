@@ -148,7 +148,7 @@ figcaption { font-family: var(--ui); font-size: 13.5px; color: var(--muted); }
 footer { border-top: 1px solid var(--rule); }
 footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 
-/* Commodities & Macro: my take */
+/* Macro page: morning brief */
 .my-take { padding: 20px 24px; background: color-mix(in srgb, var(--ink) 4%, var(--bg)); border-left: 3px solid var(--accent); display: grid; gap: 12px; }
 .my-take .sec { margin: 0; }
 .my-take p { font-size: 18px; line-height: 1.65; max-width: 80ch; }
@@ -344,7 +344,7 @@ details.more[open] .more-rows { display: none; }
             <a href="#writing-research" data-sub="research">Research</a>
           </div></span>
         </span>
-        <a href="#commodities" data-nav="markets">Commodities &amp; Macro</a>
+        <a href="#commodities" data-nav="markets">Macro</a>
         <a href="#about" data-nav="about">About</a>
         <a href="#resume" data-nav="resume">Resume</a>
         <a href="#contact" data-nav="contact">Contact</a>
@@ -382,7 +382,7 @@ details.more[open] .more-rows { display: none; }
         <a href="#commodities" class="strip-head" id="hs-head" hidden></a>
       </div>
       <div class="hs-dates" id="hs-dates" hidden></div>
-      <p class="mk-meta">Updated automatically each morning from the <a href="#commodities">Commodities &amp; Macro</a> page</p>
+      <p class="mk-meta">Updated automatically each morning from the <a href="#commodities">Macro</a> page</p>
     </section>
   </div>
 
@@ -413,7 +413,7 @@ details.more[open] .more-rows { display: none; }
   <!-- MARKETS -->
   <div class="view" data-view="markets" hidden>
     <div class="stack col">
-      <h1 class="page-title">Commodities &amp; Macro</h1>
+      <h1 class="page-title">Macro</h1>
       <p id="markets-intro"></p>
       <p class="mk-meta" id="mk-updated">Loading the latest data…</p>
     </div>
@@ -426,7 +426,7 @@ details.more[open] .more-rows { display: none; }
       <a href="#commodities" class="strip-risk" id="strip-curve" hidden></a>
       <a href="#commodities" class="strip-head" id="strip-head"></a>
     </div>
-    <nav class="filters mk-tabs" aria-label="Commodities and macro sections">
+    <nav class="filters mk-tabs" aria-label="Macro sections">
       <a href="#commodities" data-mtab="comm">Commodities</a>
       <a href="#inventories" data-mtab="inv">Inventories</a>
       <a href="#macro-drivers" data-mtab="macro">Macro Drivers</a>
@@ -561,7 +561,7 @@ function entryHTML(a, showKind) {
 function photoHTML(src, alt) { return src && safeUrl(src) ? `<img src="${esc(src)}" alt="${esc(alt)}">` : "[Photo]"; }
 
 // Where each homepage box links: chosen in the editor ("Links to"), or guessed from its title.
-const THEME_LINKS = { "Opinion": "#writing-opinion", "Analysis": "#writing-analysis", "Research": "#writing-research", "All writing": "#writing", "Markets": "#commodities", "Commodities & Macro": "#commodities", "About": "#about", "Resume": "#resume", "Contact": "#contact" };
+const THEME_LINKS = { "Opinion": "#writing-opinion", "Analysis": "#writing-analysis", "Research": "#writing-research", "All writing": "#writing", "Markets": "#commodities", "Commodities & Macro": "#commodities", "Macro": "#commodities", "About": "#about", "Resume": "#resume", "Contact": "#contact" };
 function themeLink(t) {
   if (t.link === "No link") return "";
   if (THEME_LINKS[t.link]) return THEME_LINKS[t.link];
@@ -968,7 +968,7 @@ function renderTicker(data) {
   $("tk-note").innerHTML = 'Same prices as the board below, refreshed hourly on weekdays. For live quotes, see <a href="https://www.tradingview.com/markets/" target="_blank" rel="noopener">TradingView ↗</a> (external site; its prices can differ slightly from the board, for example where it shows CFDs rather than futures)';
   $("mk-ticker").hidden = false;
 }
-// Mirrors the strip at the top of Commodities & Macro onto the Home page.
+// Mirrors the strip at the top of the Macro page onto the Home page.
 function homeStrip(id, html, label) {
   const el = $(id);
   if (label) { el.innerHTML = `<span class="hs-label">${label}</span>`; el.append(html); } else el.innerHTML = html;

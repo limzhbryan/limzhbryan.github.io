@@ -51,7 +51,7 @@ content:
           - { name: body, label: Article text, type: rich-text, description: "Leave empty for a piece that only links elsewhere." }
 
   - name: markets
-    label: Commodities & Macro
+    label: Macro
     type: file
     path: content/markets-page.json
     format: json
