@@ -176,6 +176,7 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
 .risk-head p { font-size: 18px; line-height: 1.55; }
 .risk-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 0 28px; }
 .risk-card { display: grid; gap: 6px; align-content: start; padding: 16px 0 18px; border-top: 3px solid var(--st); }
+.risk-card .rule { display: block; font-family: var(--ui); font-size: 12.5px; color: var(--muted); margin: 6px 0 2px; line-height: 1.4; }
 .risk-card h3 { font-size: 20px; }
 .risk-card .desc { font-family: var(--ui); font-size: 13px; color: var(--muted); line-height: 1.4; }
 .risk-card .val { font-family: var(--ui); font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; }
@@ -807,6 +808,7 @@ function renderRisk(list) {
     <h3>${esc(r.name)}</h3><span class="desc">${esc(r.desc)}</span>
     <span class="val">${riskValue(r)} <span class="st">${RISK_WORD[r.status]}</span></span>
     ${riskSpark(r)}
+    ${r.rule ? `<span class="rule">${esc(r.rule)}${typeof r.change_1m === "number" ? ` (past month: ${r.change_1m > 0 ? "+" : ""}${r.change_1m.toFixed(2)} pts)` : ""}</span>` : ""}
     <span class="ctx">${esc(riskContext(r))} · as of ${esc(fmtDate(r.date))}${r.id === "STLFSI4" ? " (weekly)" : ""}</span></div>`).join("");
   $("mk-risk").hidden = false;
 }

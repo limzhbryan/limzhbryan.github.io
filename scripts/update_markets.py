@@ -54,6 +54,14 @@ RISK = [
     ("STLFSI4", "Financial stress", "St. Louis Fed Financial Stress Index (0 = average)", "index", 2, "level", 0.0, 1.0),
     ("DTWEXBGS", "Dollar squeeze", "Broad US dollar index, change over the past month", "%", 1, "change", 1.5, 3.0),
 ]
+RISK_RULES = {  # plain-English thresholds shown on each gauge
+    "BAMLH0A0HYM2": "Green below 4%, amber 4–6%, red above 6%. Also amber if the spread widens by more than 1 point in a month",
+    "VIXCLS": "Green below 20, amber 20–30, red above 30",
+    "T10Y2Y": "Green above 0.25 pts, amber 0–0.25, red when the curve inverts (below 0)",
+    "STLFSI4": "Green below 0 (calmer than average), amber 0–1, red above 1",
+    "DTWEXBGS": "Green below +1.5% in a month, amber +1.5% to +3%, red above +3%",
+}
+HY_JUMP = 1.0  # percentage points of widening within a month that turns the credit gauge amber
 OUT = Path(__file__).resolve().parent.parent / "data" / "markets.json"
 
 
@@ -482,10 +490,18 @@ def main():
         else:
             status = "red" if value >= red else "amber" if value >= amber else "green"
             share = sum(1 for v in hist_vals if v <= value) / len(hist_vals)
+        jump = None
+        if sid == "BAMLH0A0HYM2":
+            month_ago = value_on_or_before(rows, last_d - timedelta(days=30))
+            if month_ago:
+                jump = round(last_v - month_ago[1], 2)
+                if jump > HY_JUMP and status == "green":
+                    status = "amber"
         spark = [[d.isoformat(), round(v, dec + 2)] for d, v in rows if d >= last_d - timedelta(days=365)]
         out["risk"].append({"id": sid, "name": name, "desc": desc, "unit": unit, "decimals": dec, "kind": kind,
                             "value": round(value, dec + 2), "level": round(last_v, dec + 2), "date": last_d.isoformat(),
                             "status": status, "amber": amber, "red": red, "pctile": round(share * 100), "since": rows[0][0].year,
+                            "rule": RISK_RULES.get(sid, ""), "change_1m": jump,
                             "history": spark})
         print(f"risk {sid}: {last_d} {value:.2f} {status} (worse than {share:.0%} of readings since {rows[0][0].year})")
     if not out["series"]:
