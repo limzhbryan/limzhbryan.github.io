@@ -37,5 +37,6 @@ jobs:
             echo "No change in data."
           else
             git commit -m "Update market data $(date -u +%Y-%m-%d)"
+            git pull --rebase
             git push
           fi
