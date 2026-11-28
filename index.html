@@ -256,6 +256,10 @@ details.more[open] .more-rows { display: none; }
 .heat-row .dot { width: 12px; height: 12px; border-radius: 50%; align-self: center; }
 .heat-row h3 { font-size: 18px; }
 .heat-row .sc { font-family: var(--ui); font-size: 13px; font-weight: 600; text-align: right; }
+.tip-item { margin-top: 8px; padding-top: 8px; border-top: 1px solid var(--rule); }
+.heat-row p + p { margin-top: 6px; }
+.heat-row .hl-meta { font-family: var(--ui); font-size: 12.5px; color: var(--muted); white-space: nowrap; }
+.heat-row p .sc, .tip-item .sc { font-size: 12px; margin-left: 2px; }
 .sc.Positive { color: var(--pos); } .sc.Negative { color: var(--neg); } .sc.Neutral { color: var(--muted); }
 .heat-row p { grid-column: 2 / 4; color: var(--muted); font-size: 16px; line-height: 1.45; }
 .heat-row p a { font-family: var(--ui); font-size: 13px; white-space: nowrap; }
@@ -704,6 +708,20 @@ async function loadHeat() {
     ]);
     const cs = getComputedStyle($("mk-heat"));
     const color = d3.scaleLinear().domain([-1, 0, 1]).range([cs.getPropertyValue("--neg"), cs.getPropertyValue("--mid"), cs.getPropertyValue("--pos")]).clamp(true);
+    // Each country can carry several news items. The country's shade is a recency-weighted
+    // average of its items (last 3 days count fully, up to a week 0.75, older 0.5). Items
+    // older than 21 days are dropped unless marked "keep" (a story still driving markets).
+    const ref = new Date((data.updated || new Date().toISOString().slice(0, 10)) + "T00:00:00Z");
+    const age = d => d ? (ref - new Date(d + "T00:00:00Z")) / 864e5 : 0;
+    data.countries = data.countries.map(c => {
+      let items = (c.items && c.items.length ? c.items : [{ headline: c.headline, score: c.score, source: c.source, url: c.url, date: c.date }])
+        .filter(i => i.headline && typeof i.score === "number" && (i.keep || age(i.date) <= 21))
+        .sort((a, b) => (b.date || "").localeCompare(a.date || ""));
+      if (!items.length) return null;
+      const w = i => age(i.date) <= 3 ? 1 : age(i.date) <= 7 ? 0.75 : 0.5;
+      const score = Math.round(items.reduce((t, i) => t + i.score * w(i), 0) / items.reduce((t, i) => t + w(i), 0) * 10) / 10;
+      return { ...c, items, score };
+    }).filter(Boolean);
     const byId = new Map(data.countries.map(c => [c.id, c]));
     const land = topojson.feature(world, world.objects.countries).features.filter(f => f.properties.name !== "Antarctica");
     const W = 960, H = 470;
@@ -712,7 +730,9 @@ async function loadHeat() {
     const svg = d3.select("#heat-map").attr("viewBox", `0 0 ${W} ${H}`);
     const tip = $("heat-tip"), wrap = document.querySelector(".heat-wrap");
     let pinned = null;
-    const tipHTML = c => `<strong>${esc(c.name)}</strong><span class="sc ${heatLabel(c.score)}">${heatLabel(c.score)} (${c.score > 0 ? "+" : ""}${c.score.toFixed(1)})</span><div>${esc(c.headline)}</div><div class="src">${esc(c.source)}${c.date ? " · " + esc(fmtDate(c.date)) : ""}</div>`;
+    const sc = v => `${v > 0 ? "+" : ""}${v.toFixed(1)}`;
+    const tipHTML = c => `<strong>${esc(c.name)}</strong><span class="sc ${heatLabel(c.score)}">${heatLabel(c.score)} overall (${sc(c.score)})</span>${c.items.map(i =>
+      `<div class="tip-item"><div>${esc(i.headline)} <span class="sc ${heatLabel(i.score)}">${sc(i.score)}</span></div><div class="src">${esc(i.source)}${i.date ? " · " + esc(fmtDate(i.date)) : ""}</div></div>`).join("")}`;
     function show(c, ev) {
       tip.innerHTML = tipHTML(c); tip.hidden = false;
       const r = wrap.getBoundingClientRect(), x = ev.clientX - r.left, y = ev.clientY - r.top;
@@ -735,8 +755,9 @@ async function loadHeat() {
       .on("click", (ev, c) => { ev.stopPropagation(); pinned = c.id; show(c, ev); });
     document.addEventListener("click", () => { pinned = null; tip.hidden = true; });
     const rows = [...data.countries].sort((a, b) => b.score - a.score);
-    $("heat-list").innerHTML = rows.map(c => `<div class="heat-row"><span class="dot" style="background:${color(c.score)}"></span><h3>${esc(c.name)}</h3><span class="sc ${heatLabel(c.score)}">${heatLabel(c.score)}</span><p>${esc(c.headline)}${safeUrl(c.url) ? ` <a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.source)}</a>` : ""}</p></div>`).join("");
-    $("heat-meta").textContent = `Updated ${fmtDate(data.updated)}. Scores run from -1 (very negative) to +1 (very positive) and are set automatically each morning from each economy's latest major news. They are a rough guide, not a forecast`;
+    $("heat-list").innerHTML = rows.map(c => `<div class="heat-row"><span class="dot" style="background:${color(c.score)}"></span><h3>${esc(c.name)}</h3><span class="sc ${heatLabel(c.score)}">${heatLabel(c.score)} (${sc(c.score)})</span>${c.items.map(i =>
+      `<p>${esc(i.headline)} <span class="sc ${heatLabel(i.score)}">${sc(i.score)}</span> <span class="hl-meta">${safeUrl(i.url) ? `<a href="${esc(i.url)}" target="_blank" rel="noopener">${esc(i.source)}</a>` : esc(i.source || "")}${i.date ? ", " + esc(fmtDate(i.date)) : ""}</span></p>`).join("")}</div>`).join("");
+    $("heat-meta").textContent = `Updated ${fmtDate(data.updated)}. Scores run from -1 (very negative) to +1 (very positive) and are set automatically each morning from up to three of each economy's most market-relevant recent stories, weighted towards the newest. Stories are replaced when newer news supersedes them, and nothing older than about two weeks is kept unless it is still driving markets. They are a rough guide, not a forecast`;
   } catch (e) {
     $("mk-heat").hidden = true;
   }
