@@ -67,7 +67,7 @@ content:
       - { name: note, label: Data note at the bottom, type: text }
 
   - name: commentary
-    label: My take (updated each morning)
+    label: Morning brief (automated each morning)
     type: file
     path: data/commentary.json
     format: json

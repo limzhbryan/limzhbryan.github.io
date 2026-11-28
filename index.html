@@ -398,7 +398,7 @@ details.more[open] .more-rows { display: none; }
     </nav>
     <div class="mk-panel stack" data-panel="comm" style="gap:48px">
       <section class="my-take col" id="my-take" hidden>
-        <h2 class="sec">My take</h2>
+        <h2 class="sec">Morning brief</h2>
         <div id="my-take-body" class="stack" style="gap:12px"></div>
         <p class="mk-meta" id="my-take-meta"></p>
       </section>
@@ -675,7 +675,7 @@ function summarize(data) {
   return out.join(" ");
 }
 
-// "My take": the latest daily note (data/commentary.json), rewritten each morning. Only the latest note is kept.
+// Morning brief: the latest daily note (data/commentary.json), rewritten each morning. Only the latest note is kept.
 async function loadCommentary() {
   try {
     const r = await fetch("data/commentary.json", { cache: "no-cache" });
@@ -685,7 +685,7 @@ async function loadCommentary() {
     const srcs = (c.sources || []).filter(s => /^https?:\/\//.test(s.url)).map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a>`).join(" · ");
     if (c.headline) { $("strip-head").textContent = c.headline; $("mk-strip").hidden = false; }
     $("my-take-body").innerHTML = `${c.headline ? `<h3>${esc(c.headline)}</h3>` : ""}${c.paragraphs.map(p => `<p>${esc(p)}</p>`).join("")}`;
-    $("my-take-meta").innerHTML = `${esc(fmtDate(c.date))} · Updated each morning${srcs ? " · Sources: " + srcs : ""}`;
+    $("my-take-meta").innerHTML = `${esc(fmtDate(c.date))} · Compiled automatically each morning from the latest prices on this page and the news sources linked here${srcs ? " · Sources: " + srcs : ""}`;
     $("my-take").hidden = false;
   } catch (e) { /* box stays hidden */ }
 }
