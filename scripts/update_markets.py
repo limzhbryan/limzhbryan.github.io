@@ -176,6 +176,102 @@ def pct(new, old):
     return round((new / old[1] - 1) * 100, 2)
 
 
+# ---------- Commodities tab ----------
+def aligned(a, b, f, start):
+    """Combine two (date, value) series on shared dates with f(a, b)."""
+    bd = dict(b)
+    return [(d, f(v, bd[d])) for d, v in a if d in bd and d >= start]
+
+
+def card(cid, name, desc, unit, dec, rows, lo, hi, extra=None):
+    """A commodities card with history, 1-day and 1-month change, and a range check."""
+    if len(rows) < 2:
+        return None
+    last_d, last_v = rows[-1]
+    checks = []
+    if not (lo <= last_v <= hi):
+        checks.append(f"Latest reading {last_v:.2f} was outside the expected range and was held back")
+        rows = rows[:-1]
+        last_d, last_v = rows[-1]
+    prev = rows[-2][1]
+    month = value_on_or_before(rows, last_d - timedelta(days=31))
+    c = {"id": cid, "name": name, "desc": desc, "unit": unit, "decimals": dec, "value": round(last_v, dec + 2),
+         "date": last_d.isoformat(), "change_1d": round(last_v - prev, dec + 2),
+         "change_1m": round(last_v - month[1], dec + 2) if month else None, "checks": checks,
+         "history": [[d.isoformat(), round(v, dec + 2)] for d, v in rows if d >= last_d - timedelta(days=365)]}
+    c.update(extra or {})
+    return c
+
+
+def build_commodities(series_rows, today):
+    out, notes = [], []
+    year_ago = today - timedelta(days=370)
+    def get(sym, rng="2y"):
+        try:
+            return fetch_yahoo(sym, rng)
+        except Exception as e:
+            notes.append(f"{sym} unavailable")
+            print(f"  commodities: {sym} failed ({type(e).__name__})")
+            return []
+    # 1. Brent-WTI spread, from the same front contracts shown on the price board.
+    b, w = series_rows.get("DCOILBRENTEU", []), series_rows.get("DCOILWTICO", [])
+    rows = aligned(b, w, lambda x, y: x - y, year_ago)
+    c = card("brent_wti", "Brent–WTI spread", "Brent minus WTI, front-month futures", "US$/bbl", 2, rows, -5, 25,
+             {"note": "A wider spread makes US crude more attractive to export"})
+    if c: out.append(c)
+    # 2. Brent futures curve: the next seven monthly contracts.
+    curve = []
+    for sym in contract_symbols("BZ", today, n=10):
+        r = get(sym, "1mo")
+        if r and r[-1][0] >= today - timedelta(days=6):
+            curve.append({"contract": sym.replace(".NYM", ""), "price": round(r[-1][1], 2), "date": r[-1][0].isoformat()})
+        if len(curve) == 7:
+            break
+    if len(curve) >= 6:
+        m1, m6 = curve[0]["price"], curve[5]["price"]
+        spread = m1 - m6
+        shape = "backwardation" if spread > 0.25 else "contango" if spread < -0.25 else "flat"
+        if abs(spread) < 40:
+            out.append({"id": "brent_curve", "name": "Brent curve", "desc": "Front month minus sixth month (M1–M6)",
+                        "unit": "US$/bbl", "decimals": 2, "value": round(spread, 2), "date": curve[0]["date"],
+                        "shape": shape, "curve": curve, "checks": [],
+                        "note": "Backwardation (near months dearer) signals a tight market; contango signals surplus"})
+    # 3. 3-2-1 crack spread: 2 bbl gasoline + 1 bbl heating oil minus 3 bbl crude, per barrel.
+    rb, ho, cl = get("RB=F"), get("HO=F"), get("CL=F")
+    if rb and ho and cl:
+        hod = dict(ho)
+        rbho = [(d, (2 * v * 42 + hod[d] * 42)) for d, v in rb if d in hod]
+        rows = aligned(rbho, cl, lambda prod, crude: (prod - 3 * crude) / 3, year_ago)
+        c = card("crack_321", "3-2-1 crack spread", "US refining margin: RBOB gasoline and heating oil vs WTI, front month",
+                 "US$/bbl", 2, rows, -10, 100, {"note": "A proxy for how profitable it is to refine a barrel of crude"})
+        if c: out.append(c)
+    # 4. LNG: JKM (Asia) vs TTF (Europe), both in US$/MMBtu.
+    jkm, ttf, eur = get("JKM=F"), get("TTF=F"), get("EURUSD=X")
+    if jkm and ttf and eur:
+        ttf_usd = aligned(ttf, eur, lambda t, fx: t * fx / 3.412, year_ago)    # EUR/MWh -> US$/MMBtu
+        rows = aligned(jkm, ttf_usd, lambda j, t: j - t, year_ago)
+        c = card("jkm_ttf", "JKM–TTF spread", "Asian LNG (JKM) minus European gas (TTF), front month", "US$/MMBtu", 2,
+                 rows, -15, 15, {"note": "When Asia pays more than Europe, flexible LNG cargoes head east",
+                                 "jkm": round(jkm[-1][1], 2), "ttf": round(ttf_usd[-1][1], 2) if ttf_usd else None})
+        if c: out.append(c)
+    # 5. Freight proxies: Breakwave ETFs that hold freight futures.
+    for sym, cid, name, desc in [("BDRY", "freight_dry", "Dry bulk freight", "Breakwave Dry Bulk Shipping ETF (proxy for Capesize, Panamax and Supramax rates)"),
+                                 ("BWET", "freight_tanker", "Tanker freight", "Breakwave Tanker Shipping ETF (proxy for crude and product tanker rates)")]:
+        r = get(sym)
+        rows = [(d, v) for d, v in r if d >= year_ago]
+        c = card(cid, name, desc, "US$ per share", 2, rows, 0.5, 5000,
+                 {"proxy": True, "note": "An ETF proxy, as the Baltic indices are not freely available"})
+        if c:
+            c["change_1d"] = pct(rows[-1][1], rows[-2]) if len(rows) > 1 else None
+            m = value_on_or_before(rows, rows[-1][0] - timedelta(days=31))
+            c["change_1m"] = pct(rows[-1][1], m)
+            c["change_is_pct"] = True
+            out.append(c)
+    for c in out:
+        print(f"commodity {c['id']}: {c['value']} {c.get('shape', '')} {c['checks'] or ''}")
+    return {"items": out, "not_covered": ["Brent–Dubai spread (no free data source)", "Baltic Dry and tanker indices (licensed; ETF proxies shown instead)"]}
+
+
 def main():
     key = os.environ.get("FRED_API_KEY", "").strip()
     if not key:
@@ -183,7 +279,7 @@ def main():
     today = datetime.now(timezone.utc).date()
     start = (today - timedelta(days=3 * 365)).isoformat()
     out = {"updated": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "source": "Yahoo Finance; FRED, Federal Reserve Bank of St. Louis", "series": []}
-    day_change = {}
+    day_change, series_rows = {}, {}
     for group, sid, name, unit, decimals, freq in SERIES:
         rows, src, checks, as_of = [], "FRED", [], None
         try:
@@ -227,6 +323,7 @@ def main():
             rows = rows[:-1]
             day_change.pop(sid, None)
             as_of = None
+        series_rows[sid] = rows
         last_d, last_v = rows[-1]
         stale = business_days_between(last_d, today) > (4 if freq == "daily" else 45)
         if stale:
@@ -247,6 +344,10 @@ def main():
             "history": history,
         })
         print(f"ok {sid} ({src}): {last_d} {last_v}" + (f" as of {as_of}" if as_of else "") + (f" [{'; '.join(checks)}]" if checks else ""))
+    try:
+        out["commodities"] = build_commodities(series_rows, today)
+    except Exception as e:
+        print(f"commodities failed: {type(e).__name__}: {e}")
     out["risk"] = []
     rstart = (today - timedelta(days=10 * 365)).isoformat()
     for sid, name, desc, unit, dec, kind, amber, red in RISK:
