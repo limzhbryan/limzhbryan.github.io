@@ -61,11 +61,11 @@ URL = "https://api.stlouisfed.org/fred/series/observations?series_id={id}&observ
 # kind "level": higher is worse; "below": lower is worse; "change": 1-month % change, higher is worse.
 RISK = [
     # id, name, what it measures, unit, decimals, kind, amber, red
-    ("BAMLH0A0HYM2", "Credit stress", "US high-yield bond spread over Treasuries", "%", 2, "level", 4.0, 6.0),
-    ("VIXCLS", "Fear gauge", "VIX, expected S&P 500 volatility", "index", 2, "level", 20.0, 30.0),
-    ("T10Y2Y", "Recession signal", "10-year minus 2-year Treasury yield", "pts", 2, "below", 0.25, 0.0),
-    ("STLFSI4", "Financial stress", "St. Louis Fed Financial Stress Index (0 = average)", "index", 2, "level", 0.0, 1.0),
-    ("DTWEXBGS", "Dollar squeeze", "Broad US dollar index, change over the past month", "%", 1, "change", 1.5, 3.0),
+    ("BAMLH0A0HYM2", "Credit Stress", "US high-yield bond spread over Treasuries", "%", 2, "level", 4.0, 6.0),
+    ("VIXCLS", "Fear Gauge", "VIX, expected S&P 500 volatility", "index", 2, "level", 20.0, 30.0),
+    ("T10Y2Y", "Recession Signal", "10-year minus 2-year Treasury yield", "pts", 2, "below", 0.25, 0.0),
+    ("STLFSI4", "Financial Stress", "St. Louis Fed Financial Stress Index (0 = average)", "index", 2, "level", 0.0, 1.0),
+    ("DTWEXBGS", "Dollar Squeeze", "Broad US dollar index, change over the past month", "%", 1, "change", 1.5, 3.0),
 ]
 RISK_RULES = {  # plain-English thresholds shown on each gauge
     "BAMLH0A0HYM2": "Green below 4%, amber 4–6%, red above 6%. Also amber if the spread widens by more than 1 point in a month",
@@ -243,7 +243,7 @@ def build_commodities(series_rows, today):
     # 1. Brent-WTI spread, from the same front contracts shown on the price board.
     b, w = series_rows.get("DCOILBRENTEU", []), series_rows.get("DCOILWTICO", [])
     rows = aligned(b, w, lambda x, y: x - y, year_ago)
-    c = card("brent_wti", "Brent–WTI spread", "Brent minus WTI, front-month futures", "US$/bbl", 2, rows, -5, 25,
+    c = card("brent_wti", "Brent–WTI Spread", "Brent minus WTI, front-month futures", "US$/bbl", 2, rows, -5, 25,
              {"note": "A wider spread makes US crude more attractive to export"})
     if c: out.append(c)
     # 2. Brent futures curve: the next seven monthly contracts.
@@ -259,7 +259,7 @@ def build_commodities(series_rows, today):
         spread = m1 - m6
         shape = "backwardation" if spread > 0.25 else "contango" if spread < -0.25 else "flat"
         if abs(spread) < 40:
-            out.append({"id": "brent_curve", "name": "Brent curve", "desc": "Front month minus sixth month (M1–M6)",
+            out.append({"id": "brent_curve", "name": "Brent Curve", "desc": "Front month minus sixth month (M1–M6)",
                         "unit": "US$/bbl", "decimals": 2, "value": round(spread, 2), "date": curve[0]["date"],
                         "shape": shape, "curve": curve, "checks": [],
                         "note": "Backwardation (near months dearer) signals a tight market; contango signals surplus"})
@@ -269,20 +269,20 @@ def build_commodities(series_rows, today):
         hod = dict(ho)
         rbho = [(d, (2 * v * 42 + hod[d] * 42)) for d, v in rb if d in hod]
         rows = aligned(rbho, cl, lambda prod, crude: (prod - 3 * crude) / 3, year_ago)
-        c = card("crack_321", "3-2-1 crack spread", "US refining margin: RBOB gasoline and heating oil vs WTI, front month",
+        c = card("crack_321", "3-2-1 Crack Spread", "US refining margin: RBOB gasoline and heating oil vs WTI, front month",
                  "US$/bbl", 2, rows, -10, 100, {"note": "A proxy for how profitable it is to refine a barrel of crude"})
         if c: out.append(c)
     # 4. LNG: JKM (Asia) vs TTF (Europe), both in US$/MMBtu.
     jkm, ttf_usd = series_rows.get("JKM", []), series_rows.get("TTF", [])    # same series as the price board
     if jkm and ttf_usd:
         rows = aligned(jkm, ttf_usd, lambda j, t: j - t, year_ago)
-        c = card("jkm_ttf", "JKM–TTF spread", "Asian LNG (JKM) minus European gas (TTF), front month", "US$/MMBtu", 2,
+        c = card("jkm_ttf", "JKM–TTF Spread", "Asian LNG (JKM) minus European gas (TTF), front month", "US$/MMBtu", 2,
                  rows, -15, 15, {"note": "When Asia pays more than Europe, flexible LNG cargoes head east",
                                  "jkm": round(jkm[-1][1], 2), "ttf": round(ttf_usd[-1][1], 2) if ttf_usd else None})
         if c: out.append(c)
     # 5. Freight proxies: Breakwave ETFs that hold freight futures.
-    for sym, cid, name, desc in [("BDRY", "freight_dry", "Dry bulk freight", "Breakwave Dry Bulk Shipping ETF (proxy for Capesize, Panamax and Supramax rates)"),
-                                 ("BWET", "freight_tanker", "Tanker freight", "Breakwave Tanker Shipping ETF (proxy for crude and product tanker rates)")]:
+    for sym, cid, name, desc in [("BDRY", "freight_dry", "Dry Bulk Freight", "Breakwave Dry Bulk Shipping ETF (proxy for Capesize, Panamax and Supramax rates)"),
+                                 ("BWET", "freight_tanker", "Tanker Freight", "Breakwave Tanker Shipping ETF (proxy for crude and product tanker rates)")]:
         r = get(sym)
         rows = [(d, v) for d, v in r if d >= year_ago]
         c = card(cid, name, desc, "US$ per share", 2, rows, 0.5, 5000,

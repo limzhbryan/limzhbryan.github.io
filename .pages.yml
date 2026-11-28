@@ -12,10 +12,10 @@ content:
     path: content/home.json
     format: json
     fields:
-      - { name: headline, label: Big headline, type: string }
+      - { name: headline, label: Big Headline, type: string }
       - { name: intro, label: Intro paragraph, type: text }
       - { name: intro_more, label: Second line, type: text }
-      - { name: themes_title, label: Themes heading, type: string }
+      - { name: themes_title, label: Themes Heading, type: string }
       - name: themes
         label: Themes
         type: object
@@ -67,7 +67,7 @@ content:
       - { name: note, label: Data note at the bottom, type: text }
 
   - name: commentary
-    label: Morning brief (automated each morning)
+    label: Morning Brief (Automated Each Morning)
     type: file
     path: data/commentary.json
     format: json

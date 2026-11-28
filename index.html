@@ -347,12 +347,12 @@ details.more[open] .more-rows { display: none; }
       <article class="feature" id="home-feature"></article>
     </section>
     <section class="stack">
-      <h2 class="sec">More writing</h2>
+      <h2 class="sec">More Writing</h2>
       <div class="list col" data-posts="latest"></div>
-      <p class="small"><a href="#writing">All writing</a></p>
+      <p class="small"><a href="#writing">All Writing</a></p>
     </section>
     <section class="stack" style="gap:24px">
-      <h2 class="sec" id="themes-title">What I write about</h2>
+      <h2 class="sec" id="themes-title">What I Write About</h2>
       <div class="themes" id="home-themes"></div>
     </section>
   </div>
@@ -398,29 +398,29 @@ details.more[open] .more-rows { display: none; }
     <nav class="filters mk-tabs" aria-label="Commodities and macro sections">
       <a href="#commodities" data-mtab="comm">Commodities</a>
       <a href="#inventories" data-mtab="inv">Inventories</a>
-      <a href="#macro-drivers" data-mtab="macro">Macro drivers</a>
+      <a href="#macro-drivers" data-mtab="macro">Macro Drivers</a>
     </nav>
     <div class="mk-panel stack" data-panel="comm" style="gap:48px">
       <section class="my-take col" id="my-take" hidden>
-        <h2 class="sec">Morning brief</h2>
+        <h2 class="sec">Morning Brief</h2>
         <div id="my-take-body" class="stack" style="gap:12px"></div>
         <p class="mk-meta" id="my-take-meta"></p>
       </section>
       <section class="stack"><h2 class="sec">Energy</h2><div id="b-energy" aria-live="polite"><p class="muted small">Loading…</p></div></section>
       <section class="stack" id="mk-comm">
-        <h2 class="sec">Spreads and curves</h2>
+        <h2 class="sec">Spreads and Curves</h2>
         <p class="muted col">The spreads that oil, refining and LNG desks watch every day</p>
         <div class="comm-grid" id="comm-spreads"><p class="muted small">Loading…</p></div>
       </section>
       <details class="more" id="more">
-        <summary><span class="more-label">Metals, freight and macro context</span><span class="more-rows" id="more-rows"></span><span class="more-btn">Show more</span></summary>
+        <summary><span class="more-label">Metals, Freight and Macro Context</span><span class="more-rows" id="more-rows"></span><span class="more-btn">Show more</span></summary>
         <div class="stack" style="gap:48px;margin-top:32px">
           <section class="stack"><h2 class="sec">Metals</h2><div id="b-metals"></div></section>
           <section class="stack">
             <h2 class="sec">Freight</h2>
             <div class="comm-grid" id="comm-freight"></div>
           </section>
-          <section class="stack"><h2 class="sec">Macro context</h2><p class="muted col">The dollar, rates and equities, only as far as they move commodities</p><div id="b-macro"></div></section>
+          <section class="stack"><h2 class="sec">Macro Context</h2><p class="muted col">The dollar, rates and equities, only as far as they move commodities</p><div id="b-macro"></div></section>
         </div>
       </details>
       <p class="mk-meta" id="comm-meta"></p>
@@ -428,13 +428,13 @@ details.more[open] .more-rows { display: none; }
     </div>
     <div class="mk-panel stack" data-panel="inv" hidden>
       <section class="stack col" id="mk-inv">
-        <h2 class="sec">Weekly inventory note</h2>
+        <h2 class="sec">Weekly Inventory Note</h2>
         <div id="inv-body" class="stack" style="gap:16px"><p class="muted">The weekly note on US and Singapore oil stocks is published every Friday morning</p></div>
       </section>
     </div>
     <div class="mk-panel stack" data-panel="macro" hidden style="gap:56px">
     <section class="stack" id="mk-heat">
-      <h2 class="sec">Macro heat map</h2>
+      <h2 class="sec">Macro Heat Map</h2>
       <p class="muted col" id="heat-intro">The latest economic news from the economies that drive commodity demand and supply, shaded from negative (red) to positive (green). Hover over or tap a country to read the headline</p>
       <div class="heat-wrap">
         <svg id="heat-map" role="img" aria-label="World map shaded by macro news sentiment"></svg>
@@ -445,7 +445,7 @@ details.more[open] .more-rows { display: none; }
       <p class="mk-meta" id="heat-meta"></p>
     </section>
     <section class="stack" id="mk-risk" hidden>
-      <h2 class="sec">Risk monitor</h2>
+      <h2 class="sec">Risk Monitor</h2>
       <p class="muted col">Financial stress tends to spill over into commodities through a stronger dollar, tighter credit and weaker demand, so these are the gauges I watch</p>
       <div class="risk-head" id="risk-head"></div>
       <div class="risk-grid" id="risk-grid"></div>
@@ -612,7 +612,7 @@ function renderArticle(slug) {
   $("article-view").innerHTML = `<header><h1>${esc(a.title)}</h1><p class="dek">${esc(a.summary)}</p>
     <p class="byline">Bryan Lim · ${esc(longDate(a.date))}${a.venue ? " · " + esc(a.venue) : ""}${a.read_time ? " · " + esc(a.read_time) : ""}</p></header>
     ${a.why_it_matters ? `<div class="why"><strong>Why it matters</strong><p>${esc(a.why_it_matters)}</p></div>` : ""}
-    <div class="prose">${paras(a.body)}<p class="small"><a href="#writing">← All writing</a></p></div>`;
+    <div class="prose">${paras(a.body)}<p class="small"><a href="#writing">← All Writing</a></p></div>`;
   document.title = a.title + " · Bryan Lim";
   return true;
 }
@@ -816,7 +816,7 @@ async function loadInventory() {
     const srcs = (n.sources || []).filter(s => /^https?:\/\//.test(s.url)).map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a>`).join(" · ");
     $("inv-body").innerHTML = `${n.headline ? `<h3 style="font-size:24px">${esc(n.headline)}</h3>` : ""}
       ${n.paragraphs.map(p => `<p class="mk-summary">${esc(p)}</p>`).join("")}
-      ${rows ? `<table class="inv-table"><thead><tr><th>Stocks</th><th>Level</th><th>Weekly change</th>${hasAvg ? "<th>Average</th>" : ""}</tr></thead><tbody>${rows}</tbody></table>` : ""}
+      ${rows ? `<table class="inv-table"><thead><tr><th>Stocks</th><th>Level</th><th>Weekly Change</th>${hasAvg ? "<th>Average</th>" : ""}</tr></thead><tbody>${rows}</tbody></table>` : ""}
       ${n.avg_note ? `<p class="mk-meta">${esc(n.avg_note)}</p>` : ""}<p class="mk-meta">${esc(n.period || "")}${srcs ? " · Sources: " + srcs : ""}</p>`;
     $("mk-inv").hidden = false;
   } catch (e) { /* no note yet */ }
@@ -861,7 +861,7 @@ function renderRisk(list) {
   const head = $("risk-head"); head.style.setProperty("--st", `var(--${overall})`);
   head.innerHTML = `<span class="lvl">${word}</span><p>${esc(text)}</p>`;
   const sr = $("strip-risk"); sr.style.setProperty("--st", `var(--${overall})`);
-  sr.innerHTML = `Risk monitor: <b>${word}</b>`; $("mk-strip").hidden = false;
+  sr.innerHTML = `Risk Monitor: <b>${word}</b>`; $("mk-strip").hidden = false;
   $("risk-grid").innerHTML = list.map(r => `<div class="risk-card" style="--st:var(--${r.status})">
     <h3>${esc(r.name)}</h3><span class="desc">${esc(r.desc)}</span>
     <span class="val">${riskValue(r)} <span class="st">${RISK_WORD[r.status]}</span></span>
@@ -921,7 +921,7 @@ async function loadMarkets() {
     $("b-metals").innerHTML = boardFor("Metals");
     $("b-macro").innerHTML = boardFor("Macro context");
     const curve = (data.commodities && data.commodities.items || []).find(c => c.id === "brent_curve");
-    if (curve) { const sc = $("strip-curve"); sc.innerHTML = `Brent curve: <b>${esc(curve.shape)}</b>`; sc.hidden = false; $("mk-strip").hidden = false; }
+    if (curve) { const sc = $("strip-curve"); sc.innerHTML = `Brent Curve: <b>${esc(curve.shape)}</b>`; sc.hidden = false; $("mk-strip").hidden = false; }
     const pick = id => data.series.find(x => x.id === id);
     $("more-rows").innerHTML = ["GOLD", "COPPER", "DXY", "DGS10"].map(pick).filter(Boolean).map(x => {
       const d = dayChange(x); return `<span><b>${esc(TK_SHORT[x.id] || x.name)}</b>${fmtNum(x.latest, x.decimals)}${x.unit === "%" ? "%" : ""}${d == null ? "" : ` <span class="${d > 0 ? "up" : d < 0 ? "down" : ""}">${d > 0 ? "+" : ""}${d.toFixed(2)}%</span>`}</span>`;
