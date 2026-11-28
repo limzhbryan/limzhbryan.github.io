@@ -746,12 +746,14 @@ async function loadInventory() {
     if (!r.ok) return;
     const n = await r.json();
     if (!n.paragraphs || !n.paragraphs.length) return;
-    const rows = (n.table || []).map(t => `<tr><td>${esc(t.name)}</td><td>${esc(t.level)}</td><td>${esc(t.change)}</td></tr>`).join("");
+    const hasAvg = (n.table || []).some(t => t.avg);
+    const dir = c => /^\s*\+/.test(c || "") ? "up" : /^\s*[−-]/.test(c || "") ? "down" : "";
+    const rows = (n.table || []).map(t => `<tr><td>${esc(t.name)}</td><td>${esc(t.level)}</td><td class="${dir(t.change)}">${esc(t.change)}</td>${hasAvg ? `<td>${esc(t.avg || "–")}</td>` : ""}</tr>`).join("");
     const srcs = (n.sources || []).filter(s => /^https?:\/\//.test(s.url)).map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a>`).join(" · ");
     $("inv-body").innerHTML = `${n.headline ? `<h3 style="font-size:24px">${esc(n.headline)}</h3>` : ""}
       ${n.paragraphs.map(p => `<p class="mk-summary">${esc(p)}</p>`).join("")}
-      ${rows ? `<table class="inv-table"><thead><tr><th>Stocks</th><th>Level</th><th>Weekly change</th></tr></thead><tbody>${rows}</tbody></table>` : ""}
-      <p class="mk-meta">${esc(n.period || "")}${srcs ? " · Sources: " + srcs : ""}</p>`;
+      ${rows ? `<table class="inv-table"><thead><tr><th>Stocks</th><th>Level</th><th>Weekly change</th>${hasAvg ? "<th>Average</th>" : ""}</tr></thead><tbody>${rows}</tbody></table>` : ""}
+      ${n.avg_note ? `<p class="mk-meta">${esc(n.avg_note)}</p>` : ""}<p class="mk-meta">${esc(n.period || "")}${srcs ? " · Sources: " + srcs : ""}</p>`;
     $("mk-inv").hidden = false;
   } catch (e) { /* no note yet */ }
 }

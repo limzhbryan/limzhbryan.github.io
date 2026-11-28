@@ -272,6 +272,37 @@ def build_commodities(series_rows, today):
     return {"items": out, "not_covered": ["Brent–Dubai spread (no free data source)", "Baltic Dry and tanker indices (licensed; ETF proxies shown instead)"]}
 
 
+EIA_HIST = {  # id -> EIA weekly history series (for the 5-year average)
+    "crude": "WCESTUS1", "cushing": "W_EPC0_SAX_YCUOK_MBBL", "spr": "WCSSTUS1",
+    "gasoline": "WGTSTUS1", "distillate": "WDISTUS1", "jet": "WKJSTUS1", "util": "WPULEUS3",
+}
+
+
+def eia_five_year_avg(series, week):
+    """Average of the same week in each of the previous five years, as EIA does (needs xlrd)."""
+    import xlrd
+    req = urllib.request.Request(f"https://www.eia.gov/dnav/pet/hist_xls/{series}w.xls", headers={"User-Agent": "Mozilla/5.0"})
+    with urllib.request.urlopen(req, timeout=40) as r:
+        book = xlrd.open_workbook(file_contents=r.read())
+    sh = book.sheet_by_name("Data 1")
+    pts = {}
+    for i in range(3, sh.nrows):
+        d, v = sh.cell_value(i, 0), sh.cell_value(i, 1)
+        if isinstance(d, float) and v not in ("", None):
+            pts[xlrd.xldate.xldate_as_datetime(d, book.datemode).date()] = float(v)
+    vals = []
+    for y in range(week.year - 5, week.year):
+        try:
+            target = week.replace(year=y)
+        except ValueError:
+            target = week.replace(year=y, day=28)
+        near = [(abs((d - target).days), d) for d in pts if abs((d - target).days) <= 3]
+        if not near:
+            return None
+        vals.append(pts[min(near)[1]])
+    return sum(vals) / len(vals)
+
+
 EIA_ROWS = {  # table4.csv row label -> (id, display name)
     "Commercial (Excluding SPR)": ("crude", "US commercial crude"),
     "Cushing": ("cushing", "Cushing, Oklahoma"),
@@ -308,8 +339,20 @@ def eia_weekly():
             break
     if len(items) < 5:
         raise ValueError(f"only {len(items)} EIA rows parsed")
+    wk = datetime.strptime(head[1], "%m/%d/%y").date()
+    for it in items + ([dict(util, id="util")] if util else []):
+        try:
+            a = eia_five_year_avg(EIA_HIST[it["id"]], wk)
+        except Exception as e:
+            print(f"EIA 5-yr average failed for {it['id']}: {type(e).__name__}: {e}")
+            a = None
+        if a is not None:
+            target = util if it["id"] == "util" else it
+            target["avg_5y"] = round(a, 3 if it["id"] != "util" else 1)
+            if it["id"] != "util":
+                target["vs_avg_pct"] = round((it["level"] / a - 1) * 100, 1)
     return {"week_ending": week, "prior_week": prev, "unit": "million barrels", "items": items,
-            "refinery_utilization": util, "source": "EIA Weekly Petroleum Status Report",
+            "refinery_utilization": util, "avg_note": "5-year average for the same week of the year, previous five years", "source": "EIA Weekly Petroleum Status Report",
             "url": "https://www.eia.gov/petroleum/supply/weekly/"}
 
 
