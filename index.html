@@ -29,6 +29,7 @@
 :root[data-theme="dark"] { --bg: #111720; --ink: #E7E9EC; --muted: #9AA3AE; --rule: #263040; --band: #0B1320; --band-ink: #F2F0EB; --band-muted: #93A0B3; --accent: #E07A5F; --link: #A9C4E6; color-scheme: dark; }
 
 * { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; text-size-adjust: 100%; }
 body { background: var(--bg); color: var(--ink); font-family: var(--serif); font-size: 19px; line-height: 1.6; }
 .inner { max-width: 960px; margin: 0 auto; padding-left: max(20px, env(safe-area-inset-left, 0px)); padding-right: max(20px, env(safe-area-inset-right, 0px)); }
 a { color: var(--link); text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; text-decoration-color: color-mix(in srgb, currentColor 40%, transparent); }
@@ -164,7 +165,7 @@ details.more[open] .more-rows { display: none; }
 .more-rows { grid-column: 1 / -1; display: flex; flex-wrap: wrap; gap: 6px 22px; font-family: var(--ui); font-size: 14px; font-variant-numeric: tabular-nums; color: var(--muted); }
 .more-rows b { color: var(--ink); font-weight: 500; margin-right: 4px; }
 /* Markets */
-.mk-meta { font-family: var(--ui); font-size: 14px; color: var(--muted); }
+.mk-meta { font-family: var(--ui); font-size: 13px; line-height: 1.5; color: var(--muted); }
 .mk-group { display: grid; gap: 0; }
 .mk-group h3.grp { font-size: clamp(26px, 3.2vw, 32px); font-weight: 500; letter-spacing: -0.01em; color: var(--ink); padding: 0 0 14px; display: flex; align-items: center; gap: 14px; }
 .mk-group h3.grp::before { content: ""; width: 6px; align-self: stretch; margin-block: 6px 14px; background: var(--accent); }
@@ -921,7 +922,7 @@ async function loadMarkets() {
     $("b-metals").innerHTML = boardFor("Metals");
     $("b-macro").innerHTML = boardFor("Macro context");
     const curve = (data.commodities && data.commodities.items || []).find(c => c.id === "brent_curve");
-    if (curve) { const sc = $("strip-curve"); sc.innerHTML = `Brent Curve: <b>${esc(curve.shape)}</b>`; sc.hidden = false; $("mk-strip").hidden = false; }
+    if (curve) { const sc = $("strip-curve"); sc.innerHTML = `Brent Curve: <b>${esc(String(curve.shape).replace(/\b\w/g, ch => ch.toUpperCase()))}</b>`; sc.hidden = false; $("mk-strip").hidden = false; }
     const pick = id => data.series.find(x => x.id === id);
     $("more-rows").innerHTML = ["GOLD", "COPPER", "DXY", "DGS10"].map(pick).filter(Boolean).map(x => {
       const d = dayChange(x); return `<span><b>${esc(TK_SHORT[x.id] || x.name)}</b>${fmtNum(x.latest, x.decimals)}${x.unit === "%" ? "%" : ""}${d == null ? "" : ` <span class="${d > 0 ? "up" : d < 0 ? "down" : ""}">${d > 0 ? "+" : ""}${d.toFixed(2)}%</span>`}</span>`;
