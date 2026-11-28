@@ -4,8 +4,8 @@
     {
       "id": "840",
       "name": "United States",
-      "score": -0.1,
-      "headline": "Q3 growth was revised up to 4.3%, but core PCE inflation rose to 3.3% and markets now expect a December Fed rate hike",
+      "score": 0.1,
+      "headline": "Q3 growth was revised up to 4.3%, and stocks rebounded as worries over AI profitability eased",
       "source": "Yahoo Finance",
       "url": "https://finance.yahoo.com/markets/live/stock-market-today-firday-november-27-dow-sp-500-nasdaq-black-friday-holiday-091152065.html",
       "date": "2026-11-27"
@@ -23,7 +23,7 @@
       "id": "392",
       "name": "Japan",
       "score": -0.1,
-      "headline": "Tokyo core inflation hit 2.9% in November, supporting the case for a December BOJ hike, while the yen hovers near 160 per dollar",
+      "headline": "Tokyo core inflation rose to 2.9% in November from 2.6% in October, keeping pressure on the BOJ",
       "source": "The Japan Times",
       "url": "https://www.japantimes.co.jp/business/2026/11/27/economy/tokyo-inflation-november/",
       "date": "2026-11-27"
@@ -41,10 +41,10 @@
       "id": "250",
       "name": "France",
       "score": -0.6,
-      "headline": "Q3 GDP was revised to a 0.2% contraction, raising the risk of recession",
-      "source": "CNBC",
-      "url": "https://www.cnbc.com/2026/11/24/france-recession-risk-pmi.html",
-      "date": "2026-11-24"
+      "headline": "GDP shrank 0.1% in the third quarter, raising the risk of recession",
+      "source": "INSEE",
+      "url": "https://www.insee.fr/en/statistiques/9113712",
+      "date": "2026-10-30"
     },
     {
       "id": "356",
@@ -59,10 +59,10 @@
       "id": "702",
       "name": "Singapore",
       "score": 0.8,
-      "headline": "The 2026 growth forecast was raised to around 6% on the AI investment boom",
-      "source": "Singapore Department of Statistics",
-      "url": "https://www.singstat.gov.sg/gdp",
-      "date": "2026-11-25",
+      "headline": "The 2026 growth forecast was raised to around 6% after the economy grew 6.1% in the third quarter",
+      "source": "Ministry of Energy, Trade and Industry",
+      "url": "https://www.meti.gov.sg/newsroom/meti-upgrades-gdp-growth-forecast-for-2026-to--around-6-0-per-cent--and-forecasts-gdp-growth-of--2-5-to-4-5-per-cent--for-2027/",
+      "date": "2026-11-24",
       "lon": 103.82,
       "lat": 1.35
     },
@@ -97,7 +97,7 @@
       "id": "364",
       "name": "Iran",
       "score": -0.9,
-      "headline": "The rial fell to a record low near 2.9 million per dollar after new US sanctions",
+      "headline": "The rial fell to a fresh record low after new US sanctions",
       "source": "A News",
       "url": "https://www.anews.com.tr/world/2026/11/24/iranian-rial-hits-record-low-after-fresh-us-sanctions-target-financial-network",
       "date": "2026-11-24"
@@ -115,10 +115,10 @@
       "id": "360",
       "name": "Indonesia",
       "score": -0.4,
-      "headline": "Bank Indonesia unexpectedly raised rates to 6.00% to defend a record-weak rupiah",
+      "headline": "Bank Indonesia raised rates by 0.25 points to 6.00% to steady the rupiah amid global uncertainty",
       "source": "Bank Indonesia",
       "url": "https://www.bi.go.id/en/publikasi/ruang-media/news-release/Pages/sp_2825426.aspx",
-      "date": "2026-11-19"
+      "date": "2026-11-18"
     }
   ]
 }
