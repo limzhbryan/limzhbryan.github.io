@@ -444,6 +444,7 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
     </div>
     <section class="cv-sec"><h2 class="sec">Experience</h2><div class="stack" id="cv-experience"></div></section>
     <section class="cv-sec"><h2 class="sec">Education</h2><div class="stack" id="cv-education"></div></section>
+    <section class="cv-sec" id="cv-teaching-sec" hidden><h2 class="sec">Teaching</h2><div class="stack" id="cv-teaching"></div></section>
     <section class="cv-sec"><h2 class="sec">Leadership</h2><div class="stack" id="cv-leadership"></div></section>
     <section class="cv-sec"><h2 class="sec">Skills</h2><p id="cv-skills"></p></section>
   </div>
@@ -590,6 +591,9 @@ function renderResume(r) {
   if (r.pdf && safeUrl(r.pdf)) pdf.href = r.pdf; else pdf.hidden = true;
   $("cv-experience").innerHTML = (r.experience || []).map(j => `<div class="job"><h3>${esc(j.organisation)}</h3><span class="when">${esc(j.dates)}</span><span class="role">${esc(j.role)}</span></div>`).join("");
   $("cv-education").innerHTML = (r.education || []).map(e => `<div class="job"><h3>${esc(e.qualification)}</h3><span class="when">${esc(e.dates)}</span><span class="role">${esc(e.school)}</span></div>`).join("");
+  const teach = r.teaching || [];
+  $("cv-teaching").innerHTML = teach.map(t => `<div class="job"><h3>${esc(t.organisation)}</h3><span class="when">${esc(t.dates || "")}</span><span class="role">${esc(t.role)}</span></div>`).join("");
+  $("cv-teaching-sec").hidden = !teach.length;
   $("cv-leadership").innerHTML = (r.leadership || []).map(l => `<div class="job"><h3>${esc(l.organisation)}</h3><span class="when">${esc(l.dates)}</span><span class="role">${esc(l.role)}</span></div>`).join("");
   $("cv-skills").textContent = r.skills || "";
 }

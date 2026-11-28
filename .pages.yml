@@ -115,6 +115,14 @@ content:
           - { name: qualification, label: Qualification, type: string }
           - { name: school, label: School, type: string }
           - { name: dates, label: Dates, type: string }
+      - name: teaching
+        label: Teaching
+        type: object
+        list: true
+        fields:
+          - { name: organisation, label: Where, type: string }
+          - { name: role, label: What you taught, type: string }
+          - { name: dates, label: Dates, type: string }
       - name: leadership
         label: Leadership
         type: object
