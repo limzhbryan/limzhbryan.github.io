@@ -185,9 +185,9 @@ details.more[open] .more-rows { display: none; }
 .mk-head { font-family: var(--ui); font-size: 12px; color: var(--muted); }
 .mk-head .mk-row { border-top: 0; padding-block: 0 6px; }
 .mk-summary { font-size: 19px; line-height: 1.65; }
-[data-view="markets"] { --green: #3B7D52; --amber: #B7832B; --red: #B5412E; }
-@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) [data-view="markets"] { --green: #5FA676; --amber: #D9A646; --red: #D2654F; } }
-:root[data-theme="dark"] [data-view="markets"] { --green: #5FA676; --amber: #D9A646; --red: #D2654F; }
+[data-view="markets"], #home-markets { --green: #3B7D52; --amber: #B7832B; --red: #B5412E; }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) [data-view="markets"], :root:not([data-theme="light"]) #home-markets { --green: #5FA676; --amber: #D9A646; --red: #D2654F; } }
+:root[data-theme="dark"] [data-view="markets"], :root[data-theme="dark"] #home-markets { --green: #5FA676; --amber: #D9A646; --red: #D2654F; }
 .risk-head { display: grid; grid-template-columns: auto minmax(0, 1fr); gap: 6px 20px; align-items: baseline; padding: 18px 20px; border-left: 4px solid var(--st); background: color-mix(in srgb, var(--st) 8%, var(--bg)); }
 .risk-head .lvl { font-size: clamp(26px, 3vw, 32px); font-weight: 500; color: var(--st); }
 .risk-head p { font-size: 18px; line-height: 1.55; }
