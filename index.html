@@ -241,6 +241,7 @@ details.more[open] .more-rows { display: none; }
 .mk-strip .strip-risk { font-family: var(--ui); font-size: 14px; white-space: nowrap; }
 .mk-strip .strip-risk b { color: var(--st, var(--ink)); }
 .mk-strip .strip-head { flex: 1 1 320px; font-style: italic; }
+.mk-strip .hs-label { font-family: var(--ui); font-size: 14px; font-style: normal; }
 #heat-map { width: 100%; height: auto; display: block; }
 #heat-map path { stroke: var(--bg); stroke-width: 0.5; vector-effect: non-scaling-stroke; }
 #heat-map .has { cursor: pointer; }
@@ -351,6 +352,15 @@ details.more[open] .more-rows { display: none; }
       <h2 class="sec">More Writing</h2>
       <div class="list col" data-posts="latest"></div>
       <p class="small"><a href="#writing">All Writing</a></p>
+    </section>
+    <section class="stack" style="gap:14px" id="home-markets" hidden>
+      <h2 class="sec">Latest From the Markets</h2>
+      <div class="mk-strip">
+        <a href="#macro-drivers" class="strip-risk" id="hs-risk" hidden></a>
+        <a href="#commodities" class="strip-risk" id="hs-curve" hidden></a>
+        <a href="#commodities" class="strip-head" id="hs-head" hidden></a>
+      </div>
+      <p class="mk-meta">Updated automatically each morning from the <a href="#commodities">Commodities &amp; Macro</a> page</p>
     </section>
     <section class="stack" style="gap:24px">
       <h2 class="sec" id="themes-title">What I Write About</h2>
@@ -702,7 +712,7 @@ async function loadCommentary() {
     const c = await r.json();
     if (!c.paragraphs || !c.paragraphs.length) return;
     const srcs = (c.sources || []).filter(s => /^https?:\/\//.test(s.url)).map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a>`).join(" · ");
-    if (c.headline) { $("strip-head").textContent = c.headline; $("mk-strip").hidden = false; }
+    if (c.headline) { $("strip-head").textContent = c.headline; $("mk-strip").hidden = false; homeStrip("hs-head", c.headline, "Morning Brief: "); }
     $("my-take-body").innerHTML = `${c.headline ? `<h3>${esc(c.headline)}</h3>` : ""}${c.paragraphs.map(p => `<p>${esc(p)}</p>`).join("")}`;
     $("my-take-meta").innerHTML = `${esc(fmtDate(c.date))} · Compiled automatically each morning from the latest prices on this page and the news sources linked here${srcs ? " · Sources: " + srcs : ""}`;
     $("my-take").hidden = false;
@@ -877,6 +887,7 @@ function renderRisk(list) {
   head.innerHTML = `<span class="lvl">${word}</span><p>${esc(text)}</p>`;
   const sr = $("strip-risk"); sr.style.setProperty("--st", `var(--${overall})`);
   sr.innerHTML = `Risk Monitor: <b>${word}</b>`; $("mk-strip").hidden = false;
+  homeStrip("hs-risk", sr.innerHTML).style.setProperty("--st", `var(--${overall})`);
   $("risk-grid").innerHTML = list.map(r => `<div class="risk-card" style="--st:var(--${r.status})">
     <h3>${esc(r.name)}</h3><span class="desc">${esc(r.desc)}</span>
     <span class="val">${riskValue(r)} <span class="st">${RISK_WORD[r.status]}</span></span>
@@ -917,6 +928,13 @@ function renderTicker(data) {
   $("tk-note").innerHTML = 'Same prices as the board below, refreshed hourly on weekdays. For live quotes, see <a href="https://www.tradingview.com/markets/" target="_blank" rel="noopener">TradingView ↗</a> (external site; its prices can differ slightly from the board, for example where it shows CFDs rather than futures)';
   $("mk-ticker").hidden = false;
 }
+// Mirrors the strip at the top of Commodities & Macro onto the Home page.
+function homeStrip(id, html, label) {
+  const el = $(id);
+  if (label) { el.innerHTML = `<span class="hs-label">${label}</span>`; el.append(html); } else el.innerHTML = html;
+  el.hidden = false; $("home-markets").hidden = false;
+  return el;
+}
 async function loadMarkets() {
   const upd = document.getElementById("mk-updated");
   try {
@@ -935,7 +953,7 @@ async function loadMarkets() {
     $("b-metals").innerHTML = boardFor("Metals");
     $("b-macro").innerHTML = boardFor("Macro context");
     const curve = (data.commodities && data.commodities.items || []).find(c => c.id === "brent_curve");
-    if (curve) { const sc = $("strip-curve"); sc.innerHTML = `Brent Curve: <b>${esc(String(curve.shape).replace(/\b\w/g, ch => ch.toUpperCase()))}</b>`; sc.hidden = false; $("mk-strip").hidden = false; }
+    if (curve) { const sc = $("strip-curve"); sc.innerHTML = `Brent Curve: <b>${esc(String(curve.shape).replace(/\b\w/g, ch => ch.toUpperCase()))}</b>`; sc.hidden = false; $("mk-strip").hidden = false; homeStrip("hs-curve", sc.innerHTML); }
     const pick = id => data.series.find(x => x.id === id);
     $("more-rows").innerHTML = ["GOLD", "COPPER", "DXY", "DGS10"].map(pick).filter(Boolean).map(x => {
       const d = dayChange(x); return `<span><b>${esc(TK_SHORT[x.id] || x.name)}</b>${fmtNum(x.latest, x.decimals)}${x.unit === "%" ? "%" : ""}${d == null ? "" : ` <span class="${d > 0 ? "up" : d < 0 ? "down" : ""}">${d > 0 ? "+" : ""}${d.toFixed(2)}%</span>`}</span>`;

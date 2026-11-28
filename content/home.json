@@ -5,16 +5,29 @@
   "themes_title": "What You Can Find Here",
   "themes": [
     {
-      "title": "Opinions",
-      "text": "Random short opinions and thoughts on society news, sometimes with basic lessons for those not in the know"
+      "title": "Opinion",
+      "text": "Short pieces on the news of the day, with simple explanations for anyone new to the topic",
+      "link": "Opinion"
     },
     {
-      "title": "Analyses",
-      "text": "Slightly more analytical pieces that observes economic matters that may come with some statistics and illustrations"
+      "title": "Analysis",
+      "text": "Data-heavy deep dives into commodities, trade and the economy, with charts and numbers to back them up",
+      "link": "Analysis"
     },
     {
       "title": "Research Papers",
-      "text": "Deep dive research papers that I work on "
+      "text": "The research I am working on, from international trade to economic statecraft",
+      "link": "Research"
+    },
+    {
+      "title": "Commodities & Macro",
+      "text": "A morning brief, live prices for oil, gas, LNG, metals and freight, a weekly inventory note on US and Singapore oil stocks, and a map of the macro news behind them",
+      "link": "Commodities & Macro"
+    },
+    {
+      "title": "Resume",
+      "text": "My experience, from assessing commodity prices at S&P Global to teaching economics",
+      "link": "Resume"
     }
   ]
 }
