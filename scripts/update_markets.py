@@ -20,6 +20,10 @@ SERIES = [
     ("Energy", "DCOILBRENTEU", "Brent crude", "US$/bbl", 2, "daily"),
     ("Energy", "DCOILWTICO", "WTI crude", "US$/bbl", 2, "daily"),
     ("Energy", "DHHNGSP", "Henry Hub natural gas", "US$/MMBtu", 2, "daily"),
+    ("Energy", "JKM", "JKM LNG (Asia)", "US$/MMBtu", 2, "daily"),
+    ("Energy", "TTF", "TTF natural gas (Europe)", "US$/MMBtu", 2, "daily"),
+    ("Energy", "RBOB", "RBOB gasoline", "US$/gal", 3, "daily"),
+    ("Energy", "HEATOIL", "Heating oil (diesel)", "US$/gal", 3, "daily"),
     ("Stock markets", "SP500", "S&P 500", "index", 0, "daily"),
     ("Stock markets", "DJIA", "Dow Jones Industrial Average", "index", 0, "daily"),
     ("Stock markets", "NASDAQCOM", "Nasdaq Composite", "index", 0, "daily"),
@@ -27,6 +31,7 @@ SERIES = [
     ("Stock markets", "VIXCLS", "VIX (US volatility)", "index", 2, "daily"),
     ("FX & rates", "DEXSIUS", "USD/SGD", "S$ per US$1", 4, "daily"),
     ("FX & rates", "DEXCHUS", "USD/CNY", "yuan per US$1", 4, "daily"),
+    ("FX & rates", "DEXUSEU", "EUR/USD", "US$ per €1", 4, "daily"),
     ("FX & rates", "DGS10", "US 10-year Treasury yield", "%", 2, "daily"),
 ]
 
@@ -34,14 +39,19 @@ SERIES = [
 YAHOO = {
     "DCOILBRENTEU": "BZ=F", "DCOILWTICO": "CL=F", "DHHNGSP": "NG=F",
     "SP500": "^GSPC", "DJIA": "^DJI", "NASDAQCOM": "^IXIC", "NIKKEI225": "^N225", "VIXCLS": "^VIX",
-    "DEXSIUS": "SGD=X", "DEXCHUS": "CNY=X",
+    "DEXSIUS": "SGD=X", "DEXCHUS": "CNY=X", "DEXUSEU": "EURUSD=X",
+    "JKM": "JKM=F", "TTF": "TTF=F", "RBOB": "RB=F", "HEATOIL": "HO=F",
 }
+# Series with no FRED equivalent: Yahoo futures only (still range-checked, stale-checked and time-stamped).
+YAHOO_ONLY = {"JKM", "TTF", "RBOB", "HEATOIL"}
+# TTF trades in EUR/MWh; it is converted to US$/MMBtu (1 MWh = 3.412 MMBtu) with EUR/USD so it can be compared with JKM and Henry Hub.
+MWH_PER_MMBTU = 3.412
 YAHOO_URL = "https://query1.finance.yahoo.com/v8/finance/chart/{sym}?range={range}&interval=1d"
 # Yahoo's continuous futures (BZ=F etc.) switch to the next contract before the old one
 # expires, which makes the price jump and the daily change compare two different
 # contracts. For these we use the nearest live contract itself (e.g. BZF27.NYM) for
 # recent prices, and scale the older continuous history to join it smoothly.
-FUTURES_ROOT = {"BZ=F": "BZ", "CL=F": "CL", "NG=F": "NG"}
+FUTURES_ROOT = {"BZ=F": "BZ", "CL=F": "CL", "NG=F": "NG", "RB=F": "RB", "HO=F": "HO", "JKM=F": "JKM"}
 MONTH_CODES = "FGHJKMNQUVXZ"
 URL = "https://api.stlouisfed.org/fred/series/observations?series_id={id}&observation_start={start}&file_type=json&api_key={key}"
 # Market risk monitor: FRED series with fixed, published-style thresholds.
@@ -49,7 +59,7 @@ URL = "https://api.stlouisfed.org/fred/series/observations?series_id={id}&observ
 RISK = [
     # id, name, what it measures, unit, decimals, kind, amber, red
     ("BAMLH0A0HYM2", "Credit stress", "US high-yield bond spread over Treasuries", "%", 2, "level", 4.0, 6.0),
-    ("VIXCLS", "Fear gauge", "VIX, expected S&P 500 volatility", "index", 1, "level", 20.0, 30.0),
+    ("VIXCLS", "Fear gauge", "VIX, expected S&P 500 volatility", "index", 2, "level", 20.0, 30.0),
     ("T10Y2Y", "Recession signal", "10-year minus 2-year Treasury yield", "pts", 2, "below", 0.25, 0.0),
     ("STLFSI4", "Financial stress", "St. Louis Fed Financial Stress Index (0 = average)", "index", 2, "level", 0.0, 1.0),
     ("DTWEXBGS", "Dollar squeeze", "Broad US dollar index, change over the past month", "%", 1, "change", 1.5, 3.0),
@@ -149,10 +159,10 @@ def front_contract(cont_symbol, cont_rows, today):
 # ---------- Accuracy checks ----------
 # Largest believable one-day move by group (%); bigger moves are held back as likely bad data.
 MAX_MOVE = {"Energy": 15, "Stock markets": 10, "FX & rates": 4}
-MAX_MOVE_ID = {"VIXCLS": 80, "DHHNGSP": 25, "DGS10": 15}
+MAX_MOVE_ID = {"VIXCLS": 80, "DHHNGSP": 25, "DGS10": 15, "JKM": 25, "TTF": 25}
 # How closely Yahoo must agree with FRED on the same dates (median gap, %). Oil and gas are
 # skipped because FRED publishes spot prices while Yahoo gives futures.
-AGREE_TOL = {"SP500": 0.5, "DJIA": 0.5, "NASDAQCOM": 0.5, "NIKKEI225": 1.0, "VIXCLS": 4.0, "DEXSIUS": 0.6, "DEXCHUS": 0.6}
+AGREE_TOL = {"SP500": 0.5, "DJIA": 0.5, "NASDAQCOM": 0.5, "NIKKEI225": 1.0, "VIXCLS": 4.0, "DEXSIUS": 0.6, "DEXCHUS": 0.6, "DEXUSEU": 0.6}
 
 
 def agreement(yrows, frows):
@@ -251,7 +261,7 @@ def build_commodities(series_rows, today):
                         "shape": shape, "curve": curve, "checks": [],
                         "note": "Backwardation (near months dearer) signals a tight market; contango signals surplus"})
     # 3. 3-2-1 crack spread: 2 bbl gasoline + 1 bbl heating oil minus 3 bbl crude, per barrel.
-    rb, ho, cl = get("RB=F"), get("HO=F"), get("CL=F")
+    rb, ho, cl = series_rows.get("RBOB", []), series_rows.get("HEATOIL", []), series_rows.get("DCOILWTICO", [])
     if rb and ho and cl:
         hod = dict(ho)
         rbho = [(d, (2 * v * 42 + hod[d] * 42)) for d, v in rb if d in hod]
@@ -260,9 +270,8 @@ def build_commodities(series_rows, today):
                  "US$/bbl", 2, rows, -10, 100, {"note": "A proxy for how profitable it is to refine a barrel of crude"})
         if c: out.append(c)
     # 4. LNG: JKM (Asia) vs TTF (Europe), both in US$/MMBtu.
-    jkm, ttf, eur = get("JKM=F"), get("TTF=F"), get("EURUSD=X")
-    if jkm and ttf and eur:
-        ttf_usd = aligned(ttf, eur, lambda t, fx: t * fx / 3.412, year_ago)    # EUR/MWh -> US$/MMBtu
+    jkm, ttf_usd = series_rows.get("JKM", []), series_rows.get("TTF", [])    # same series as the price board
+    if jkm and ttf_usd:
         rows = aligned(jkm, ttf_usd, lambda j, t: j - t, year_ago)
         c = card("jkm_ttf", "JKM–TTF spread", "Asian LNG (JKM) minus European gas (TTF), front month", "US$/MMBtu", 2,
                  rows, -15, 15, {"note": "When Asia pays more than Europe, flexible LNG cargoes head east",
@@ -383,7 +392,8 @@ def main():
     for group, sid, name, unit, decimals, freq in SERIES:
         rows, src, checks, as_of = [], "FRED", [], None
         try:
-            rows = fetch(sid, start, key)
+            if sid not in YAHOO_ONLY:
+                rows = fetch(sid, start, key)
         except Exception as e:
             print(f"FRED failed for {sid}: {type(e).__name__}")
         fred_rows = rows
@@ -413,6 +423,14 @@ def main():
                         print(f"  {sid}: Yahoo agrees with FRED (median gap {gap:.2f}%)")
             except Exception as e:
                 print(f"Yahoo failed for {sid}: {type(e).__name__}")
+        if sid == "TTF" and rows:
+            try:
+                fx = fetch_yahoo("EURUSD=X")
+                rows = aligned(rows, fx, lambda t, e: t * e / MWH_PER_MMBTU, date(1900, 1, 1))
+                src += " (EUR/MWh converted at EUR/USD)"
+            except Exception as e:
+                print(f"TTF conversion failed: {type(e).__name__}")
+                rows = []
         if len(rows) < 2:
             print(f"skip {sid}: not enough data")
             continue
