@@ -421,6 +421,7 @@ details.more[open] .more-rows { display: none; }
       <a href="#commodities" data-mtab="comm">Commodities</a>
       <a href="#inventories" data-mtab="inv">Inventories</a>
       <a href="#macro-drivers" data-mtab="macro">Macro Drivers</a>
+      <a href="#key-dates" data-mtab="dates">Key Dates</a>
     </nav>
     <div class="mk-panel stack" data-panel="comm" style="gap:48px">
       <section class="my-take col" id="my-take" hidden>
@@ -433,12 +434,6 @@ details.more[open] .more-rows { display: none; }
         <h2 class="sec">Spreads and Curves</h2>
         <p class="muted col">The spreads that oil, refining and LNG desks watch every day</p>
         <div class="comm-grid" id="comm-spreads"><p class="muted small">Loading…</p></div>
-      </section>
-      <section class="stack" id="key-dates" hidden>
-        <h2 class="sec">Key Dates Ahead</h2>
-        <p class="muted col">The scheduled releases and meetings most likely to move commodities over the coming weeks</p>
-        <div class="kd-list" id="kd-list"></div>
-        <p class="mk-meta" id="kd-meta"></p>
       </section>
       <details class="more" id="more">
         <summary><span class="more-label">Metals, Freight and Macro Context</span><span class="more-rows" id="more-rows"></span><span class="more-btn">Show more</span></summary>
@@ -479,6 +474,14 @@ details.more[open] .more-rows { display: none; }
       <div class="risk-head" id="risk-head"></div>
       <div class="risk-grid" id="risk-grid"></div>
       <p class="mk-meta">Each gauge turns amber or red when it crosses a level that has historically gone with market stress. Data: FRED, Federal Reserve Bank of St. Louis, with the VIX from the price board. Refreshed hourly on weekdays</p>
+    </section>
+    </div>
+    <div class="mk-panel stack" data-panel="dates" hidden>
+    <section class="stack" id="kd-sec">
+      <h2 class="sec">Key Dates Ahead</h2>
+      <p class="muted col">The scheduled releases and meetings most likely to move commodities over the coming weeks</p>
+      <div class="kd-list" id="kd-list"><p class="muted small">Loading…</p></div>
+      <p class="mk-meta" id="kd-meta"></p>
     </section>
     </div>
   </div>
@@ -976,14 +979,13 @@ function upcoming(max) {
     .filter(e => !seen.has(e.series) && seen.add(e.series)).slice(0, max);
 }
 function renderCalendar() {
-  const now = new Date(), main = upcoming(9), home = upcoming(3);
+  const now = new Date(), main = upcoming(14), home = upcoming(3);
   if (main.length) {
     $("kd-list").innerHTML = main.map(e => `<div class="kd-row"><div class="kd-when"><span class="kd-cd">${esc(countdown(e, now))}</span><span class="kd-date">${esc(whenText(e))}</span></div>
       <div class="kd-what"><h3>${esc(e.title)}</h3><p>${esc(e.why)}</p><span class="kd-note">${e.note ? esc(e.note) + " · " : ""}${safeUrl(e.url) ? `<a href="${esc(e.url)}" target="_blank" rel="noopener">${esc(e.source)}</a>` : esc(e.source || "")}</span></div></div>`).join("");
-    $("key-dates").hidden = false;
-  }
+      }
   if (home.length) {
-    $("hs-dates").innerHTML = `<span class="hs-label">Coming Up:</span>` + home.map(e => `<a href="#commodities">${esc(e.title)} <em>${esc(countdown(e, now).replace(/^\w/, c => c.toLowerCase()))}</em></a>`).join("");
+    $("hs-dates").innerHTML = `<span class="hs-label">Coming Up:</span>` + home.map(e => `<a href="#key-dates">${esc(e.title)} <em>${esc(countdown(e, now).replace(/^\w/, c => c.toLowerCase()))}</em></a>`).join("");
     $("hs-dates").hidden = false; $("home-markets").hidden = false;
   }
 }
@@ -1038,7 +1040,7 @@ loadMarkets();
 // ---------- Routing ----------
 // Markets tabs: #markets (Today), #macro-map, #risk-monitor.
 // Old links (#markets, #macro-map, #risk-monitor) still work and land on the matching tab.
-const MARKET_TABS = { "commodities": "comm", "markets": "comm", "inventories": "inv",
+const MARKET_TABS = { "key-dates": "dates", "commodities": "comm", "markets": "comm", "inventories": "inv",
   "macro-drivers": "macro", "macro-map": "macro", "risk-monitor": "macro", "daily-note": "comm" };
 const views = [...document.querySelectorAll(".view")];
 const hero = $("hero");
