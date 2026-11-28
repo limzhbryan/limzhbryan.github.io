@@ -166,6 +166,30 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
 .mk-head { font-family: var(--ui); font-size: 12px; color: var(--muted); }
 .mk-head .mk-row { border-top: 0; padding-block: 0 6px; }
 .mk-summary { font-size: 19px; line-height: 1.65; }
+#mk-heat { --neg: #B5412E; --mid: #E6DFCF; --pos: #3B7D52; --nodata: color-mix(in srgb, var(--ink) 9%, var(--bg)); }
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) #mk-heat { --neg: #D2654F; --pos: #5FA676; } }
+:root[data-theme="dark"] #mk-heat { --neg: #D2654F; --pos: #5FA676; }
+.heat-wrap { position: relative; }
+#heat-map { width: 100%; height: auto; display: block; }
+#heat-map path { stroke: var(--bg); stroke-width: 0.5; vector-effect: non-scaling-stroke; }
+#heat-map .has { cursor: pointer; }
+#heat-map .has:hover, #heat-map .on { stroke: var(--ink); stroke-width: 1.5; }
+.heat-tip { position: absolute; z-index: 3; max-width: 280px; background: var(--bg); border: 1px solid var(--rule); border-top: 3px solid var(--accent); box-shadow: 0 8px 24px rgba(0,0,0,.15); padding: 12px 14px; font-size: 15px; line-height: 1.45; pointer-events: none; }
+.heat-tip strong { display: block; font-size: 17px; }
+.heat-tip .sc { font-family: var(--ui); font-size: 13px; font-weight: 600; }
+.heat-tip .src { font-family: var(--ui); font-size: 12.5px; color: var(--muted); margin-top: 4px; }
+.heat-legend { display: flex; align-items: center; gap: 10px; font-family: var(--ui); font-size: 13px; color: var(--muted); flex-wrap: wrap; }
+.heat-legend i { width: 160px; height: 10px; background: linear-gradient(90deg, var(--neg), var(--mid), var(--pos)); }
+.heat-legend b { width: 14px; height: 10px; background: var(--nodata); margin-left: 14px; }
+.heat-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0 32px; }
+.heat-row { display: grid; grid-template-columns: 12px minmax(0, 1fr) auto; gap: 4px 12px; align-items: baseline; align-content: start; padding-block: 12px; border-top: 1px solid var(--rule); }
+.heat-row .dot { width: 12px; height: 12px; border-radius: 50%; align-self: center; }
+.heat-row h3 { font-size: 18px; }
+.heat-row .sc { font-family: var(--ui); font-size: 13px; font-weight: 600; text-align: right; }
+.sc.Positive { color: var(--pos); } .sc.Negative { color: var(--neg); } .sc.Neutral { color: var(--muted); }
+.heat-row p { grid-column: 2 / 4; color: var(--muted); font-size: 16px; line-height: 1.45; }
+.heat-row p a { font-family: var(--ui); font-size: 13px; white-space: nowrap; }
+@media (max-width: 760px) { .heat-list { grid-template-columns: 1fr; } }
 #mk-today { gap: 0; }
 #mk-today h2.sec { margin-bottom: 28px; }
 #mk-today .mk-headline { font-size: clamp(28px, 3.6vw, 36px); font-weight: 500; letter-spacing: -0.015em; line-height: 1.15; margin-bottom: 24px; text-wrap: pretty; }
@@ -291,6 +315,17 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
       <h2 class="sec">Today in markets</h2>
       <p class="mk-summary" id="mk-summary">The daily summary appears here once the latest data has loaded</p>
       <p class="mk-meta">Written automatically each morning from the latest closing prices of oil and US stocks</p>
+    </section>
+    <section class="stack" id="mk-heat">
+      <h2 class="sec">Macro heat map</h2>
+      <p class="muted col" id="heat-intro">The latest economic news from major economies, shaded from negative (red) to positive (green). Hover over or tap a country to read the headline</p>
+      <div class="heat-wrap">
+        <svg id="heat-map" role="img" aria-label="World map shaded by macro news sentiment"></svg>
+        <div class="heat-tip" id="heat-tip" hidden></div>
+      </div>
+      <div class="heat-legend"><span>Negative</span><i></i><span>Positive</span><b></b><span>No recent news</span></div>
+      <div class="heat-list" id="heat-list"></div>
+      <p class="mk-meta" id="heat-meta"></p>
     </section>
     <section class="stack" id="mk-board" aria-live="polite"></section>
     <p class="mk-meta" id="markets-note"></p>
@@ -531,6 +566,58 @@ async function loadCommentary() {
   } catch (e) { /* keep the data-only summary */ }
 }
 
+// Macro heat map: reads data/heatmap.json (refreshed each morning with the commentary).
+// d3 and the world map are loaded only when the Markets page is first opened.
+let heatLoaded = false;
+function loadScript(src) { return new Promise((ok, fail) => { const s = document.createElement("script"); s.src = src; s.onload = ok; s.onerror = fail; document.head.appendChild(s); }); }
+const heatLabel = v => v >= 0.25 ? "Positive" : v <= -0.25 ? "Negative" : "Neutral";
+async function loadHeat() {
+  if (heatLoaded) return; heatLoaded = true;
+  try {
+    const [data, world] = await Promise.all([
+      fetch("data/heatmap.json", { cache: "no-cache" }).then(r => r.json()),
+      loadScript("assets/vendor/d3.min.js").then(() => loadScript("assets/vendor/topojson-client.min.js")).then(() => fetch("assets/vendor/countries-110m.json").then(r => r.json())),
+    ]);
+    const cs = getComputedStyle($("mk-heat"));
+    const color = d3.scaleLinear().domain([-1, 0, 1]).range([cs.getPropertyValue("--neg"), cs.getPropertyValue("--mid"), cs.getPropertyValue("--pos")]).clamp(true);
+    const byId = new Map(data.countries.map(c => [c.id, c]));
+    const land = topojson.feature(world, world.objects.countries).features.filter(f => f.properties.name !== "Antarctica");
+    const W = 960, H = 470;
+    const proj = d3.geoNaturalEarth1().fitExtent([[0, 0], [W, H]], { type: "FeatureCollection", features: land });
+    const path = d3.geoPath(proj);
+    const svg = d3.select("#heat-map").attr("viewBox", `0 0 ${W} ${H}`);
+    const tip = $("heat-tip"), wrap = document.querySelector(".heat-wrap");
+    let pinned = null;
+    const tipHTML = c => `<strong>${esc(c.name)}</strong><span class="sc ${heatLabel(c.score)}">${heatLabel(c.score)} (${c.score > 0 ? "+" : ""}${c.score.toFixed(1)})</span><div>${esc(c.headline)}</div><div class="src">${esc(c.source)}${c.date ? " · " + esc(fmtDate(c.date)) : ""}</div>`;
+    function show(c, ev) {
+      tip.innerHTML = tipHTML(c); tip.hidden = false;
+      const r = wrap.getBoundingClientRect(), x = ev.clientX - r.left, y = ev.clientY - r.top;
+      tip.style.left = Math.max(0, Math.min(x + 14, r.width - tip.offsetWidth)) + "px";
+      tip.style.top = (y + 14 + tip.offsetHeight > r.height ? Math.max(0, y - tip.offsetHeight - 10) : y + 14) + "px";
+    }
+    const hide = () => { if (!pinned) tip.hidden = true; };
+    svg.selectAll("path").data(land).join("path").attr("d", path)
+      .style("fill", f => byId.has(f.id) ? color(byId.get(f.id).score) : "var(--nodata)")
+      .attr("class", f => byId.has(f.id) ? "has" : null)
+      .on("mousemove", (ev, f) => { if (byId.has(f.id) && !pinned) show(byId.get(f.id), ev); })
+      .on("mouseleave", hide)
+      .on("click", (ev, f) => { ev.stopPropagation(); if (!byId.has(f.id)) { pinned = null; tip.hidden = true; return; } pinned = f.id; show(byId.get(f.id), ev); });
+    // Small economies that the world map is too coarse to draw get a dot.
+    const dots = data.countries.filter(c => c.lon != null && !land.some(f => f.id === c.id));
+    svg.selectAll("circle").data(dots).join("circle").attr("class", "has")
+      .attr("cx", c => proj([c.lon, c.lat])[0]).attr("cy", c => proj([c.lon, c.lat])[1]).attr("r", 6)
+      .style("fill", c => color(c.score)).style("stroke", "var(--ink)").style("stroke-width", 1)
+      .on("mousemove", (ev, c) => { if (!pinned) show(c, ev); }).on("mouseleave", hide)
+      .on("click", (ev, c) => { ev.stopPropagation(); pinned = c.id; show(c, ev); });
+    document.addEventListener("click", () => { pinned = null; tip.hidden = true; });
+    const rows = [...data.countries].sort((a, b) => b.score - a.score);
+    $("heat-list").innerHTML = rows.map(c => `<div class="heat-row"><span class="dot" style="background:${color(c.score)}"></span><h3>${esc(c.name)}</h3><span class="sc ${heatLabel(c.score)}">${heatLabel(c.score)}</span><p>${esc(c.headline)}${safeUrl(c.url) ? ` <a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.source)}</a>` : ""}</p></div>`).join("");
+    $("heat-meta").textContent = `Updated ${fmtDate(data.updated)}. Scores run from -1 (very negative) to +1 (very positive) and are set automatically each morning from each economy's latest major news. They are a rough guide, not a forecast`;
+  } catch (e) {
+    $("mk-heat").hidden = true;
+  }
+}
+
 // Change from the previous close, from the price history in markets.json.
 function dayChange(s) {
   if (typeof s.change_1d === "number") return s.change_1d;
@@ -581,6 +668,7 @@ function route() {
   document.querySelectorAll("[data-nav]").forEach(a => {
     if (a.dataset.nav === navKey) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
   });
+  if (target === "markets") loadHeat();
   if (target === "writing") renderWriting(name.startsWith("writing-") ? name.slice(8) : "all");
   if (document.activeElement && document.activeElement.closest(".has-sub")) document.activeElement.blur();
   window.scrollTo(0, 0);
