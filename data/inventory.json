@@ -1,62 +1,78 @@
 {
- "headline": "US refiners run flat out as diesel stays tight, and Singapore's fuel oil tanks fill",
+ "headline": "US refiners are running flat out, but diesel is still tight, while Singapore's fuel oil stocks build up",
  "date": "2026-11-28",
  "paragraphs": [
-  "US refineries ran at 97.5% of capacity in the week to 20 Nov, up from 95.7% the week before and 92.3% a year ago. Running that hard soaks up crude, yet commercial crude stocks still rose 1.1 million barrels to 418.9 million, about 2% below a year ago. Cushing, the delivery point for WTI futures, slipped 0.5 million barrels to 25.6 million, while the Strategic Petroleum Reserve fell another 2.9 million barrels to 273.5 million, a third lower than a year ago.",
-  "The products side is where it gets interesting. Gasoline rose 1.7 million barrels and is now 3.7% above last year, which is comfortable going into winter. Distillates, which covers diesel and heating oil, added only 0.7 million barrels and sit 5.9% below a year ago despite refiners running near full tilt. That gap helps explain why the US crack spread is still wide: refiners are being paid to keep making diesel.",
-  "In Singapore, Enterprise Singapore data for the week to 18 Nov showed total onshore oil product stocks down 1.1% to 39.93 million barrels. Light distillates such as naphtha and gasoline fell to a near two-month low of 10.8 million barrels and middle distillates eased to 8.33 million, while residual fuel oil jumped 6.5% to 20.81 million barrels. Shipping fuel supplier ENGINE says residual stocks have averaged about 9% higher in November than in October, helped by higher net fuel oil imports.",
-  "The common thread is middle distillates. Both the US and Singapore are holding less diesel than a year ago, so any refinery outage or cold snap would show up there first. Fuel oil, by contrast, is building up in Asia's main bunkering hub, which should take some pressure off marine fuel prices for now."
+  "US refineries ran at 97.5% of their capacity in the week to 20 Nov, up from 95.7% the week before and well above the five-year average of 90.5% for this time of year. You would expect refiners running this hard to pull crude out of storage. However, commercial crude stocks still rose by 1.1 million barrels to 418.9 million barrels, which is about 3.4% below the five-year average. Cushing, the delivery point for WTI futures, fell by 0.5 million barrels to 25.6 million barrels, while the Strategic Petroleum Reserve fell by another 2.9 million barrels to 273.5 million barrels, about a third lower than a year ago.",
+  "So where is all that refined oil going? Gasoline stocks rose by 1.7 million barrels and are now 2.6% above the five-year average, so the US looks well supplied there going into winter. Distillates, which include diesel and heating oil, only rose by 0.7 million barrels and are still 6.3% below the five-year average, even with refineries running at close to full capacity. This means diesel is still in short supply, which is why the US crack spread remains wide and refiners are still being paid well to keep their runs high.",
+  "In Singapore, Enterprise Singapore data for the week to 18 Nov showed total onshore oil product stocks falling by 1.1% to 39.93 million barrels. Light distillates such as naphtha and gasoline fell to a near two-month low of 10.8 million barrels, and middle distillates eased to 8.33 million barrels. On the other hand, residual fuel oil rose by 6.5% to 20.81 million barrels. According to ENGINE, residual stocks have averaged about 9% higher so far in November than in October, as more fuel oil has been imported into Singapore.",
+  "Ultimately, the common thread here is diesel. Both the US and Singapore are holding less of it than usual, hence any refinery outage or cold snap would likely push diesel prices up first. Fuel oil, on the other hand, is building up in Singapore, Asia's largest bunkering hub, which could take some pressure off marine fuel prices for now. What should we watch next week? Whether US distillate stocks finally start to rebuild, and whether Singapore's middle distillate stocks keep falling."
  ],
  "table": [
   {
    "name": "US commercial crude",
    "level": "418.9 mb",
-   "change": "+1.1 mb"
+   "change": "+1.1 mb",
+   "avg": "433.8 mb"
   },
   {
    "name": "Cushing",
    "level": "25.6 mb",
-   "change": "−0.5 mb"
+   "change": "−0.5 mb",
+   "avg": "24.8 mb"
   },
   {
    "name": "US SPR",
    "level": "273.5 mb",
-   "change": "−2.9 mb"
+   "change": "−2.9 mb",
+   "avg": "429.6 mb"
   },
   {
    "name": "US gasoline",
    "level": "217.7 mb",
-   "change": "+1.7 mb"
+   "change": "+1.7 mb",
+   "avg": "212.2 mb"
   },
   {
    "name": "US distillates",
    "level": "105.6 mb",
-   "change": "+0.7 mb"
+   "change": "+0.7 mb",
+   "avg": "112.7 mb"
+  },
+  {
+   "name": "US jet fuel",
+   "level": "43.2 mb",
+   "change": "−0.9 mb",
+   "avg": "39.6 mb"
   },
   {
    "name": "US refinery runs",
    "level": "97.5%",
-   "change": "+1.8 pts"
+   "change": "+1.8 pts",
+   "avg": "90.5%"
   },
   {
    "name": "Singapore light distillates",
    "level": "10.8 mb",
-   "change": "near 2-month low"
+   "change": "near 2-month low",
+   "avg": "–"
   },
   {
    "name": "Singapore middle distillates",
    "level": "8.33 mb",
-   "change": "2-week low"
+   "change": "2-week low",
+   "avg": "8.62 mb"
   },
   {
    "name": "Singapore residual fuel oil",
    "level": "20.81 mb",
-   "change": "+6.5%"
+   "change": "+6.5%",
+   "avg": "20.14 mb"
   },
   {
    "name": "Singapore total",
    "level": "39.93 mb",
-   "change": "−1.1%"
+   "change": "−1.1%",
+   "avg": "–"
   }
  ],
  "period": "US: week to 20 Nov 2026 (EIA, released 25 Nov). Singapore: week to 18 Nov 2026 (Enterprise Singapore). mb = million barrels",
@@ -73,5 +89,6 @@
    "title": "ENGINE",
    "url": "https://www.engine.online/news/singapore-fuel-oil-inventories-rise-9-pc-this-month-84a9"
   }
- ]
+ ],
+ "avg_note": "Average: for the US, the five-year average for the same week of the year (2021–2025, calculated from EIA weekly data). For Singapore, the November average so far (ENGINE, 27 Nov). Green is a build and red is a draw"
 }

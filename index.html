@@ -203,6 +203,8 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
 .inv-table { width: 100%; border-collapse: collapse; font-family: var(--ui); font-size: 14.5px; font-variant-numeric: tabular-nums; }
 .inv-table th, .inv-table td { padding: 8px 6px; border-top: 1px solid var(--rule); text-align: right; }
 .inv-table th:first-child, .inv-table td:first-child { text-align: left; }
+.inv-table td:not(:first-child) { white-space: nowrap; }
+@media (max-width: 560px) { .inv-table { font-size: 13px; } .inv-table th, .inv-table td { padding: 7px 4px; } .inv-table td:nth-child(3) { white-space: normal; } }
 .inv-table th { font-weight: 500; color: var(--muted); font-size: 12.5px; }
 .mk-tabs { font-size: 16px; gap: 28px; border-bottom: 1px solid var(--rule); margin-top: -20px; }
 .mk-tabs a { padding-bottom: 10px; }
