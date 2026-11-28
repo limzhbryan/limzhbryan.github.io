@@ -16,7 +16,8 @@ from pathlib import Path
 from zoneinfo import ZoneInfo
 
 SERIES = [
-    # group, FRED id, name, unit, decimals, frequency
+    # group, FRED id (or our own id for Yahoo-only series), name, unit, decimals, frequency
+    # Groups starting with "_" are fetched (e.g. for the risk monitor) but not shown on the board.
     ("Energy", "DCOILBRENTEU", "Brent crude", "US$/bbl", 2, "daily"),
     ("Energy", "DCOILWTICO", "WTI crude", "US$/bbl", 2, "daily"),
     ("Energy", "DHHNGSP", "Henry Hub natural gas", "US$/MMBtu", 2, "daily"),
@@ -24,15 +25,16 @@ SERIES = [
     ("Energy", "TTF", "TTF natural gas (Europe)", "US$/MMBtu", 2, "daily"),
     ("Energy", "RBOB", "RBOB gasoline", "US$/gal", 3, "daily"),
     ("Energy", "HEATOIL", "Heating oil (diesel)", "US$/gal", 3, "daily"),
-    ("Stock markets", "SP500", "S&P 500", "index", 0, "daily"),
-    ("Stock markets", "DJIA", "Dow Jones Industrial Average", "index", 0, "daily"),
-    ("Stock markets", "NASDAQCOM", "Nasdaq Composite", "index", 0, "daily"),
-    ("Stock markets", "NIKKEI225", "Nikkei 225", "index", 0, "daily"),
-    ("Stock markets", "VIXCLS", "VIX (US volatility)", "index", 2, "daily"),
-    ("FX & rates", "DEXSIUS", "USD/SGD", "S$ per US$1", 4, "daily"),
-    ("FX & rates", "DEXCHUS", "USD/CNY", "yuan per US$1", 4, "daily"),
-    ("FX & rates", "DEXUSEU", "EUR/USD", "US$ per €1", 4, "daily"),
-    ("FX & rates", "DGS10", "US 10-year Treasury yield", "%", 2, "daily"),
+    ("Metals", "GOLD", "Gold", "US$/oz", 1, "daily"),
+    ("Metals", "SILVER", "Silver", "US$/oz", 2, "daily"),
+    ("Metals", "COPPER", "Copper (COMEX)", "US$/lb", 3, "daily"),
+    ("Macro context", "DXY", "US dollar index (DXY)", "index", 2, "daily"),
+    ("Macro context", "DGS10", "US 10-year Treasury yield", "%", 2, "daily"),
+    ("Macro context", "SP500", "S&P 500", "index", 0, "daily"),
+    ("Macro context", "DEXSIUS", "USD/SGD", "S$ per US$1", 4, "daily"),
+    ("Macro context", "DEXCHUS", "USD/CNY", "yuan per US$1", 4, "daily"),
+    ("Macro context", "DEXUSEU", "EUR/USD", "US$ per €1", 4, "daily"),
+    ("_risk", "VIXCLS", "VIX (US volatility)", "index", 2, "daily"),
 ]
 
 # Fresher daily source for each series, used when it returns newer data than FRED.
@@ -41,9 +43,10 @@ YAHOO = {
     "SP500": "^GSPC", "DJIA": "^DJI", "NASDAQCOM": "^IXIC", "NIKKEI225": "^N225", "VIXCLS": "^VIX",
     "DEXSIUS": "SGD=X", "DEXCHUS": "CNY=X", "DEXUSEU": "EURUSD=X", "DGS10": "^TNX",
     "JKM": "JKM=F", "TTF": "TTF=F", "RBOB": "RB=F", "HEATOIL": "HO=F",
+    "GOLD": "GC=F", "SILVER": "SI=F", "COPPER": "HG=F", "DXY": "DX-Y.NYB",
 }
 # Series with no FRED equivalent: Yahoo futures only (still range-checked, stale-checked and time-stamped).
-YAHOO_ONLY = {"JKM", "TTF", "RBOB", "HEATOIL"}
+YAHOO_ONLY = {"JKM", "TTF", "RBOB", "HEATOIL", "GOLD", "SILVER", "COPPER", "DXY"}
 # TTF trades in EUR/MWh; it is converted to US$/MMBtu (1 MWh = 3.412 MMBtu) with EUR/USD so it can be compared with JKM and Henry Hub.
 MWH_PER_MMBTU = 3.412
 YAHOO_URL = "https://query1.finance.yahoo.com/v8/finance/chart/{sym}?range={range}&interval=1d"
@@ -158,8 +161,8 @@ def front_contract(cont_symbol, cont_rows, today):
 
 # ---------- Accuracy checks ----------
 # Largest believable one-day move by group (%); bigger moves are held back as likely bad data.
-MAX_MOVE = {"Energy": 15, "Stock markets": 10, "FX & rates": 4}
-MAX_MOVE_ID = {"VIXCLS": 80, "DHHNGSP": 25, "DGS10": 15, "JKM": 25, "TTF": 25}
+MAX_MOVE = {"Energy": 15, "Metals": 12, "Macro context": 10, "_risk": 80}
+MAX_MOVE_ID = {"DEXSIUS": 4, "DEXCHUS": 4, "DEXUSEU": 4, "DXY": 4, "VIXCLS": 80, "DHHNGSP": 25, "DGS10": 15, "JKM": 25, "TTF": 25}
 # How closely Yahoo must agree with FRED on the same dates (median gap, %). Oil and gas are
 # skipped because FRED publishes spot prices while Yahoo gives futures.
 AGREE_TOL = {"SP500": 0.5, "DJIA": 0.5, "NASDAQCOM": 0.5, "NIKKEI225": 1.0, "VIXCLS": 4.0, "DEXSIUS": 0.6, "DEXCHUS": 0.6, "DEXUSEU": 0.6, "DGS10": 1.5}

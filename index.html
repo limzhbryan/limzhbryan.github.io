@@ -147,6 +147,10 @@ figcaption { font-family: var(--ui); font-size: 13.5px; color: var(--muted); }
 footer { border-top: 1px solid var(--rule); }
 footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
 
+/* Commodities & Macro: my take */
+.my-take { padding: 20px 24px; background: color-mix(in srgb, var(--ink) 4%, var(--bg)); border-left: 3px solid var(--accent); display: grid; gap: 12px; }
+.my-take .sec { margin: 0; }
+.my-take p { font-size: 18px; line-height: 1.65; }
 /* Markets */
 .mk-meta { font-family: var(--ui); font-size: 14px; color: var(--muted); }
 .mk-group { display: grid; gap: 0; }
@@ -301,7 +305,7 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
             <a href="#writing-research" data-sub="research">Research</a>
           </div></span>
         </span>
-        <a href="#markets" data-nav="markets">Markets</a>
+        <a href="#commodities" data-nav="markets">Commodities &amp; Macro</a>
         <a href="#about" data-nav="about">About</a>
         <a href="#resume" data-nav="resume">Resume</a>
         <a href="#contact" data-nav="contact">Contact</a>
@@ -362,7 +366,7 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
   <!-- MARKETS -->
   <div class="view" data-view="markets" hidden>
     <div class="stack col">
-      <h1 class="page-title">Markets</h1>
+      <h1 class="page-title">Commodities &amp; Macro</h1>
       <p id="markets-intro"></p>
       <p class="mk-meta" id="mk-updated">Loading the latest data…</p>
     </div>
@@ -371,40 +375,53 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
       <p class="mk-meta" id="tk-note"></p>
     </div>
     <div class="mk-strip" id="mk-strip" hidden>
-      <a href="#risk-monitor" class="strip-risk" id="strip-risk"></a>
-      <a href="#markets" class="strip-head" id="strip-head"></a>
+      <a href="#macro-drivers" class="strip-risk" id="strip-risk"></a>
+      <a href="#commodities" class="strip-risk" id="strip-curve" hidden></a>
+      <a href="#daily-note" class="strip-head" id="strip-head"></a>
     </div>
-    <nav class="filters mk-tabs" aria-label="Markets sections">
-      <a href="#markets" data-mtab="today">Today</a>
+    <nav class="filters mk-tabs" aria-label="Commodities and macro sections">
       <a href="#commodities" data-mtab="comm">Commodities</a>
-      <a href="#macro-map" data-mtab="map">Macro map</a>
-      <a href="#risk-monitor" data-mtab="risk">Risk monitor</a>
+      <a href="#daily-note" data-mtab="note">Daily note</a>
+      <a href="#inventories" data-mtab="inv">Inventories</a>
+      <a href="#macro-drivers" data-mtab="macro">Macro drivers</a>
     </nav>
-    <div class="mk-panel stack" data-panel="today" style="gap:48px">
-    <section class="stack col" id="mk-today">
-      <h2 class="sec">Today in markets</h2>
-      <p class="mk-summary" id="mk-summary">The daily summary appears here once the latest data has loaded</p>
-      <p class="mk-meta">Written automatically each morning from the latest closing prices of oil and US stocks</p>
-    </section>
-    <section class="stack" id="mk-board" aria-live="polite"></section>
-    <p class="mk-meta" id="markets-note"></p>
-    </div>
-    <div class="mk-panel stack" data-panel="comm" hidden style="gap:48px">
+    <div class="mk-panel stack" data-panel="comm" style="gap:48px">
+      <section class="my-take col" id="my-take" hidden>
+        <h2 class="sec">My take</h2>
+        <div id="my-take-body" class="stack" style="gap:12px"></div>
+        <p class="mk-meta" id="my-take-date"></p>
+      </section>
+      <section class="stack"><h2 class="sec">Energy</h2><div id="b-energy" aria-live="polite"><p class="muted small">Loading…</p></div></section>
       <section class="stack" id="mk-comm">
-        <h2 class="sec">Commodities dashboard</h2>
-        <p class="muted col">The spreads and curves that oil, refining, LNG and shipping desks watch every day</p>
-        <div class="comm-grid" id="comm-grid"><p class="muted small">Loading…</p></div>
-        <p class="mk-meta" id="comm-meta"></p>
+        <h2 class="sec">Spreads and curves</h2>
+        <p class="muted col">The spreads that oil, refining and LNG desks watch every day</p>
+        <div class="comm-grid" id="comm-spreads"><p class="muted small">Loading…</p></div>
       </section>
-      <section class="stack col" id="mk-inv" hidden>
+      <section class="stack"><h2 class="sec">Metals</h2><div id="b-metals"></div></section>
+      <section class="stack">
+        <h2 class="sec">Freight</h2>
+        <div class="comm-grid" id="comm-freight"></div>
+      </section>
+      <section class="stack"><h2 class="sec">Macro context</h2><p class="muted col">The dollar, rates and equities, only as far as they move commodities</p><div id="b-macro"></div></section>
+      <p class="mk-meta" id="comm-meta"></p>
+      <p class="mk-meta" id="markets-note"></p>
+    </div>
+    <div class="mk-panel stack" data-panel="note" hidden style="gap:32px">
+    <section class="stack col" id="mk-today">
+      <h2 class="sec">Daily note</h2>
+      <p class="mk-summary" id="mk-summary">The daily note appears here once the latest data has loaded</p>
+    </section>
+    </div>
+    <div class="mk-panel stack" data-panel="inv" hidden>
+      <section class="stack col" id="mk-inv">
         <h2 class="sec">Weekly inventory note</h2>
-        <div id="inv-body" class="stack" style="gap:16px"></div>
+        <div id="inv-body" class="stack" style="gap:16px"><p class="muted">The weekly note on US and Singapore oil stocks is published every Friday morning</p></div>
       </section>
     </div>
-    <div class="mk-panel" data-panel="map" hidden>
+    <div class="mk-panel stack" data-panel="macro" hidden style="gap:56px">
     <section class="stack" id="mk-heat">
       <h2 class="sec">Macro heat map</h2>
-      <p class="muted col" id="heat-intro">The latest economic news from major economies, shaded from negative (red) to positive (green). Hover over or tap a country to read the headline</p>
+      <p class="muted col" id="heat-intro">The latest economic news from the economies that drive commodity demand and supply, shaded from negative (red) to positive (green). Hover over or tap a country to read the headline</p>
       <div class="heat-wrap">
         <svg id="heat-map" role="img" aria-label="World map shaded by macro news sentiment"></svg>
         <div class="heat-tip" id="heat-tip" hidden></div>
@@ -413,10 +430,9 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
       <div class="heat-list" id="heat-list"></div>
       <p class="mk-meta" id="heat-meta"></p>
     </section>
-    </div>
-    <div class="mk-panel" data-panel="risk" hidden>
     <section class="stack" id="mk-risk" hidden>
-      <h2 class="sec">Market risk monitor</h2>
+      <h2 class="sec">Risk monitor</h2>
+      <p class="muted col">Financial stress tends to spill over into commodities through a stronger dollar, tighter credit and weaker demand, so these are the gauges I watch</p>
       <div class="risk-head" id="risk-head"></div>
       <div class="risk-grid" id="risk-grid"></div>
       <p class="mk-meta">Each gauge turns amber or red when it crosses a level that has historically gone with market stress. Data: FRED, Federal Reserve Bank of St. Louis. Updated every morning</p>
@@ -490,7 +506,7 @@ function entryHTML(a, showKind) {
 function photoHTML(src, alt) { return src && safeUrl(src) ? `<img src="${esc(src)}" alt="${esc(alt)}">` : "[Photo]"; }
 
 // Where each homepage box links: chosen in the editor ("Links to"), or guessed from its title.
-const THEME_LINKS = { "Opinion": "#writing-opinion", "Analysis": "#writing-analysis", "Research": "#writing-research", "All writing": "#writing", "Markets": "#markets", "About": "#about", "Resume": "#resume", "Contact": "#contact" };
+const THEME_LINKS = { "Opinion": "#writing-opinion", "Analysis": "#writing-analysis", "Research": "#writing-research", "All writing": "#writing", "Markets": "#commodities", "Commodities & Macro": "#commodities", "About": "#about", "Resume": "#resume", "Contact": "#contact" };
 function themeLink(t) {
   if (t.link === "No link") return "";
   if (THEME_LINKS[t.link]) return THEME_LINKS[t.link];
@@ -498,7 +514,7 @@ function themeLink(t) {
   if (s.includes("opinion")) return "#writing-opinion";
   if (s.includes("analys")) return "#writing-analysis";
   if (s.includes("research")) return "#writing-research";
-  if (s.includes("market")) return "#markets";
+  if (s.includes("market") || s.includes("commodit")) return "#commodities";
   return "";
 }
 function renderHome(h) {
@@ -548,6 +564,11 @@ function renderContact(c) {
 function renderMarketsText(m) {
   $("markets-intro").textContent = m.intro || "";
   $("markets-note").textContent = m.note || "";
+  if (m.my_take && String(m.my_take).trim()) {
+    $("my-take-body").innerHTML = paras(m.my_take);
+    $("my-take-date").textContent = m.my_take_date ? "Updated " + fmtDate(m.my_take_date) : "";
+    $("my-take").hidden = false;
+  }
 }
 
 function renderArticles(d) {
@@ -659,7 +680,7 @@ async function loadCommentary() {
     const esc = s => String(s).replace(/[&<>"]/g, ch => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[ch]));
     const srcs = (c.sources || []).filter(s => /^https?:\/\//.test(s.url)).map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.title)}</a>`).join(" · ");
     if (c.headline) { $("strip-head").textContent = c.headline; $("mk-strip").hidden = false; }
-    box.innerHTML = `<h2 class="sec">Today in markets</h2>
+    box.innerHTML = `<h2 class="sec">Daily note</h2>
       ${c.headline ? `<h3 class="mk-headline">${esc(c.headline)}</h3>` : ""}
       ${c.paragraphs.map(p => `<p class="mk-summary">${esc(p)}</p>`).join("")}
       <p class="mk-meta">${esc(fmtDate(c.date))} · Automated commentary, written each morning from the day's market data and news${srcs ? " · Sources: " + srcs : ""}</p>`;
@@ -738,8 +759,8 @@ function curveChart(curve) {
   </svg>`;
 }
 function renderCommodities(cm) {
-  if (!cm || !cm.items || !cm.items.length) { $("comm-grid").innerHTML = `<p class="muted small">Commodity data is updating, please check back shortly</p>`; return; }
-  $("comm-grid").innerHTML = cm.items.map(c => {
+  if (!cm || !cm.items || !cm.items.length) { $("comm-spreads").innerHTML = `<p class="muted small">Commodity data is updating, please check back shortly</p>`; return; }
+  const cardHtml = c => {
     const pctMode = c.change_is_pct;
     const ch = (v, lbl) => v == null ? "" : `<span class="${v > 0 ? "up" : v < 0 ? "down" : ""}">${pctMode ? sgn(v, 1) + "%" : sgn(v, c.decimals)}</span> ${lbl}`;
     const value = c.id === "brent_curve" ? `${sgn(c.value, 2)}<small>${esc(c.unit)}</small>` : `${pctMode ? fmtNum(c.value, 2) : sgn(c.value, c.decimals).replace(/^\+/, c.value > 0 ? "+" : "")}<small>${esc(c.unit)}</small>`;
@@ -754,8 +775,10 @@ function renderCommodities(cm) {
       ${(c.checks || []).map(k => `<span class="desc" style="color:var(--accent)">${esc(k)}</span>`).join("")}
       <span class="desc">As of ${esc(fmtDate(c.date))}</span>
     </div>`;
-  }).join("");
-  $("comm-meta").textContent = "Data: Yahoo Finance futures and ETF prices, refreshed hourly on weekdays. Not covered: " + (cm.not_covered || []).join("; ");
+  };
+  $("comm-spreads").innerHTML = cm.items.filter(c => !c.proxy).map(cardHtml).join("");
+  $("comm-freight").innerHTML = cm.items.filter(c => c.proxy).map(cardHtml).join("");
+  $("comm-meta").textContent = "Spreads and freight: Yahoo Finance futures and ETF prices, refreshed hourly on weekdays. Not covered: " + (cm.not_covered || []).join("; ");
 }
 async function loadInventory() {
   try {
@@ -840,9 +863,10 @@ function asOfText(s) {
 // Live ticker strip (TradingView, quotes delayed); loaded only when the Markets page is opened.
 // Ticker strip: the same instruments and numbers as the price board below, so the two never disagree.
 const TK_SHORT = { DCOILBRENTEU: "Brent", DCOILWTICO: "WTI", DHHNGSP: "Henry Hub", JKM: "JKM", TTF: "TTF", RBOB: "RBOB", HEATOIL: "Heating oil",
-  SP500: "S&P 500", DJIA: "Dow", NASDAQCOM: "Nasdaq", NIKKEI225: "Nikkei 225", VIXCLS: "VIX", DEXSIUS: "USD/SGD", DEXCHUS: "USD/CNY", DEXUSEU: "EUR/USD", DGS10: "US 10Y" };
+  SP500: "S&P 500", DJIA: "Dow", NASDAQCOM: "Nasdaq", NIKKEI225: "Nikkei 225", VIXCLS: "VIX", DEXSIUS: "USD/SGD", DEXCHUS: "USD/CNY", DEXUSEU: "EUR/USD", DGS10: "US 10Y",
+  GOLD: "Gold", SILVER: "Silver", COPPER: "Copper", DXY: "DXY" };
 function renderTicker(data) {
-  const items = data.series.filter(s => !s.stale).map(s => {
+  const items = data.series.filter(s => !s.stale && !s.group.startsWith("_")).map(s => {
     const d = dayChange(s), cls = d > 0 ? "up" : d < 0 ? "down" : "";
     return `<span class="tk-item"><b>${esc(TK_SHORT[s.id] || s.name)}</b>${fmtNum(s.latest, s.decimals)}${s.unit === "%" ? "%" : ""}${d == null ? "" : `<span class="${cls}">${d > 0 ? "+" : ""}${d.toFixed(2)}%</span>`}</span>`;
   }).join("");
@@ -854,14 +878,13 @@ function renderTicker(data) {
   $("mk-ticker").hidden = false;
 }
 async function loadMarkets() {
-  const board = document.getElementById("mk-board"), upd = document.getElementById("mk-updated");
+  const upd = document.getElementById("mk-updated");
   try {
     const r = await fetch("data/markets.json", { cache: "no-cache" });
     if (!r.ok) throw new Error(r.status);
     const data = await r.json();
-    const groups = [...new Set(data.series.map(s => s.group))];
     const head = `<div class="mk-head"><div class="mk-row"><span></span><span style="text-align:right">Latest</span><span style="text-align:right">Day</span><span style="text-align:right">Month</span><span class="c-ytd" style="text-align:right">YTD</span><span>Past year</span></div></div>`;
-    board.innerHTML = groups.map(g => `<div class="mk-group"><h3 class="grp">${g}</h3>${head}${data.series.filter(s => s.group === g).map(s => `
+    const boardFor = g => `<div class="mk-group">${head}${data.series.filter(s => s.group === g).map(s => `
       <div class="mk-row${s.stale ? " mk-stale" : ""}">
         <div class="mk-name">${s.name}<small>${s.unit}${s.frequency === "monthly" ? " · monthly avg" : ""}</small>${(s.checks || []).filter(c => !c.startsWith("No new data")).map(c => `<small class="mk-check">${esc(c)}</small>`).join("")}</div>
         <div class="mk-val">${fmtNum(s.latest, s.decimals)}<small>${s.stale ? "Not updated since " + fmtDate(s.date) : asOfText(s)}</small></div>
@@ -869,7 +892,12 @@ async function loadMarkets() {
         ${chg(s.change_short, s.change_short_label, "")}
         ${chg(s.change_ytd, "YTD", "c-ytd")}
         <div class="mk-spark">${spark(s.history)}</div>
-      </div>`).join("")}</div>`).join("");
+      </div>`).join("")}</div>`;
+    $("b-energy").innerHTML = boardFor("Energy");
+    $("b-metals").innerHTML = boardFor("Metals");
+    $("b-macro").innerHTML = boardFor("Macro context");
+    const curve = (data.commodities && data.commodities.items || []).find(c => c.id === "brent_curve");
+    if (curve) { const sc = $("strip-curve"); sc.innerHTML = `Brent curve: <b>${esc(curve.shape)}</b>`; sc.hidden = false; $("mk-strip").hidden = false; }
     const sum = summarize(data); if (sum) document.getElementById("mk-summary").textContent = sum;
     loadCommentary();
     renderRisk(data.risk);
@@ -886,7 +914,9 @@ loadMarkets();
 
 // ---------- Routing ----------
 // Markets tabs: #markets (Today), #macro-map, #risk-monitor.
-const MARKET_TABS = { "markets": "today", "commodities": "comm", "macro-map": "map", "risk-monitor": "risk" };
+// Old links (#markets, #macro-map, #risk-monitor) still work and land on the matching tab.
+const MARKET_TABS = { "commodities": "comm", "markets": "comm", "daily-note": "note", "inventories": "inv",
+  "macro-drivers": "macro", "macro-map": "macro", "risk-monitor": "macro" };
 const views = [...document.querySelectorAll(".view")];
 const hero = $("hero");
 function route() {
@@ -904,7 +934,7 @@ function route() {
     if (a.dataset.nav === navKey) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
   });
   if (target === "markets") {
-    const tab = MARKET_TABS[name] || "today";
+    const tab = MARKET_TABS[name] || "comm";
     document.querySelectorAll(".mk-panel").forEach(p => { p.hidden = p.dataset.panel !== tab; });
     document.querySelectorAll("[data-mtab]").forEach(a => a.setAttribute("aria-current", a.dataset.mtab === tab ? "true" : "false"));
     loadHeat();
