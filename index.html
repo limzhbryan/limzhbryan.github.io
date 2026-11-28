@@ -198,7 +198,7 @@ details.more[open] .more-rows { display: none; }
 .risk-card .desc { font-family: var(--ui); font-size: 13px; color: var(--muted); line-height: 1.4; }
 .risk-card .val { font-family: var(--ui); font-size: 24px; font-weight: 600; font-variant-numeric: tabular-nums; }
 .risk-card .st { font-family: var(--ui); font-size: 13px; font-weight: 600; color: var(--st); }
-.risk-card .ctx { font-size: 15px; color: var(--muted); line-height: 1.45; }
+.risk-card .ctx { font-size: 15.5px; color: var(--muted); line-height: 1.45; }
 .risk-card svg { width: 100%; height: 34px; display: block; }
 @media (max-width: 760px) { .risk-head { grid-template-columns: 1fr; } }
 #mk-heat { --neg: #B5412E; --mid: #E6DFCF; --pos: #3B7D52; --nodata: color-mix(in srgb, var(--ink) 9%, var(--bg)); }
@@ -234,7 +234,7 @@ details.more[open] .more-rows { display: none; }
 .tk-item b { font-weight: 500; margin-right: 6px; } .tk-item span { margin-left: 6px; }
 @keyframes tk-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
 @media (prefers-reduced-motion: reduce) { .tk-track { animation: none; white-space: normal; } .tk-set { flex-wrap: wrap; gap: 8px 24px; } .tk-dup { display: none; } }
-.mk-ticker .mk-meta { font-size: 12px; }
+
 .mk-strip { display: flex; flex-wrap: wrap; gap: 6px 24px; align-items: baseline; padding: 12px 16px; background: color-mix(in srgb, var(--ink) 4%, var(--bg)); border-left: 3px solid var(--accent); font-size: 16px; }
 .mk-strip a { color: var(--ink); text-decoration: none; }
 .mk-strip a:hover { color: var(--accent); }
@@ -436,7 +436,7 @@ details.more[open] .more-rows { display: none; }
     <div class="mk-panel stack" data-panel="macro" hidden style="gap:56px">
     <section class="stack" id="mk-heat">
       <h2 class="sec">Macro Heat Map</h2>
-      <p class="muted col" id="heat-intro">The latest economic news from major economies, shaded from negative (red) to positive (green). Hover over or tap a country to read the headline</p>
+      <p class="muted col" id="heat-intro">The latest economic news from major economies, shaded from negative (red) to positive (green). Hover over or tap a country to read its headlines</p>
       <div class="heat-wrap">
         <svg id="heat-map" role="img" aria-label="World map shaded by macro news sentiment"></svg>
         <div class="heat-tip" id="heat-tip" hidden></div>
@@ -451,7 +451,7 @@ details.more[open] .more-rows { display: none; }
       <p class="muted col">Financial stress tends to spill over into commodities through a stronger dollar, tighter credit and weaker demand, so these are the gauges I watch</p>
       <div class="risk-head" id="risk-head"></div>
       <div class="risk-grid" id="risk-grid"></div>
-      <p class="mk-meta">Each gauge turns amber or red when it crosses a level that has historically gone with market stress. Data: FRED, Federal Reserve Bank of St. Louis. Updated every morning</p>
+      <p class="mk-meta">Each gauge turns amber or red when it crosses a level that has historically gone with market stress. Data: FRED, Federal Reserve Bank of St. Louis, with the VIX from the price board. Refreshed hourly on weekdays</p>
     </section>
     </div>
   </div>
@@ -631,9 +631,22 @@ function renderResume(r) {
   $("cv-skills").textContent = r.skills || "";
 }
 
-// Markets board: reads data/markets.json, which a GitHub Action refreshes every morning.
+// Markets board: reads data/markets.json, which a GitHub Action refreshes hourly on weekdays.
 const fmtNum = (v, d) => v.toLocaleString("en-US", { minimumFractionDigits: d, maximumFractionDigits: d });
 const fmtDate = s => new Date(s + "T00:00:00Z").toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" });
+// Yield changes are shown in basis points (1 bp = 0.01 percentage point), as markets quote them.
+function bpAt(s, target) { let best = null; for (const [d, v] of s.history || []) { if (d <= target) best = v; else break; } return best; }
+function bpChanges(s) {
+  const h = s.history || []; if (h.length < 2) return {};
+  const [ld, lv] = h[h.length - 1], dt = new Date(ld + "T00:00:00Z");
+  const back = new Date(dt - 31 * 864e5).toISOString().slice(0, 10), ye = `${dt.getUTCFullYear() - 1}-12-31`;
+  const f = b => b == null ? null : Math.round((lv - b) * 100);
+  return { d: f(h[h.length - 2][1]), m: f(bpAt(s, back)), y: f(bpAt(s, ye)) };
+}
+function chgBp(v, label, cls) {
+  if (v === null || v === undefined) return `<div class="mk-chg ${cls}">–<small>${label}</small></div>`;
+  return `<div class="mk-chg ${cls} ${v > 0 ? "up" : v < 0 ? "down" : ""}">${v > 0 ? "+" : ""}${v} bp<small>${label}</small></div>`;
+}
 function chg(v, label, cls, dp = 1) {
   if (v === null || v === undefined) return `<div class="mk-chg ${cls}">–<small>${label}</small></div>`;
   const dir = v > 0 ? "up" : v < 0 ? "down" : "";
@@ -792,7 +805,7 @@ function renderCommodities(cm) {
     const value = c.id === "brent_curve" ? `${sgn(c.value, 2)}<small>${esc(c.unit)}</small>` : `${pctMode ? fmtNum(c.value, 2) : sgn(c.value, c.decimals).replace(/^\+/, c.value > 0 ? "+" : "")}<small>${esc(c.unit)}</small>`;
     const extra = c.id === "jkm_ttf" && c.jkm != null ? `<span class="chg">JKM ${fmtNum(c.jkm, 2)} · TTF ${fmtNum(c.ttf, 2)} US$/MMBtu</span>` : "";
     return `<div class="comm-card">
-      <h3>${esc(c.name)}${c.shape ? ` <span class="tag">${esc(c.shape)}</span>` : ""}${c.proxy ? ` <span class="tag">proxy</span>` : ""}</h3>
+      <h3>${esc(c.name)}${c.shape ? ` <span class="tag">${esc(c.shape.charAt(0).toUpperCase() + c.shape.slice(1))}</span>` : ""}${c.proxy ? ` <span class="tag">Proxy</span>` : ""}</h3>
       <span class="desc">${esc(c.desc)}</span>
       <span class="val">${value}</span>
       ${extra}
@@ -819,7 +832,7 @@ async function loadInventory() {
     $("inv-body").innerHTML = `${n.headline ? `<h3 style="font-size:24px">${esc(n.headline)}</h3>` : ""}
       ${n.paragraphs.map(p => `<p class="mk-summary">${esc(p)}</p>`).join("")}
       ${rows ? `<table class="inv-table"><thead><tr><th>Stocks</th><th>Level</th><th>Weekly Change</th>${hasAvg ? "<th>Average</th>" : ""}</tr></thead><tbody>${rows}</tbody></table>` : ""}
-      ${n.avg_note ? `<p class="mk-meta">${esc(n.avg_note)}</p>` : ""}<p class="mk-meta">${esc(n.period || "")}${srcs ? " · Sources: " + srcs : ""}</p>`;
+      ${n.avg_note ? `<p class="mk-meta">${esc(n.avg_note)}</p>` : ""}<p class="mk-meta">Compiled automatically each week from the data sources below. ${esc(n.period || "")}${srcs ? " · Sources: " + srcs : ""}</p>`;
     $("mk-inv").hidden = false;
   } catch (e) { /* no note yet */ }
 }
@@ -893,8 +906,9 @@ const TK_SHORT = { DCOILBRENTEU: "Brent", DCOILWTICO: "WTI", DHHNGSP: "Henry Hub
   GOLD: "Gold", SILVER: "Silver", COPPER: "Copper", DXY: "DXY" };
 function renderTicker(data) {
   const items = data.series.filter(s => !s.stale && !s.group.startsWith("_")).map(s => {
-    const d = dayChange(s), cls = d > 0 ? "up" : d < 0 ? "down" : "";
-    return `<span class="tk-item"><b>${esc(TK_SHORT[s.id] || s.name)}</b>${fmtNum(s.latest, s.decimals)}${s.unit === "%" ? "%" : ""}${d == null ? "" : `<span class="${cls}">${d > 0 ? "+" : ""}${d.toFixed(2)}%</span>`}</span>`;
+    const bp = s.unit === "%" ? bpChanges(s).d : null, d = s.unit === "%" ? bp : dayChange(s), cls = d > 0 ? "up" : d < 0 ? "down" : "";
+    const dTxt = d == null ? "" : s.unit === "%" ? `${d > 0 ? "+" : ""}${d} bp` : `${d > 0 ? "+" : ""}${d.toFixed(2)}%`;
+    return `<span class="tk-item"><b>${esc(TK_SHORT[s.id] || s.name)}</b>${fmtNum(s.latest, s.decimals)}${s.unit === "%" ? "%" : ""}${d == null ? "" : `<span class="${cls}">${dTxt}</span>`}</span>`;
   }).join("");
   if (!items) return;
   const track = $("tk-track");
@@ -914,9 +928,7 @@ async function loadMarkets() {
       <div class="mk-row${s.stale ? " mk-stale" : ""}">
         <div class="mk-name">${s.name}<small>${s.unit}${s.frequency === "monthly" ? " · monthly avg" : ""}</small>${(s.checks || []).filter(c => !c.startsWith("No new data")).map(c => `<small class="mk-check">${esc(c)}</small>`).join("")}</div>
         <div class="mk-val">${fmtNum(s.latest, s.decimals)}<small>${s.stale ? "Not updated since " + fmtDate(s.date) : asOfText(s)}</small></div>
-        ${chg(dayChange(s), "1D", "", 2)}
-        ${chg(s.change_short, s.change_short_label, "")}
-        ${chg(s.change_ytd, "YTD", "c-ytd")}
+        ${s.unit === "%" ? (b => chgBp(b.d, "1D", "") + chgBp(b.m, s.change_short_label, "") + chgBp(b.y, "YTD", "c-ytd"))(bpChanges(s)) : chg(dayChange(s), "1D", "", 2) + chg(s.change_short, s.change_short_label, "") + chg(s.change_ytd, "YTD", "c-ytd")}
         <div class="mk-spark">${spark(s.history)}</div>
       </div>`).join("")}</div>`;
     $("b-energy").innerHTML = boardFor("Energy");
@@ -934,7 +946,7 @@ async function loadMarkets() {
     renderCommodities(data.commodities);
     loadInventory();
     const u = new Date(data.updated.replace("Z", ":00Z"));
-    upd.textContent = "Last refreshed " + u.toLocaleString("en-GB", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Singapore" }) + " (Singapore time). Prices refresh hourly on weekdays and are checked against FRED before they are shown";
+    upd.textContent = "Last refreshed " + u.toLocaleString("en-GB", { day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Singapore" }) + " (Singapore time). Prices refresh hourly on weekdays and, where FRED publishes the same series, are checked against it before they are shown";
   } catch (e) {
     upd.textContent = "Market data is updating, please check back shortly";
   }
