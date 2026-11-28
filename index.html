@@ -209,7 +209,14 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
 .inv-table th { font-weight: 500; color: var(--muted); font-size: 12.5px; }
 .mk-tabs { font-size: 16px; gap: 28px; border-bottom: 1px solid var(--rule); margin-top: -20px; }
 .mk-tabs a { padding-bottom: 10px; }
-.mk-ticker { display: grid; gap: 4px; min-height: 64px; }
+.mk-ticker { display: grid; gap: 4px; }
+.tk-viewport { overflow: hidden; border-top: 1px solid var(--rule); border-bottom: 1px solid var(--rule); padding: 9px 0; -webkit-mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); mask-image: linear-gradient(90deg, transparent, #000 4%, #000 96%, transparent); }
+.tk-track { display: inline-flex; white-space: nowrap; font-family: var(--ui); font-size: 14px; font-variant-numeric: tabular-nums; animation: tk-scroll var(--tk-dur, 60s) linear infinite; }
+.tk-viewport:hover .tk-track { animation-play-state: paused; }
+.tk-set { display: inline-flex; gap: 32px; padding-right: 32px; }
+.tk-item b { font-weight: 500; margin-right: 6px; } .tk-item span { margin-left: 6px; }
+@keyframes tk-scroll { from { transform: translateX(0); } to { transform: translateX(-50%); } }
+@media (prefers-reduced-motion: reduce) { .tk-track { animation: none; white-space: normal; } .tk-set { flex-wrap: wrap; gap: 8px 24px; } .tk-dup { display: none; } }
 .mk-ticker .mk-meta { font-size: 12px; }
 .mk-strip { display: flex; flex-wrap: wrap; gap: 6px 24px; align-items: baseline; padding: 12px 16px; background: color-mix(in srgb, var(--ink) 4%, var(--bg)); border-left: 3px solid var(--accent); font-size: 16px; }
 .mk-strip a { color: var(--ink); text-decoration: none; }
@@ -359,9 +366,9 @@ footer .inner { padding-block: 24px; font-family: var(--ui); font-size: 13px; co
       <p id="markets-intro"></p>
       <p class="mk-meta" id="mk-updated">Loading the latest data…</p>
     </div>
-    <div class="mk-ticker">
-      <div class="tradingview-widget-container"><div class="tradingview-widget-container__widget" id="mk-ticker-widget"></div></div>
-      <p class="mk-meta">Live ticker by <a href="https://www.tradingview.com/" target="_blank" rel="noopener">TradingView</a>. Quotes may be delayed by about 15 minutes, and index and oil quotes are indicative</p>
+    <div class="mk-ticker" id="mk-ticker" hidden>
+      <div class="tk-viewport"><div class="tk-track" id="tk-track"></div></div>
+      <p class="mk-meta" id="tk-note"></p>
     </div>
     <div class="mk-strip" id="mk-strip" hidden>
       <a href="#risk-monitor" class="strip-risk" id="strip-risk"></a>
@@ -827,24 +834,20 @@ function asOfText(s) {
   return t.toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hour12: false, timeZone: "Asia/Singapore" }) + " SGT";
 }
 // Live ticker strip (TradingView, quotes delayed); loaded only when the Markets page is opened.
-let tickerLoaded = false;
-function loadTicker() {
-  if (tickerLoaded) return; tickerLoaded = true;
-  const dark = matchMedia("(prefers-color-scheme: dark)").matches && document.documentElement.dataset.theme !== "light" || document.documentElement.dataset.theme === "dark";
-  const box = $("mk-ticker-widget");
-  const s = document.createElement("script");
-  s.src = "https://s3.tradingview.com/external-embedding/embed-widget-ticker-tape.js"; s.async = true;
-  s.textContent = JSON.stringify({
-    symbols: [
-      { proName: "TVC:UKOIL", title: "Brent" }, { proName: "TVC:USOIL", title: "WTI" },
-      { proName: "FOREXCOM:SPXUSD", title: "S&P 500" }, { proName: "FOREXCOM:NSXUSD", title: "Nasdaq 100" },
-      { proName: "FOREXCOM:DJI", title: "Dow" }, { proName: "TVC:NI225", title: "Nikkei 225" },
-      { proName: "FX_IDC:USDSGD", title: "USD/SGD" }, { proName: "FX_IDC:USDCNY", title: "USD/CNY" },
-      { proName: "TVC:US10Y", title: "US 10Y" }, { proName: "TVC:GOLD", title: "Gold" }
-    ],
-    showSymbolLogo: false, isTransparent: true, displayMode: "regular", colorTheme: dark ? "dark" : "light", locale: "en"
-  });
-  box.appendChild(s);
+// Ticker strip: the same instruments and numbers as the price board below, so the two never disagree.
+const TK_SHORT = { DCOILBRENTEU: "Brent", DCOILWTICO: "WTI", DHHNGSP: "Henry Hub", JKM: "JKM", TTF: "TTF", RBOB: "RBOB", HEATOIL: "Heating oil",
+  SP500: "S&P 500", DJIA: "Dow", NASDAQCOM: "Nasdaq", NIKKEI225: "Nikkei 225", VIXCLS: "VIX", DEXSIUS: "USD/SGD", DEXCHUS: "USD/CNY", DEXUSEU: "EUR/USD", DGS10: "US 10Y" };
+function renderTicker(data) {
+  const items = data.series.filter(s => !s.stale).map(s => {
+    const d = dayChange(s), cls = d > 0 ? "up" : d < 0 ? "down" : "";
+    return `<span class="tk-item"><b>${esc(TK_SHORT[s.id] || s.name)}</b>${fmtNum(s.latest, s.decimals)}${s.unit === "%" ? "%" : ""}${d == null ? "" : `<span class="${cls}">${d > 0 ? "+" : ""}${d.toFixed(2)}%</span>`}</span>`;
+  }).join("");
+  if (!items) return;
+  const track = $("tk-track");
+  track.innerHTML = `<span class="tk-set">${items}</span><span class="tk-set tk-dup" aria-hidden="true">${items}</span>`;   // doubled so the scroll loops seamlessly
+  track.style.setProperty("--tk-dur", Math.max(40, data.series.length * 5) + "s");
+  $("tk-note").textContent = "Same prices as the board below, refreshed hourly on weekdays. Each price is the latest available at the time shown on the board";
+  $("mk-ticker").hidden = false;
 }
 async function loadMarkets() {
   const board = document.getElementById("mk-board"), upd = document.getElementById("mk-updated");
@@ -866,6 +869,7 @@ async function loadMarkets() {
     const sum = summarize(data); if (sum) document.getElementById("mk-summary").textContent = sum;
     loadCommentary();
     renderRisk(data.risk);
+    renderTicker(data);
     renderCommodities(data.commodities);
     loadInventory();
     const u = new Date(data.updated.replace("Z", ":00Z"));
@@ -900,7 +904,6 @@ function route() {
     document.querySelectorAll(".mk-panel").forEach(p => { p.hidden = p.dataset.panel !== tab; });
     document.querySelectorAll("[data-mtab]").forEach(a => a.setAttribute("aria-current", a.dataset.mtab === tab ? "true" : "false"));
     loadHeat();
-    loadTicker();
   }
   if (target === "writing") renderWriting(name.startsWith("writing-") ? name.slice(8) : "all");
   if (document.activeElement && document.activeElement.closest(".has-sub")) document.activeElement.blur();
